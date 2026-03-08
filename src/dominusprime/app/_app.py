@@ -522,9 +522,9 @@ if os.path.isdir(_CONSOLE_STATIC_DIR):
 
         raise HTTPException(status_code=404, detail="Not Found")
 
-    @app.get("/copaw-symbol.svg")
+    @app.get("/dominusprime-symbol.svg")
     def _console_icon():
-        f = _console_path / "copaw-symbol.svg"
+        f = _console_path / "dominusprime-symbol.svg"
         if f.is_file():
             return FileResponse(f, media_type="image/svg+xml")
 

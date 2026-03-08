@@ -65,7 +65,42 @@ Your Personal AI Assistant; easy to install, deploy on your own machine or on th
 
 ## Quick Start
 
-### pip install (recommended)
+### Quick Install
+
+**Step 1: Clone the repository**
+
+```bash
+git clone https://github.com/BattlescarZA/DominusPrime.git
+cd DominusPrime
+```
+
+**Step 2: Run the installer**
+
+**Linux / macOS:**
+
+```bash
+chmod +x scripts/install.sh
+./scripts/install.sh
+```
+
+**Windows (PowerShell):**
+
+```powershell
+.\scripts\install.ps1
+```
+
+**Step 3: Initialize and start**
+
+```bash
+dominusprime init --defaults
+dominusprime app
+```
+
+Then open **http://127.0.0.1:9999/** in your browser for the Console (chat with DominusPrime, configure the agent).
+
+![Console](docs/images/dominusprime-console-interface.png)
+
+### Alternative: pip install
 
 If you prefer managing Python yourself:
 
@@ -74,125 +109,6 @@ pip install DominusPrime
 DominusPrime init --defaults
 DominusPrime app
 ```
-
-Then open **http://127.0.0.1:9999/** in your browser for the Console (chat with DominusPrime, configure the agent). To talk in DingTalk, Feishu, QQ, etc., add a channel in the [docs](https://DominusPrime.agentscope.io/docs/channels).
-
-![Console](docs/images/dominusprime-console-interface.png)
-
-### One-line install (beta, continuously improving)
-
-No Python required — the installer handles everything for you:
-
-**macOS / Linux:**
-
-```bash
-curl -fsSL https://DominusPrime.agentscope.io/install.sh | bash
-```
-
-To install with Ollama support:
-
-```bash
-curl -fsSL https://DominusPrime.agentscope.io/install.sh | bash -s -- --extras ollama
-```
-
-To install with multiple extras (e.g., Ollama + llama.cpp):
-
-```bash
-curl -fsSL https://DominusPrime.agentscope.io/install.sh | bash -s -- --extras ollama,llamacpp
-```
-
-**Windows (CMD):**
-
-```CMD
-curl -fsSL https://DominusPrime.agentscope.io/install.bat -o install.bat && install.bat
-```
-
-**Windows (PowerShell):**
-
-```powershell
-irm https://DominusPrime.agentscope.io/install.ps1 | iex
-```
-
-> **Note**: The installer will automatically check the status of uv. If it is not installed, it will attempt to download and configure it automatically. If the automatic installation fails, please follow the on-screen prompts or execute `python -m pip install -U uv`, then rerun the installer.
-
-> **⚠️ Special Notice for Windows Enterprise LTSC Users**
->
-> If you are using Windows LTSC or an enterprise environment governed by strict security policies, PowerShell may run in **Constrained Language Mode**, potentially causing the following issue:
-> 1. **If using CMD (.bat): Script executes successfully but fails to write to `Path`**
->
->    The script completes file installation. Due to **Constrained Language Mode**, it cannot automatically update environment variables. Manually configure as follows:
->    - **Locate the installation directory**:
->      - Check if `uv` is available: Enter `uv --version` in CMD. If a version number appears, **only configure the DominusPrime path**. If you receive the prompt `'uv' is not recognized as an internal or external command, operable program or batch file,` configure both paths.
->      - uv path (choose one based on installation location; use if `uv` fails): Typically `%USERPROFILE%\.local\bin`, `%USERPROFILE%\AppData\Local\uv`, or the `Scripts` folder within your Python installation directory
->      - DominusPrime path: Typically located at `%USERPROFILE%\.DominusPrime\bin`.
->    - **Manually add to the system's Path environment variable**:
->      - Press `Win + R`, type `sysdm.cpl` and press Enter to open System Properties.
->      - Click “Advanced” -> “Environment Variables”.
->      - Under “System variables”, locate and select `Path`, then click “Edit”.
->      - Click “New”, enter both directory paths sequentially, then click OK to save.
-> 2. **If using PowerShell (.ps1): Script execution interrupted**
->
->   Due to **Constrained Language Mode**, the script may fail to automatically download `uv`.
->   - **Manually install uv**: Refer to the [GitHub Release](https://github.com/astral-sh/uv/releases) to download `uv.exe` and place it in `%USERPROFILE%\.local\bin` or `%USERPROFILE%\AppData\Local\uv`; or ensure Python is installed and run `python -m pip install -U uv`.
->   - **Configure `uv` environment variables**: Add the `uv` directory and `%USERPROFILE%\.DominusPrime\bin` to your system's `Path` variable.
->   - **Re-run the installation**: Open a new terminal and execute the installation script again to complete the `DominusPrime` installation.
->   - **Configure the `DominusPrime` environment variable**: Add `%USERPROFILE%\.DominusPrime\bin` to your system's `Path` variable.
-
-Once installed, open a new terminal and run:
-
-```bash
-DominusPrime init --defaults   # or: DominusPrime init (interactive)
-DominusPrime app
-```
-
-<details>
-<summary><b>Install options</b></summary>
-
-**macOS / Linux:**
-
-```bash
-# Install a specific version
-curl -fsSL ... | bash -s -- --version 0.0.2
-
-# Install from source (dev/testing)
-curl -fsSL ... | bash -s -- --from-source
-
-# With local model support
-bash install.sh --extras llamacpp    # llama.cpp (cross-platform)
-bash install.sh --extras mlx         # MLX (Apple Silicon)
-bash install.sh --extras llamacpp,mlx
-
-# Upgrade — just re-run the installer
-curl -fsSL ... | bash
-
-# Uninstall
-DominusPrime uninstall          # keeps config and data
-DominusPrime uninstall --purge  # removes everything
-```
-
-**Windows (PowerShell):**
-
-```powershell
-# Install a specific version
-irm ... | iex; .\install.ps1 -Version 0.0.2
-
-# Install from source (dev/testing)
-.\install.ps1 -FromSource
-
-# With local model support
-.\install.ps1 -Extras llamacpp      # llama.cpp (cross-platform)
-.\install.ps1 -Extras mlx           # MLX
-.\install.ps1 -Extras llamacpp,mlx
-
-# Upgrade — just re-run the installer
-irm ... | iex
-
-# Uninstall
-DominusPrime uninstall          # keeps config and data
-DominusPrime uninstall --purge  # removes everything
-```
-
-</details>
 
 ### Using Docker
 

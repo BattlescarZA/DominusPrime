@@ -82,7 +82,7 @@ DominusPrime init --defaults
 DominusPrime app
 ```
 
-Then open **http://127.0.0.1:8088/** in your browser for the Console (chat with DominusPrime, configure the agent). To talk in DingTalk, Feishu, QQ, etc., add a channel in the [docs](https://DominusPrime.agentscope.io/docs/channels).
+Then open **http://127.0.0.1:9999/** in your browser for the Console (chat with DominusPrime, configure the agent). To talk in DingTalk, Feishu, QQ, etc., add a channel in the [docs](https://DominusPrime.agentscope.io/docs/channels).
 
 ![Console](https://img.alicdn.com/imgextra/i4/O1CN01z9VY6z1uMad7pgrCj_!!6000000006023-2-tps-3822-2064.png)
 
@@ -207,12 +207,12 @@ Images are on **Docker Hub** (`agentscope/DominusPrime`). Image tags: `latest` (
 
 ```bash
 docker pull agentscope/DominusPrime:latest
-docker run -p 127.0.0.1:8088:8088 -v DominusPrime-data:/app/working agentscope/DominusPrime:latest
+docker run -p 127.0.0.1:9999:9999 -v DominusPrime-data:/app/working agentscope/DominusPrime:latest
 ```
 
 Also available on Alibaba Cloud Container Registry (ACR) for users in China: `agentscope-registry.ap-southeast-1.cr.aliyuncs.com/agentscope/DominusPrime` (same tags).
 
-Then open **http://127.0.0.1:8088/** for the Console. Config, memory, and skills are stored in the `DominusPrime-data` volume. To pass API keys (e.g. `DASHSCOPE_API_KEY`), add `-e VAR=value` or `--env-file .env` to `docker run`.
+Then open **http://127.0.0.1:9999/** for the Console. Config, memory, and skills are stored in the `DominusPrime-data` volume. To pass API keys (e.g. `DASHSCOPE_API_KEY`), add `-e VAR=value` or `--env-file .env` to `docker run`.
 
 > **Connecting to Ollama or other services on the host machine**
 >
@@ -220,7 +220,7 @@ Then open **http://127.0.0.1:8088/** for the Console. Config, memory, and skills
 >
 > **Option A** — Explicit host binding (all platforms):
 > ```bash
-> docker run -p 127.0.0.1:8088:8088 \
+> docker run -p 127.0.0.1:9999:9999 \
 >   --add-host=host.docker.internal:host-gateway \
 >   -v DominusPrime-data:/app/working agentscope/DominusPrime:latest
 > ```
@@ -250,7 +250,7 @@ If you use a **cloud LLM** (e.g. DashScope, ModelScope), you must configure an A
 
 **How to configure:**
 
-1. **Console (recommended)** — After running `DominusPrime app`, open **http://127.0.0.1:8088/** → **Settings** → **Models**. Choose a provider, enter the **API Key**, and enable that provider and model.
+1. **Console (recommended)** — After running `DominusPrime app`, open **http://127.0.0.1:9999/** → **Settings** → **Models**. Choose a provider, enter the **API Key**, and enable that provider and model.
 2. **`DominusPrime init`** — When you run `DominusPrime init`, it will guide you through configuring the LLM provider and API key. Follow the prompts to choose a provider and enter your key.
 3. **Environment variable** — For DashScope you can set `DASHSCOPE_API_KEY` in your shell or in a `.env` file in the working directory.
 

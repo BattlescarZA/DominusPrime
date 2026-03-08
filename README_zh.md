@@ -101,7 +101,7 @@ DominusPrime init --defaults
 DominusPrime app
 ```
 
-在浏览器打开 **http://127.0.0.1:8088/** 即可使用控制台（与 DominusPrime 对话、配置 Agent）。若要在钉钉、飞书、QQ 等 app 内对话，请参考 [文档](https://DominusPrime.agentscope.io/docs/channels) 接入频道。
+在浏览器打开 **http://127.0.0.1:9999/** 即可使用控制台（与 DominusPrime 对话、配置 Agent）。若要在钉钉、飞书、QQ 等 app 内对话，请参考 [文档](https://DominusPrime.agentscope.io/docs/channels) 接入频道。
 
 ![Console](https://img.alicdn.com/imgextra/i4/O1CN01kUEGsC1XolpzIWdsu_!!6000000002971-2-tps-3822-2064.png)
 
@@ -226,12 +226,12 @@ DominusPrime uninstall --purge  # 删除所有内容
 
 ```bash
 docker pull agentscope/DominusPrime:latest
-docker run -p 127.0.0.1:8088:8088 -v DominusPrime-data:/app/working agentscope/DominusPrime:latest
+docker run -p 127.0.0.1:9999:9999 -v DominusPrime-data:/app/working agentscope/DominusPrime:latest
 ```
 
 国内用户也可选用阿里云容器镜像服务 (ACR)：`agentscope-registry.ap-southeast-1.cr.aliyuncs.com/agentscope/DominusPrime`（tag 相同）。
 
-然后在浏览器打开 **http://127.0.0.1:8088/** 进入控制台。配置、记忆与 Skills 保存在 `DominusPrime-data` 卷中。如需传入 API Key（如 `DASHSCOPE_API_KEY`），在 `docker run` 时添加 `-e VAR=value` 或 `--env-file .env`。
+然后在浏览器打开 **http://127.0.0.1:9999/** 进入控制台。配置、记忆与 Skills 保存在 `DominusPrime-data` 卷中。如需传入 API Key（如 `DASHSCOPE_API_KEY`），在 `docker run` 时添加 `-e VAR=value` 或 `--env-file .env`。
 
 > **从容器内连接宿主机上的 Ollama 或其他模型服务**
 >
@@ -239,7 +239,7 @@ docker run -p 127.0.0.1:8088:8088 -v DominusPrime-data:/app/working agentscope/D
 >
 > **方式 A** — 显式绑定宿主机地址（全平台通用）：
 > ```bash
-> docker run -p 127.0.0.1:8088:8088 \
+> docker run -p 127.0.0.1:9999:9999 \
 >   --add-host=host.docker.internal:host-gateway \
 >   -v DominusPrime-data:/app/working agentscope/DominusPrime:latest
 > ```
@@ -269,7 +269,7 @@ docker run -p 127.0.0.1:8088:8088 -v DominusPrime-data:/app/working agentscope/D
 
 **配置方式：**
 
-1. **控制台（推荐）** — 运行 `DominusPrime app` 后，打开 **http://127.0.0.1:8088/** → **设置** → **模型**。选择提供商、填写 **API Key**，并启用该提供商与模型。
+1. **控制台（推荐）** — 运行 `DominusPrime app` 后，打开 **http://127.0.0.1:9999/** → **设置** → **模型**。选择提供商、填写 **API Key**，并启用该提供商与模型。
 2. **`DominusPrime init`** — 运行 `DominusPrime init` 时，会引导你配置 LLM 提供商与 API Key。按提示选择提供商并填写 Key 即可。
 3. **环境变量** — 使用 DashScope 时，可在终端或工作目录下的 `.env` 文件中设置 `DASHSCOPE_API_KEY`。
 

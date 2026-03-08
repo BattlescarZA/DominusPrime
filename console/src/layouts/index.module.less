@@ -16,11 +16,35 @@
   justify-content: space-between;
   background: #fff;
   border-bottom: 1px solid #f0f0f0;
+  
+  @media (max-width: 768px) {
+    height: 56px;
+    padding: 0 16px;
+  }
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
 }
 
 .headerTitle {
   font-size: 18px;
   font-weight: 500;
+  
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+}
+
+.mobileMenuBtn {
+  font-size: 20px;
 }
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
@@ -33,6 +57,14 @@
   :global {
     .copaw-menu {
       border-inline-end: 0 !important;
+    }
+  }
+}
+
+.mobileDrawer {
+  :global {
+    .ant-drawer-body {
+      padding: 0;
     }
   }
 }
@@ -53,6 +85,10 @@
 .logoImg {
   height: 32px;
   width: auto;
+  
+  @media (max-width: 768px) {
+    height: 28px;
+  }
 }
 
 .versionBadge {

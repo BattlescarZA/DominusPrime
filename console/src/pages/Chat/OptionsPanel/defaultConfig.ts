@@ -2,10 +2,10 @@ const defaultConfig = {
   theme: {
     colorPrimary: "#615CED",
     darkMode: false,
-    prefix: "copaw",
+    prefix: "dominusprime",
     leftHeader: {
       logo: "",
-      title: "Work with CoPaw",
+      title: "Work with Dominus",
     },
   },
   sender: {
@@ -20,10 +20,10 @@ const defaultConfig = {
     avatar: `${import.meta.env.BASE_URL}dominusprime-symbol.svg`,
     prompts: [
       {
-        value: "让我们开启一段新的旅程吧！",
+        value: "How can you help me with my business",
       },
       {
-        value: "能告诉我你有哪些技能吗？",
+        value: "Can you tell me what skills you have?",
       },
     ],
   },

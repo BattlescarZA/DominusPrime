@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="icon192Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="192" height="192" fill="#FFFFFF" rx="32"/>
+  
+  <!-- Symbol centered -->
+  <g transform="translate(16, 16)">
+    <!-- Crown/Prime symbol -->
+    <path d="M 50 60 L 80 30 L 110 60 L 110 45 L 80 15 L 50 45 Z" fill="url(#icon192Grad)"/>
+    
+    <!-- Letter D -->
+    <path d="M 42 80 L 42 120 L 62 120 Q 82 120 82 100 Q 82 80 62 80 Z" fill="url(#icon192Grad)"/>
+    
+    <!-- Letter P -->
+    <path d="M 90 80 L 90 120 M 90 80 L 110 80 Q 120 80 120 90 Q 120 100 110 100 L 90 100" 
+          fill="none" stroke="url(#icon192Grad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Tech accent circle -->
+    <circle cx="80" cy="80" r="75" fill="none" stroke="url(#icon192Grad)" stroke-width="2.5" opacity="0.5"/>
+  </g>
+</svg>

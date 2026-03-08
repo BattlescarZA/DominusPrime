@@ -1,5 +1,5 @@
-import { Layout } from "antd";
-import { useEffect } from "react";
+import { Layout, Drawer } from "antd";
+import { useEffect, useState } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../Sidebar";
 import Header from "../Header";
@@ -39,6 +39,10 @@ export default function MainLayout() {
   const navigate = useNavigate();
   const currentPath = location.pathname;
   const selectedKey = pathToKey[currentPath] || "chat";
+  
+  // Mobile drawer state
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     if (currentPath === "/") {
@@ -46,11 +50,53 @@ export default function MainLayout() {
     }
   }, [currentPath, navigate]);
 
+  // Handle window resize for mobile detection
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Close mobile drawer on route change
+  useEffect(() => {
+    if (isMobile) {
+      setMobileDrawerOpen(false);
+    }
+  }, [currentPath, isMobile]);
+
+  const toggleMobileDrawer = () => {
+    setMobileDrawerOpen(!mobileDrawerOpen);
+  };
+
   return (
     <Layout className={styles.mainLayout}>
-      <Sidebar selectedKey={selectedKey} />
+      {/* Desktop Sidebar */}
+      {!isMobile && <Sidebar selectedKey={selectedKey} />}
+      
+      {/* Mobile Drawer */}
+      {isMobile && (
+        <Drawer
+          placement="left"
+          onClose={() => setMobileDrawerOpen(false)}
+          open={mobileDrawerOpen}
+          width={280}
+          bodyStyle={{ padding: 0 }}
+          className={styles.mobileDrawer}
+        >
+          <Sidebar selectedKey={selectedKey} />
+        </Drawer>
+      )}
+      
       <Layout>
-        <Header selectedKey={selectedKey} />
+        <Header
+          selectedKey={selectedKey}
+          onMenuClick={toggleMobileDrawer}
+          isMobile={isMobile}
+        />
         <Content className="page-container">
           <ConsoleCronBubble />
           <div className="page-content">

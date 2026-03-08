@@ -1,6 +1,8 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./i18n";
+import "./styles/layout.css";
+import "./styles/mobile.css";
 
 if (typeof window !== "undefined") {
   const originalError = console.error;

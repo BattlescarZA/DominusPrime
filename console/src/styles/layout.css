@@ -38,6 +38,55 @@ body {
   padding: 0 24px 24px 24px;
 }
 
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .page-content {
+    padding: 0 16px 16px 16px;
+  }
+  
+  /* Touch-friendly button sizes */
+  button {
+    min-height: 40px;
+  }
+  
+  /* Improved spacing for mobile */
+  .ant-space {
+    gap: 8px !important;
+  }
+  
+  /* Better table responsiveness */
+  .ant-table-wrapper {
+    overflow-x: auto;
+  }
+  
+  /* Modal adjustments */
+  .ant-modal {
+    max-width: calc(100vw - 32px) !important;
+    margin: 16px auto !important;
+  }
+  
+  /* Form adjustments */
+  .ant-form-item {
+    margin-bottom: 16px;
+  }
+  
+  /* Card adjustments */
+  .ant-card {
+    margin-bottom: 12px;
+  }
+  
+  .ant-card-body {
+    padding: 16px;
+  }
+}
+
+/* Tablet Responsive Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .page-content {
+    padding: 0 20px 20px 20px;
+  }
+}
+
 .table-container {
   height: 100%;
   overflow: hidden;
@@ -57,7 +106,7 @@ body {
   padding: 0;
 }
 
-/* Welcome avatar: full tall SVG. Class is CoPaw-avatar (no "ant"). */
+/* Welcome avatar: full tall SVG. Class is DominusPrime-avatar (no "ant"). */
 [class*="chat-anywhere-welcome-default"] [class*="-avatar"],
 [class*="message-list-welcome"] [class*="welcome-default"] [class*="-avatar"] {
   width: 36px !important;

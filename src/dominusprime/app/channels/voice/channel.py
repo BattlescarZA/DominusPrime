@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class VoiceChannel(BaseChannel):
-    """CoPaw Voice channel backed by Twilio ConversationRelay.
+    """DominusPrime Voice channel backed by Twilio ConversationRelay.
 
     ``uses_manager_queue = False`` because voice calls are long-lived
     WebSocket sessions -- the ConversationRelay handler runs its own
@@ -98,12 +98,12 @@ class VoiceChannel(BaseChannel):
             return
 
         # Start Cloudflare tunnel pointing at the app's serving port
-        from copaw.tunnel import CloudflareTunnelDriver
-        from copaw.config.utils import read_last_api
+        from dominusprime.tunnel import CloudflareTunnelDriver
+        from dominusprime.config.utils import read_last_api
 
         self.tunnel_mgr = CloudflareTunnelDriver()
         api_info = read_last_api()
-        local_port = api_info[1] if api_info else 8088
+        local_port = api_info[1] if api_info else 9999
 
         try:
             tunnel_info = await self.tunnel_mgr.start(local_port)

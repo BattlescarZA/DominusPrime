@@ -33,24 +33,24 @@ def build_env_context(
     """
     parts = []
     if session_id is not None:
-        parts.append(f"- 当前的session_id: {session_id}")
+        parts.append(f"- Current session_id: {session_id}")
     if user_id is not None:
-        parts.append(f"- 当前的user_id: {user_id}")
+        parts.append(f"- Current user_id: {user_id}")
     if channel is not None:
-        parts.append(f"- 当前的channel: {channel}")
+        parts.append(f"- Current channel: {channel}")
 
     if working_dir is not None:
-        parts.append(f"- 工作目录: {working_dir}")
+        parts.append(f"- Working directory: {working_dir}")
 
     if add_hint:
         parts.append(
-            "- 重要提示:\n"
-            "  1. 完成任务时，优先考虑使用 skills"
-            "（例如定时任务，优先使用 cron skill）。"
-            "对于不清楚的 skills，请先查阅相关对应文档。\n"
-            "  2. 使用 write_file 写文件时，如果担心覆盖原有内容，"
-            "可以先用 read_file 查看文件内容，"
-            "再使用 edit_file 工具进行局部内容更新或追加内容。",
+            "- Important hints:\n"
+            "  1. When completing tasks, prioritize using skills "
+            "(e.g. for scheduled tasks, prioritize using cron skill). "
+            "For unclear skills, please consult the relevant documentation first.\n"
+            "  2. When using write_file to write files, if you're worried about overwriting existing content, "
+            "first use read_file to view the file content, "
+            "then use edit_file tool for partial content updates or appending content.",
         )
 
     return (

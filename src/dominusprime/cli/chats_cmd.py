@@ -21,7 +21,7 @@ def _base_url(ctx: click.Context, base_url: Optional[str]) -> str:
     if base_url:
         return base_url.rstrip("/")
     host = (ctx.obj or {}).get("host", "127.0.0.1")
-    port = (ctx.obj or {}).get("port", 8088)
+    port = (ctx.obj or {}).get("port", 9999)
     return f"http://{host}:{port}"
 
 
@@ -53,7 +53,7 @@ def chats_group() -> None:
 @click.option(
     "--base-url",
     default=None,
-    help="Override API base URL, e.g. http://127.0.0.1:8088",
+    help="Override API base URL, e.g. http://127.0.0.1:9999",
 )
 @click.pass_context
 def list_chats(

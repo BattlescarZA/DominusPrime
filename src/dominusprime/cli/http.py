@@ -8,7 +8,7 @@ import click
 import httpx
 
 
-DEFAULT_BASE_URL = "http://127.0.0.1:8088"
+DEFAULT_BASE_URL = "http://127.0.0.1:9999"
 
 
 def client(base_url: str) -> httpx.Client:

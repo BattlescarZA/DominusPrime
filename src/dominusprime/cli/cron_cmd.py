@@ -20,7 +20,7 @@ def _base_url(ctx: click.Context, base_url: Optional[str]) -> str:
     if base_url:
         return base_url.rstrip("/")
     host = (ctx.obj or {}).get("host", "127.0.0.1")
-    port = (ctx.obj or {}).get("port", 8088)
+    port = (ctx.obj or {}).get("port", 9999)
     return f"http://{host}:{port}"
 
 
@@ -38,7 +38,7 @@ def cron_group() -> None:
     "--base-url",
     default=None,
     help=(
-        "Override the API base URL (e.g. http://127.0.0.1:8088). "
+        "Override the API base URL (e.g. http://127.0.0.1:9999). "
         "If omitted, uses global --host and --port from config."
     ),
 )

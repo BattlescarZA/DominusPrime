@@ -336,7 +336,7 @@ class DiscordChannel(BaseChannel):
         return session_id
 
     def _route_from_handle(self, to_handle: str) -> dict:
-        # to_handle: discord:ch:<channel_id> 或 discord:dm:<user_id>
+        # to_handle: discord:ch:<channel_id> or discord:dm:<user_id>
         parts = (to_handle or "").split(":")
         if len(parts) >= 3 and parts[0] == "discord":
             kind, ident = parts[1], parts[2]

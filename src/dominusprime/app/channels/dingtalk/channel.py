@@ -1242,16 +1242,11 @@ class DingTalkChannel(BaseChannel):
         # Not allowed - return rejection message
         if is_group:
             msg = (
-                "抱歉，此机器人仅对授权用户开放。请联系管理员配置访问权限。\n"
-                f"您的 ID：{sender_id}\n"
                 "Sorry, this bot is only available to authorized users. "
-                "Please contact the administrator. Your ID: "
-                f"{sender_id}"
+                f"Please contact the administrator. Your ID: {sender_id}"
             )
         else:
             msg = (
-                "抱歉，您没有权限使用此机器人。请联系管理员添加您的 ID 到白名单。\n"
-                f"您的 ID：{sender_id}\n"
                 "Sorry, you are not authorized to use this bot. "
                 "Please contact the administrator to add your ID to "
                 f"the allowlist. Your ID: {sender_id}"

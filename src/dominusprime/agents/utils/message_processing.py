@@ -264,11 +264,7 @@ async def process_file_and_media_blocks_in_message(msg) -> None:
         if downloaded_files:
             lang = load_config().agents.language
             for i, local_path in reversed(downloaded_files):
-                text = (
-                    f"用户上传文件，已经下载到 {local_path}"
-                    if lang == "zh"
-                    else f"User uploaded a file, downloaded to {local_path}"
-                )
+                text = f"User uploaded a file, downloaded to {local_path}"
                 text_block = {"type": "text", "text": text}
                 message.content.insert(i + 1, text_block)
 

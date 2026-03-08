@@ -483,10 +483,10 @@ def read_root():
         return FileResponse(_CONSOLE_INDEX)
     return {
         "message": (
-            "CoPaw Web Console is not available. "
-            "If you installed CoPaw from source code, please run "
-            "`npm ci && npm run build` in CoPaw's `console/` "
-            "directory, and restart CoPaw to enable the web console."
+            "DominusPrime Web Console is not available. "
+            "If you installed DominusPrime from source code, please run "
+            "`npm ci && npm run build` in DominusPrime's `console/` "
+            "directory, and restart DominusPrime to enable the web console."
         ),
     }
 

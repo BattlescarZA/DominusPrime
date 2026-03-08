@@ -1,26 +1,26 @@
 ---
-summary: "Agent 长期记忆 — 工具设置与经验教训"
+summary: "Agent long-term memory — tool settings and lessons learned"
 read_when:
-  - 手动引导工作区
+  - Manually bootstrapping a workspace
 ---
 
-## 工具设置
+## Tool Settings
 
-Skills 定义工具怎么用。这文件记你的具体情况 — 你独有的设置。
+Skills define how tools work. This file records your specific situation — your unique settings.
 
-### 这里记什么
+### What to Record Here
 
-加上任何能帮你干活的东西。这是你的小抄。
+Add anything that helps you get work done. This is your cheat sheet.
 
-比如：
+For example:
 
-- SSH 主机和别名
-- 其他执行skills的时候，和用户相关的设置
+- SSH hosts and aliases
+- Other user-related settings when executing skills
 
-### 示例
+### Example
 
 ```markdown
 ### SSH
 
-- home-server → 192.168.1.100，用户：admin
+- home-server → 192.168.1.100, user: admin
 ```

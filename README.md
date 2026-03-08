@@ -84,7 +84,7 @@ DominusPrime app
 
 Then open **http://127.0.0.1:9999/** in your browser for the Console (chat with DominusPrime, configure the agent). To talk in DingTalk, Feishu, QQ, etc., add a channel in the [docs](https://DominusPrime.agentscope.io/docs/channels).
 
-![Console](https://img.alicdn.com/imgextra/i4/O1CN01z9VY6z1uMad7pgrCj_!!6000000006023-2-tps-3822-2064.png)
+![Console](docs/images/dominusprime-console-interface.png)
 
 ### One-line install (beta, continuously improving)
 

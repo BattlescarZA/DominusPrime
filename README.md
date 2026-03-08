@@ -11,11 +11,6 @@
 [![GitHub Stars](https://img.shields.io/github/stars/BattlescarZA/DominusPrime?style=flat&logo=github&color=yellow&label=Stars)](https://github.com/BattlescarZA/DominusPrime/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/BattlescarZA/DominusPrime?style=flat&logo=github&color=purple&label=Forks)](https://github.com/BattlescarZA/DominusPrime/network)
 
-[[中文 README](README_zh.md)] [[日本語](README_ja.md)]
-
-<p align="center">
-  <img src="https://img.alicdn.com/imgextra/i2/O1CN014TIqyO1U5wDiSbFfA_!!6000000002467-2-tps-816-192.png" alt="DominusPrime Logo" width="120">
-</p>
 
 <p align="center"><b>Works for you, grows with you.</b></p>
 

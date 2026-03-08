@@ -61,8 +61,6 @@ Your Personal AI Assistant; easy to install, deploy on your own machine or on th
 - [Local Models](#local-models)
 - [Documentation](#documentation)
 - [FAQ](#faq)
-- [Roadmap](#roadmap)
-- [Contributing](#get-involved)
 - [Install from source](#install-from-source)
 - [Why DominusPrime?](#why-DominusPrime)
 - [Built by](#built-by)
@@ -303,45 +301,6 @@ Full docs in this repo: [website/public/docs/](website/public/docs/).
 ## FAQ
 
 For common questions, troubleshooting tips, and known issues, please visit the **[FAQ page](https://DominusPrime.agentscope.io/docs/faq)**.
-
----
-
-## Roadmap
-
-| Area | Item | Status |
-| --- | --- | --- |
-| Horizontal Expansion | More channels, models, skills, MCPs — **community contributions welcome** | Seeking Contributors |
-| Existing Feature Extension | Display optimization, download hints, Windows path compatibility, etc. — **community contributions welcome** | Seeking Contributors |
-| Console Web UI | Expose more info/config in the Console | In Progress |
-| Compatibility & Ease of Use | App-level packaging (.dmg, .exe) | In Progress |
-| Self-healing | Magic commands and daemon capabilities (CLI, status, restart, logs) | In Progress |
-| | DaemonAgent: autonomous diagnostics, self-healing, and recovery | Planned |
-| Multi-agent | Background task support | In Progress |
-| | Multi-agent isolation | Planned |
-| | Inter-agent contention resolution | Planned |
-| | Multi-agent communication | Planned |
-| Multimodal | Voice/video calls and real-time interaction | In Progress |
-| Release & Contributing | Contributing guidance for vibe coding agents | Planned |
-| Bugfixes & Enhancements | Skills and MCP runtime install, hot-reload improvements | Planned |
-| Security | Shell execution confirmation | Planned |
-| | Tool/skills security | Planned |
-| | Configurable security levels (user-configurable) | Planned |
-| Sandbox | Deeper integration with AgentScope Runtime sandboxes | Long-term Planning |
-| DominusPrime-optimized local models | LLMs tuned for DominusPrime's native skills and common tasks; better local personal-assistant usability | Long-term Planning |
-| Small + large model collaboration | Local LLMs for sensitive data; cloud LLMs for planning and coding; balance of privacy, performance, and capability | Long-term Planning |
-| Cloud-native | Deeper integration with AgentScope Runtime; leverage cloud compute, storage, and tooling | Long-term Planning |
-| Skills Hub | Enrich the [AgentScope Skills](https://github.com/agentscope-ai/agentscope-skills) repository and improve discoverability of high-quality skills | Long-term Planning |
-
-*Status:* *In Progress* — actively being worked on; *Planned* — queued or under design, also **welcome contributions**; *Seeking Contributors* — we **strongly encourage community contributions**; *Long-term Planning* — longer-horizon roadmap.
-
-### Get involved
-
-We are building DominusPrime in the open and welcome contributions of all kinds! Check the [Roadmap](#roadmap) above (especially items marked **Seeking Contributors**) to find areas that interest you, and read [CONTRIBUTING](https://github.com/agentscope-ai/DominusPrime/blob/main/CONTRIBUTING.md) to get started. We particularly welcome:
-
-- **Horizontal expansion** — new channels, model providers, skills, MCPs.
-- **Existing feature extension** — display and UX improvements, download hints, Windows path compatibility, and the like.
-
-Join the conversation on [GitHub Discussions](https://github.com/agentscope-ai/DominusPrime/discussions) to suggest or pick up work.
 
 ---
 

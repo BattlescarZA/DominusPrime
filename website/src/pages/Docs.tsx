@@ -193,7 +193,6 @@ const DOC_SLUG_ICONS: Record<string, LucideIcon> = {
   faq: CircleHelp,
   community: Users,
   contributing: GitBranch,
-  roadmap: Map,
 };
 
 const DOC_SLUGS: DocEntry[] = [
@@ -216,7 +215,6 @@ const DOC_SLUGS: DocEntry[] = [
   { slug: "faq", titleKey: "docs.faq" },
   { slug: "community", titleKey: "docs.community" },
   { slug: "contributing", titleKey: "docs.contributing" },
-  { slug: "roadmap", titleKey: "docs.roadmap" },
 ];
 
 /** Collect all valid slugs (parents + children). */
@@ -246,7 +244,6 @@ const DOC_TITLES: Record<Lang, Record<string, string>> = {
     "docs.faq": "FAQ 常见问题",
     "docs.community": "问题反馈与交流",
     "docs.contributing": "开源与贡献",
-    "docs.roadmap": "路线图",
   },
   en: {
     "docs.intro": "Introduction",
@@ -265,7 +262,6 @@ const DOC_TITLES: Record<Lang, Record<string, string>> = {
     "docs.faq": "FAQ",
     "docs.community": "Bug reports & community",
     "docs.contributing": "Open source & contribution",
-    "docs.roadmap": "Roadmap",
   },
 };
 

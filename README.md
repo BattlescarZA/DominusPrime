@@ -235,7 +235,7 @@ Full docs in this repo: [website/public/docs/](website/public/docs/).
 
 ## FAQ
 
-For common questions, troubleshooting tips, and known issues, please visit the **[FAQ page](https://DominusPrime.agentscope.io/docs/faq)**.
+For common questions, troubleshooting tips, and known issues, please visit the **[FAQ page](https://github.com/BattlescarZA/DominusPrime/wiki)**.
 
 ---
 

@@ -47,20 +47,6 @@ Your Personal AI Assistant; easy to install, deploy on your own machine or on th
 
 ---
 
-## News
-
-[2026-03-06] We released v0.0.5! See the [v0.0.5 Release Notes](https://agentscope-ai.github.io/DominusPrime/release-notes) for the full changelog.
-
-- **[v0.0.5] Added:** Daemon mode; Twilio voice channel; DeepSeek Reasoner support; agent interruption API; version update notifications; optional display of thinking and tool calls.
-- **[v0.0.5] Improved:** Memory system upgrade; console UI improvements; optional channel lazy loading; Windows one-click installation script.
-- **[v0.0.5] Fixed:** Docker configuration persistence; Ollama base URL; channel fixes; Windows compatibility; MCP client stability.
-- **[v0.0.5] Docs:** Release notes; improved model and channel configuration guides; Docker + Ollama connection guide.
-- **[v0.0.5] Contributors:** Thanks to new contributors: [@qoli](https://github.com/qoli), [@qbc2016](https://github.com/qbc2016), [@yunlzheng](https://github.com/yunlzheng), [@BlueSkyXN](https://github.com/BlueSkyXN), [@sidonsoft](https://github.com/sidonsoft), [@lishengzxc](https://github.com/lishengzxc), [@pikaxinge](https://github.com/pikaxinge), [@linshengli](https://github.com/linshengli), [@eltociear](https://github.com/eltociear), [@liuxiaopai-ai](https://github.com/liuxiaopai-ai), [@Leirunlin](https://github.com/Leirunlin), [@pan-x-c](https://github.com/pan-x-c), [@garyzhang99](https://github.com/garyzhang99), [@celestialhorse51D](https://github.com/celestialhorse51D), [@wwx814](https://github.com/wwx814), [@nszhsl](https://github.com/nszhsl), [@DavdGao](https://github.com/DavdGao), [@zhangckcup](https://github.com/zhangckcup).
-
-[2026-03-02] We released v0.0.4! See the [v0.0.4 Release Notes](https://agentscope-ai.github.io/DominusPrime/release-notes) for the full changelog.
-
----
-
 ## Table of Contents
 
 > **Recommended reading:**

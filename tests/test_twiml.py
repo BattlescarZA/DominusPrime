@@ -2,7 +2,7 @@
 """Tests for TwiML generation helpers."""
 import xml.etree.ElementTree as ET
 
-from copaw.app.channels.voice.twiml import (
+from dominusprime.app.channels.voice.twiml import (
     build_busy_twiml,
     build_conversation_relay_twiml,
     build_error_twiml,

@@ -2,16 +2,16 @@
 """Tests for command dispatch and daemon commands (sync helpers)."""
 import asyncio
 
-from copaw.agents.command_handler import (
+from dominusprime.agents.command_handler import (
     CommandHandler,
     ConversationCommandHandlerMixin,
 )
-from copaw.app.runner.command_dispatch import (
+from dominusprime.app.runner.command_dispatch import (
     _get_last_user_text,
     _is_command,
     _is_conversation_command,
 )
-from copaw.app.runner.daemon_commands import (
+from dominusprime.app.runner.daemon_commands import (
     DaemonContext,
     parse_daemon_query,
     run_daemon_logs,

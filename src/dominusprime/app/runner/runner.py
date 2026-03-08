@@ -22,7 +22,7 @@ from .utils import build_env_context
 from ..channels.schema import DEFAULT_CHANNEL
 from ...agents.memory import MemoryManager
 from ...agents.model_factory import create_model_and_formatter
-from ...agents.react_agent import CoPawAgent
+from ...agents.react_agent import DominusPrimeAgent
 from ...agents.tools import read_file, write_file, edit_file
 from ...agents.utils.token_counting import _get_token_counter
 from ...config import load_config
@@ -114,7 +114,7 @@ class AgentRunner(Runner):
             max_iters = config.agents.running.max_iters
             max_input_length = config.agents.running.max_input_length
 
-            agent = CoPawAgent(
+            agent = DominusPrimeAgent(
                 env_context=env_context,
                 mcp_clients=mcp_clients,
                 memory_manager=self.memory_manager,

@@ -13,7 +13,7 @@ from typing import Optional
 from agentscope.tool import ToolResponse
 from agentscope.message import TextBlock
 
-from copaw.constant import WORKING_DIR
+from dominusprime.constant import WORKING_DIR
 
 
 def _execute_subprocess_sync(

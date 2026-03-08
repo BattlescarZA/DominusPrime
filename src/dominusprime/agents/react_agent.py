@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""CoPaw Agent - Main agent implementation.
+"""DominusPrime Agent - Main agent implementation.
 
-This module provides the main CoPawAgent class built on ReActAgent,
+This module provides the main DominusPrimeAgent class built on ReActAgent,
 with integrated tools, skills, and memory management.
 """
 import asyncio
@@ -62,8 +62,8 @@ def normalize_reasoning_tool_choice(
     return tool_choice
 
 
-class CoPawAgent(ReActAgent):
-    """CoPaw Agent with integrated tools, skills, and memory management.
+class DominusPrimeAgent(ReActAgent):
+    """DominusPrime Agent with integrated tools, skills, and memory management.
 
     This agent extends ReActAgent with:
     - Built-in tools (shell, file operations, browser, etc.)
@@ -83,7 +83,7 @@ class CoPawAgent(ReActAgent):
         max_input_length: int = 128 * 1024,  # 128K = 131072 tokens
         namesake_strategy: NamesakeStrategy = "skip",
     ):
-        """Initialize CoPawAgent.
+        """Initialize DominusPrimeAgent.
 
         Args:
             env_context: Optional environment context to prepend to

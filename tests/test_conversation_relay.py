@@ -6,10 +6,10 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from fastapi import WebSocketDisconnect
 
-from copaw.app.channels.voice.conversation_relay import (
+from dominusprime.app.channels.voice.conversation_relay import (
     ConversationRelayHandler,
 )
-from copaw.app.channels.voice.session import CallSessionManager
+from dominusprime.app.channels.voice.session import CallSessionManager
 
 
 def _make_handler(

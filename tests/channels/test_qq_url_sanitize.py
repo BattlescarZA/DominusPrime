@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from copaw.app.channels.qq.channel import _sanitize_qq_text
+from dominusprime.app.channels.qq.channel import _sanitize_qq_text
 
 
 def test_sanitize_qq_text_replaces_http_and_https_urls() -> None:

@@ -6,11 +6,11 @@ from datetime import datetime
 from types import SimpleNamespace
 from typing import Any
 
-from copaw.providers.openai_chat_model_compat import (
+from dominusprime.providers.openai_chat_model_compat import (
     OpenAIChatModelCompat,
     _sanitize_tool_call,
 )
-from copaw.providers.registry import get_chat_model_class
+from dominusprime.providers.registry import get_chat_model_class
 
 
 class CompatHarnessOpenAIChatModel(OpenAIChatModelCompat):

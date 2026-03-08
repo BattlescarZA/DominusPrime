@@ -65,8 +65,8 @@ from agentscope_runtime.engine.schemas.agent_schemas import (
     ContentType,
 )
 
-from copaw.app.channels.base import BaseChannel
-from copaw.app.channels.schema import ChannelType
+from dominusprime.app.channels.base import BaseChannel
+from dominusprime.app.channels.schema import ChannelType
 
 
 class CustomChannel(BaseChannel):

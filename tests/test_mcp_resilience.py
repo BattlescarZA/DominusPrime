@@ -7,11 +7,11 @@ from types import SimpleNamespace
 import pytest
 from anyio import ClosedResourceError
 
-import copaw.app.runner.runner as runner_module
-from copaw.agents.react_agent import CoPawAgent
-from copaw.app.mcp.manager import MCPClientManager
-from copaw.app.runner.runner import AgentRunner
-from copaw.config.config import MCPClientConfig
+import dominusprime.app.runner.runner as runner_module
+from dominusprime.agents.react_agent import DominusPrimeAgent
+from dominusprime.app.mcp.manager import MCPClientManager
+from dominusprime.app.runner.runner import AgentRunner
+from dominusprime.config.config import MCPClientConfig
 
 
 class _FakeToolkit:
@@ -194,7 +194,7 @@ async def test_reconnect_mcp_client_respects_timeout() -> None:
         async def connect(self) -> None:
             await asyncio.sleep(0.1)
 
-    ok = await CoPawAgent._reconnect_mcp_client(
+    ok = await DominusPrimeAgent._reconnect_mcp_client(
         _SlowClient(),
         timeout=0.01,
     )
@@ -239,7 +239,7 @@ async def test_query_handler_skips_session_save_when_load_not_reached(
         ),
     )
 
-    monkeypatch.setattr(runner_module, "CoPawAgent", _FakeAgent)
+    monkeypatch.setattr(runner_module, "DominusPrimeAgent", _FakeAgent)
     monkeypatch.setattr(runner_module, "load_config", lambda: cfg)
     monkeypatch.setattr(
         runner_module,

@@ -1,25 +1,20 @@
 <div align="center">
 
-# CoPaw
+# DominusPrime
 
-[![GitHub Repo](https://img.shields.io/badge/GitHub-Repo-black.svg?logo=github)](https://github.com/agentscope-ai/CoPaw)
-[![PyPI](https://img.shields.io/pypi/v/copaw?color=3775A9&label=PyPI&logo=pypi)](https://pypi.org/project/copaw/)
-[![Documentation](https://img.shields.io/badge/Docs-Website-green.svg?logo=readthedocs&label=Docs)](https://copaw.agentscope.io/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repo-black.svg?logo=github)](https://github.com/BattlescarZA/DominusPrime)
+[![PyPI](https://img.shields.io/pypi/v/dominusprime?color=3775A9&label=PyPI&logo=pypi)](https://pypi.org/project/dominusprime/)
 [![Python Version](https://img.shields.io/badge/python-3.10%20~%20%3C3.14-blue.svg?logo=python&label=Python)](https://www.python.org/downloads/)
-[![Last Commit](https://img.shields.io/github/last-commit/agentscope-ai/CoPaw)](https://github.com/agentscope-ai/CoPaw)
+[![Last Commit](https://img.shields.io/github/last-commit/BattlescarZA/DominusPrime)](https://github.com/BattlescarZA/DominusPrime)
 [![License](https://img.shields.io/badge/license-Apache%202.0-red.svg?logo=apache&label=License)](LICENSE)
 [![Code Style](https://img.shields.io/badge/code%20style-black-black.svg?logo=python&label=CodeStyle)](https://github.com/psf/black)
-[![GitHub Stars](https://img.shields.io/github/stars/agentscope-ai/CoPaw?style=flat&logo=github&color=yellow&label=Stars)](https://github.com/agentscope-ai/CoPaw/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/agentscope-ai/CoPaw?style=flat&logo=github&color=purple&label=Forks)](https://github.com/agentscope-ai/CoPaw/network)
-[![DeepWiki](https://img.shields.io/badge/DeepWiki-Ask_Devin-navy.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAyCAYAAAAnWDnqAAAAAXNSR0IArs4c6QAAA05JREFUaEPtmUtyEzEQhtWTQyQLHNak2AB7ZnyXZMEjXMGeK/AIi+QuHrMnbChYY7MIh8g01fJoopFb0uhhEqqcbWTp06/uv1saEDv4O3n3dV60RfP947Mm9/SQc0ICFQgzfc4CYZoTPAswgSJCCUJUnAAoRHOAUOcATwbmVLWdGoH//PB8mnKqScAhsD0kYP3j/Yt5LPQe2KvcXmGvRHcDnpxfL2zOYJ1mFwrryWTz0advv1Ut4CJgf5uhDuDj5eUcAUoahrdY/56ebRWeraTjMt/00Sh3UDtjgHtQNHwcRGOC98BJEAEymycmYcWwOprTgcB6VZ5JK5TAJ+fXGLBm3FDAmn6oPPjR4rKCAoJCal2eAiQp2x0vxTPB3ALO2CRkwmDy5WohzBDwSEFKRwPbknEggCPB/imwrycgxX2NzoMCHhPkDwqYMr9tRcP5qNrMZHkVnOjRMWwLCcr8ohBVb1OMjxLwGCvjTikrsBOiA6fNyCrm8V1rP93iVPpwaE+gO0SsWmPiXB+jikdf6SizrT5qKasx5j8ABbHpFTx+vFXp9EnYQmLx02h1QTTrl6eDqxLnGjporxl3NL3agEvXdT0WmEost648sQOYAeJS9Q7bfUVoMGnjo4AZdUMQku50McDcMWcBPvr0SzbTAFDfvJqwLzgxwATnCgnp4wDl6Aa+Ax283gghmj+vj7feE2KBBRMW3FzOpLOADl0Isb5587h/U4gGvkt5v60Z1VLG8BhYjbzRwyQZemwAd6cCR5/XFWLYZRIMpX39AR0tjaGGiGzLVyhse5C9RKC6ai42ppWPKiBagOvaYk8lO7DajerabOZP46Lby5wKjw1HCRx7p9sVMOWGzb/vA1hwiWc6jm3MvQDTogQkiqIhJV0nBQBTU+3okKCFDy9WwferkHjtxib7t3xIUQtHxnIwtx4mpg26/HfwVNVDb4oI9RHmx5WGelRVlrtiw43zboCLaxv46AZeB3IlTkwouebTr1y2NjSpHz68WNFjHvupy3q8TFn3Hos2IAk4Ju5dCo8B3wP7VPr/FGaKiG+T+v+TQqIrOqMTL1VdWV1DdmcbO8KXBz6esmYWYKPwDL5b5FA1a0hwapHiom0r/cKaoqr+27/XcrS5UwSMbQAAAABJRU5ErkJggg==)](https://deepwiki.com/agentscope-ai/CoPaw)
-[![Discord](https://img.shields.io/badge/Discord-Join_Us-blueviolet.svg?logo=discord)](https://discord.gg/eYMpfnkG8h)
-[![X](https://img.shields.io/badge/X-Follow_Us-black.svg?logo=x)](https://x.com/agentscope_ai)
-[![DingTalk](https://img.shields.io/badge/DingTalk-Join_Us-orange.svg)](https://qr.dingtalk.com/action/joingroup?code=v1,k1,OmDlBXpjW+I2vWjKDsjvI9dhcXjGZi3bQiojOq3dlDw=&_dt_no_comment=1&origin=11)
+[![GitHub Stars](https://img.shields.io/github/stars/BattlescarZA/DominusPrime?style=flat&logo=github&color=yellow&label=Stars)](https://github.com/BattlescarZA/DominusPrime/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/BattlescarZA/DominusPrime?style=flat&logo=github&color=purple&label=Forks)](https://github.com/BattlescarZA/DominusPrime/network)
 
-[[Documentation](https://copaw.agentscope.io/)] [[中文 README](README_zh.md)] [[日本語](README_ja.md)]
+[[中文 README](README_zh.md)] [[日本語](README_ja.md)]
 
 <p align="center">
-  <img src="https://img.alicdn.com/imgextra/i2/O1CN014TIqyO1U5wDiSbFfA_!!6000000002467-2-tps-816-192.png" alt="CoPaw Logo" width="120">
+  <img src="https://img.alicdn.com/imgextra/i2/O1CN014TIqyO1U5wDiSbFfA_!!6000000002467-2-tps-816-192.png" alt="DominusPrime Logo" width="120">
 </p>
 
 <p align="center"><b>Works for you, grows with you.</b></p>
@@ -54,7 +49,7 @@ Your Personal AI Assistant; easy to install, deploy on your own machine or on th
 
 ## News
 
-[2026-03-06] We released v0.0.5! See the [v0.0.5 Release Notes](https://agentscope-ai.github.io/CoPaw/release-notes) for the full changelog.
+[2026-03-06] We released v0.0.5! See the [v0.0.5 Release Notes](https://agentscope-ai.github.io/DominusPrime/release-notes) for the full changelog.
 
 - **[v0.0.5] Added:** Daemon mode; Twilio voice channel; DeepSeek Reasoner support; agent interruption API; version update notifications; optional display of thinking and tool calls.
 - **[v0.0.5] Improved:** Memory system upgrade; console UI improvements; optional channel lazy loading; Windows one-click installation script.
@@ -62,7 +57,7 @@ Your Personal AI Assistant; easy to install, deploy on your own machine or on th
 - **[v0.0.5] Docs:** Release notes; improved model and channel configuration guides; Docker + Ollama connection guide.
 - **[v0.0.5] Contributors:** Thanks to new contributors: [@qoli](https://github.com/qoli), [@qbc2016](https://github.com/qbc2016), [@yunlzheng](https://github.com/yunlzheng), [@BlueSkyXN](https://github.com/BlueSkyXN), [@sidonsoft](https://github.com/sidonsoft), [@lishengzxc](https://github.com/lishengzxc), [@pikaxinge](https://github.com/pikaxinge), [@linshengli](https://github.com/linshengli), [@eltociear](https://github.com/eltociear), [@liuxiaopai-ai](https://github.com/liuxiaopai-ai), [@Leirunlin](https://github.com/Leirunlin), [@pan-x-c](https://github.com/pan-x-c), [@garyzhang99](https://github.com/garyzhang99), [@celestialhorse51D](https://github.com/celestialhorse51D), [@wwx814](https://github.com/wwx814), [@nszhsl](https://github.com/nszhsl), [@DavdGao](https://github.com/DavdGao), [@zhangckcup](https://github.com/zhangckcup).
 
-[2026-03-02] We released v0.0.4! See the [v0.0.4 Release Notes](https://agentscope-ai.github.io/CoPaw/release-notes) for the full changelog.
+[2026-03-02] We released v0.0.4! See the [v0.0.4 Release Notes](https://agentscope-ai.github.io/DominusPrime/release-notes) for the full changelog.
 
 ---
 
@@ -70,9 +65,9 @@ Your Personal AI Assistant; easy to install, deploy on your own machine or on th
 
 > **Recommended reading:**
 >
-> - **I want to run CoPaw in 3 commands**: [Quick Start](#quick-start) → open Console in browser.
-> - **I want to chat in DingTalk / Feishu / QQ**: Configure [channels](https://copaw.agentscope.io/docs/channels) in the Console.
-> - **I don’t want to install Python**: [One-line install](#one-line-install-beta-continuously-improving) handles Python automatically, or use [ModelScope one-click](https://modelscope.cn/studios/fork?target=AgentScope/CoPaw) for cloud deployment.
+> - **I want to run DominusPrime in 3 commands**: [Quick Start](#quick-start) → open Console in browser.
+> - **I want to chat in DingTalk / Feishu / QQ**: Configure [channels](https://DominusPrime.agentscope.io/docs/channels) in the Console.
+> - **I don’t want to install Python**: [One-line install](#one-line-install-beta-continuously-improving) handles Python automatically, or use [ModelScope one-click](https://modelscope.cn/studios/fork?target=AgentScope/DominusPrime) for cloud deployment.
 
 - [News](#news)
 - [Quick Start](#quick-start)
@@ -83,7 +78,7 @@ Your Personal AI Assistant; easy to install, deploy on your own machine or on th
 - [Roadmap](#roadmap)
 - [Contributing](#get-involved)
 - [Install from source](#install-from-source)
-- [Why CoPaw?](#why-copaw)
+- [Why DominusPrime?](#why-DominusPrime)
 - [Built by](#built-by)
 - [License](#license)
 
@@ -96,12 +91,12 @@ Your Personal AI Assistant; easy to install, deploy on your own machine or on th
 If you prefer managing Python yourself:
 
 ```bash
-pip install copaw
-copaw init --defaults
-copaw app
+pip install DominusPrime
+DominusPrime init --defaults
+DominusPrime app
 ```
 
-Then open **http://127.0.0.1:8088/** in your browser for the Console (chat with CoPaw, configure the agent). To talk in DingTalk, Feishu, QQ, etc., add a channel in the [docs](https://copaw.agentscope.io/docs/channels).
+Then open **http://127.0.0.1:8088/** in your browser for the Console (chat with DominusPrime, configure the agent). To talk in DingTalk, Feishu, QQ, etc., add a channel in the [docs](https://DominusPrime.agentscope.io/docs/channels).
 
 ![Console](https://img.alicdn.com/imgextra/i4/O1CN01z9VY6z1uMad7pgrCj_!!6000000006023-2-tps-3822-2064.png)
 
@@ -112,31 +107,31 @@ No Python required — the installer handles everything for you:
 **macOS / Linux:**
 
 ```bash
-curl -fsSL https://copaw.agentscope.io/install.sh | bash
+curl -fsSL https://DominusPrime.agentscope.io/install.sh | bash
 ```
 
 To install with Ollama support:
 
 ```bash
-curl -fsSL https://copaw.agentscope.io/install.sh | bash -s -- --extras ollama
+curl -fsSL https://DominusPrime.agentscope.io/install.sh | bash -s -- --extras ollama
 ```
 
 To install with multiple extras (e.g., Ollama + llama.cpp):
 
 ```bash
-curl -fsSL https://copaw.agentscope.io/install.sh | bash -s -- --extras ollama,llamacpp
+curl -fsSL https://DominusPrime.agentscope.io/install.sh | bash -s -- --extras ollama,llamacpp
 ```
 
 **Windows (CMD):**
 
 ```CMD
-curl -fsSL https://copaw.agentscope.io/install.bat -o install.bat && install.bat
+curl -fsSL https://DominusPrime.agentscope.io/install.bat -o install.bat && install.bat
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
-irm https://copaw.agentscope.io/install.ps1 | iex
+irm https://DominusPrime.agentscope.io/install.ps1 | iex
 ```
 
 > **Note**: The installer will automatically check the status of uv. If it is not installed, it will attempt to download and configure it automatically. If the automatic installation fails, please follow the on-screen prompts or execute `python -m pip install -U uv`, then rerun the installer.
@@ -148,9 +143,9 @@ irm https://copaw.agentscope.io/install.ps1 | iex
 >
 >    The script completes file installation. Due to **Constrained Language Mode**, it cannot automatically update environment variables. Manually configure as follows:
 >    - **Locate the installation directory**:
->      - Check if `uv` is available: Enter `uv --version` in CMD. If a version number appears, **only configure the CoPaw path**. If you receive the prompt `'uv' is not recognized as an internal or external command, operable program or batch file,` configure both paths.
+>      - Check if `uv` is available: Enter `uv --version` in CMD. If a version number appears, **only configure the DominusPrime path**. If you receive the prompt `'uv' is not recognized as an internal or external command, operable program or batch file,` configure both paths.
 >      - uv path (choose one based on installation location; use if `uv` fails): Typically `%USERPROFILE%\.local\bin`, `%USERPROFILE%\AppData\Local\uv`, or the `Scripts` folder within your Python installation directory
->      - CoPaw path: Typically located at `%USERPROFILE%\.copaw\bin`.
+>      - DominusPrime path: Typically located at `%USERPROFILE%\.DominusPrime\bin`.
 >    - **Manually add to the system's Path environment variable**:
 >      - Press `Win + R`, type `sysdm.cpl` and press Enter to open System Properties.
 >      - Click “Advanced” -> “Environment Variables”.
@@ -160,15 +155,15 @@ irm https://copaw.agentscope.io/install.ps1 | iex
 >
 >   Due to **Constrained Language Mode**, the script may fail to automatically download `uv`.
 >   - **Manually install uv**: Refer to the [GitHub Release](https://github.com/astral-sh/uv/releases) to download `uv.exe` and place it in `%USERPROFILE%\.local\bin` or `%USERPROFILE%\AppData\Local\uv`; or ensure Python is installed and run `python -m pip install -U uv`.
->   - **Configure `uv` environment variables**: Add the `uv` directory and `%USERPROFILE%\.copaw\bin` to your system's `Path` variable.
->   - **Re-run the installation**: Open a new terminal and execute the installation script again to complete the `CoPaw` installation.
->   - **Configure the `CoPaw` environment variable**: Add `%USERPROFILE%\.copaw\bin` to your system's `Path` variable.
+>   - **Configure `uv` environment variables**: Add the `uv` directory and `%USERPROFILE%\.DominusPrime\bin` to your system's `Path` variable.
+>   - **Re-run the installation**: Open a new terminal and execute the installation script again to complete the `DominusPrime` installation.
+>   - **Configure the `DominusPrime` environment variable**: Add `%USERPROFILE%\.DominusPrime\bin` to your system's `Path` variable.
 
 Once installed, open a new terminal and run:
 
 ```bash
-copaw init --defaults   # or: copaw init (interactive)
-copaw app
+DominusPrime init --defaults   # or: DominusPrime init (interactive)
+DominusPrime app
 ```
 
 <details>
@@ -192,8 +187,8 @@ bash install.sh --extras llamacpp,mlx
 curl -fsSL ... | bash
 
 # Uninstall
-copaw uninstall          # keeps config and data
-copaw uninstall --purge  # removes everything
+DominusPrime uninstall          # keeps config and data
+DominusPrime uninstall --purge  # removes everything
 ```
 
 **Windows (PowerShell):**
@@ -214,40 +209,40 @@ irm ... | iex; .\install.ps1 -Version 0.0.2
 irm ... | iex
 
 # Uninstall
-copaw uninstall          # keeps config and data
-copaw uninstall --purge  # removes everything
+DominusPrime uninstall          # keeps config and data
+DominusPrime uninstall --purge  # removes everything
 ```
 
 </details>
 
 ### Using Docker
 
-Images are on **Docker Hub** (`agentscope/copaw`). Image tags: `latest` (stable); `pre` (PyPI pre-release).
+Images are on **Docker Hub** (`agentscope/DominusPrime`). Image tags: `latest` (stable); `pre` (PyPI pre-release).
 
 ```bash
-docker pull agentscope/copaw:latest
-docker run -p 127.0.0.1:8088:8088 -v copaw-data:/app/working agentscope/copaw:latest
+docker pull agentscope/DominusPrime:latest
+docker run -p 127.0.0.1:8088:8088 -v DominusPrime-data:/app/working agentscope/DominusPrime:latest
 ```
 
-Also available on Alibaba Cloud Container Registry (ACR) for users in China: `agentscope-registry.ap-southeast-1.cr.aliyuncs.com/agentscope/copaw` (same tags).
+Also available on Alibaba Cloud Container Registry (ACR) for users in China: `agentscope-registry.ap-southeast-1.cr.aliyuncs.com/agentscope/DominusPrime` (same tags).
 
-Then open **http://127.0.0.1:8088/** for the Console. Config, memory, and skills are stored in the `copaw-data` volume. To pass API keys (e.g. `DASHSCOPE_API_KEY`), add `-e VAR=value` or `--env-file .env` to `docker run`.
+Then open **http://127.0.0.1:8088/** for the Console. Config, memory, and skills are stored in the `DominusPrime-data` volume. To pass API keys (e.g. `DASHSCOPE_API_KEY`), add `-e VAR=value` or `--env-file .env` to `docker run`.
 
 > **Connecting to Ollama or other services on the host machine**
 >
-> Inside a Docker container, `localhost` refers to the container itself, not your host machine. If you run Ollama (or other model services) on the host and want CoPaw in Docker to reach them, use one of these approaches:
+> Inside a Docker container, `localhost` refers to the container itself, not your host machine. If you run Ollama (or other model services) on the host and want DominusPrime in Docker to reach them, use one of these approaches:
 >
 > **Option A** — Explicit host binding (all platforms):
 > ```bash
 > docker run -p 127.0.0.1:8088:8088 \
 >   --add-host=host.docker.internal:host-gateway \
->   -v copaw-data:/app/working agentscope/copaw:latest
+>   -v DominusPrime-data:/app/working agentscope/DominusPrime:latest
 > ```
-> Then in CoPaw **Settings → Models → Ollama**, change the Base URL to `http://host.docker.internal:11434/v1` or your corresponding port.
+> Then in DominusPrime **Settings → Models → Ollama**, change the Base URL to `http://host.docker.internal:11434/v1` or your corresponding port.
 >
 > **Option B** — Host networking (Linux only):
 > ```bash
-> docker run --network=host -v copaw-data:/app/working agentscope/copaw:latest
+> docker run --network=host -v DominusPrime-data:/app/working agentscope/DominusPrime:latest
 > ```
 > No port mapping (`-p`) is needed; the container shares the host network directly. Note that all container ports are exposed on the host, which may cause conflicts if the port is already in use.
 
@@ -255,44 +250,44 @@ The image is built from scratch. To build the image yourself, please refer to th
 
 ### Using ModelScope
 
-**No local install?** [ModelScope Studio](https://modelscope.cn/studios/fork?target=AgentScope/CoPaw) one-click cloud setup. Set your Studio to **non-public** so others cannot control your CoPaw.
+**No local install?** [ModelScope Studio](https://modelscope.cn/studios/fork?target=AgentScope/DominusPrime) one-click cloud setup. Set your Studio to **non-public** so others cannot control your DominusPrime.
 
 ### Deploy on Alibaba Cloud ECS
 
-To run CoPaw on Alibaba Cloud (ECS), use the one-click deployment: open the [CoPaw on Alibaba Cloud (ECS) deployment link](https://computenest.console.aliyun.com/service/instance/create/cn-hangzhou?type=user&ServiceId=service-1ed84201799f40879884) and follow the prompts. For step-by-step instructions, see [Alibaba Cloud Developer: Deploy your AI assistant in 3 minutes](https://developer.aliyun.com/article/1713682).
+To run DominusPrime on Alibaba Cloud (ECS), use the one-click deployment: open the [DominusPrime on Alibaba Cloud (ECS) deployment link](https://computenest.console.aliyun.com/service/instance/create/cn-hangzhou?type=user&ServiceId=service-1ed84201799f40879884) and follow the prompts. For step-by-step instructions, see [Alibaba Cloud Developer: Deploy your AI assistant in 3 minutes](https://developer.aliyun.com/article/1713682).
 
 ---
 
 ## API Key
 
-If you use a **cloud LLM** (e.g. DashScope, ModelScope), you must configure an API key before chatting. CoPaw will not work until a valid key is set. See the [official docs](https://copaw.agentscope.io/docs/models#configure-cloud-providers) for details.
+If you use a **cloud LLM** (e.g. DashScope, ModelScope), you must configure an API key before chatting. DominusPrime will not work until a valid key is set. See the [official docs](https://DominusPrime.agentscope.io/docs/models#configure-cloud-providers) for details.
 
 **How to configure:**
 
-1. **Console (recommended)** — After running `copaw app`, open **http://127.0.0.1:8088/** → **Settings** → **Models**. Choose a provider, enter the **API Key**, and enable that provider and model.
-2. **`copaw init`** — When you run `copaw init`, it will guide you through configuring the LLM provider and API key. Follow the prompts to choose a provider and enter your key.
+1. **Console (recommended)** — After running `DominusPrime app`, open **http://127.0.0.1:8088/** → **Settings** → **Models**. Choose a provider, enter the **API Key**, and enable that provider and model.
+2. **`DominusPrime init`** — When you run `DominusPrime init`, it will guide you through configuring the LLM provider and API key. Follow the prompts to choose a provider and enter your key.
 3. **Environment variable** — For DashScope you can set `DASHSCOPE_API_KEY` in your shell or in a `.env` file in the working directory.
 
-Tools that need extra keys (e.g. `TAVILY_API_KEY` for web search) can be set in Console **Settings → Environment variables**, or see [Config](https://copaw.agentscope.io/docs/config) for details.
+Tools that need extra keys (e.g. `TAVILY_API_KEY` for web search) can be set in Console **Settings → Environment variables**, or see [Config](https://DominusPrime.agentscope.io/docs/config) for details.
 
 > **Using local models only?** If you use [Local Models](#local-models) (llama.cpp or MLX), you do **not** need any API key.
 
 ## Local Models
 
-CoPaw can run LLMs entirely on your machine — no API keys or cloud services required. See the [official docs](https://copaw.agentscope.io/docs/models#local-providers-llamacpp--mlx) for details.
+DominusPrime can run LLMs entirely on your machine — no API keys or cloud services required. See the [official docs](https://DominusPrime.agentscope.io/docs/models#local-providers-llamacpp--mlx) for details.
 
 | Backend       | Best for                                 | Install                                                              |
 | ------------- | ---------------------------------------- | -------------------------------------------------------------------- |
-| **llama.cpp** | Cross-platform (macOS / Linux / Windows) | `pip install 'copaw[llamacpp]'` or `bash install.sh --extras llamacpp` |
-| **MLX**       | Apple Silicon Macs (M1/M2/M3/M4)         | `pip install 'copaw[mlx]'` or `bash install.sh --extras mlx`         |
-| **Ollama**    | Cross-platform (requires Ollama service) | `pip install 'copaw[ollama]'` or `bash install.sh --extras ollama`   |
+| **llama.cpp** | Cross-platform (macOS / Linux / Windows) | `pip install 'DominusPrime[llamacpp]'` or `bash install.sh --extras llamacpp` |
+| **MLX**       | Apple Silicon Macs (M1/M2/M3/M4)         | `pip install 'DominusPrime[mlx]'` or `bash install.sh --extras mlx`         |
+| **Ollama**    | Cross-platform (requires Ollama service) | `pip install 'DominusPrime[ollama]'` or `bash install.sh --extras ollama`   |
 
 After installing, you can download and manage local models in the **Console** UI. You can also use the command line:
 
 ```bash
-copaw models download Qwen/Qwen3-4B-GGUF
-copaw models # select the downloaded model
-copaw app # start the server
+DominusPrime models download Qwen/Qwen3-4B-GGUF
+DominusPrime models # select the downloaded model
+DominusPrime app # start the server
 ```
 
 ---
@@ -301,19 +296,19 @@ copaw app # start the server
 
 | Topic                                                                 | Description                                      |
 | --------------------------------------------------------------------- | ------------------------------------------------ |
-| [Introduction](https://copaw.agentscope.io/docs/intro)                | What CoPaw is and how to use it                  |
-| [Quick start](https://copaw.agentscope.io/docs/quickstart)            | Install and run (local or ModelScope Studio)    |
-| [Console](https://copaw.agentscope.io/docs/console)                   | Web UI: chat and agent configuration            |
-| [Models](https://copaw.agentscope.io/docs/models)                     | Configure cloud, local, and custom providers    |
-| [Channels](https://copaw.agentscope.io/docs/channels)                  | DingTalk, Feishu, QQ, Discord, iMessage, and more |
-| [Skills](https://copaw.agentscope.io/docs/skills)                      | Extend and customize capabilities               |
-| [MCP](https://copaw.agentscope.io/docs/skills)                        | Manage MCP clients                               |
-| [Memory](https://copaw.agentscope.io/docs/memory)                     | Context and long-term memory                     |
-| [Magic commands](https://copaw.agentscope.io/docs/commands)           | Control conversation state without waiting for the AI |
-| [Heartbeat](https://copaw.agentscope.io/docs/heartbeat)                | Scheduled check-in and digest                    |
-| [Config & working dir](https://copaw.agentscope.io/docs/config) | Working directory and config file                |
-| [CLI](https://copaw.agentscope.io/docs/cli)                            | Init, cron jobs, skills, clean                   |
-| [FAQ](https://copaw.agentscope.io/docs/faq)                           | Common questions and troubleshooting             |
+| [Introduction](https://DominusPrime.agentscope.io/docs/intro)                | What DominusPrime is and how to use it                  |
+| [Quick start](https://DominusPrime.agentscope.io/docs/quickstart)            | Install and run (local or ModelScope Studio)    |
+| [Console](https://DominusPrime.agentscope.io/docs/console)                   | Web UI: chat and agent configuration            |
+| [Models](https://DominusPrime.agentscope.io/docs/models)                     | Configure cloud, local, and custom providers    |
+| [Channels](https://DominusPrime.agentscope.io/docs/channels)                  | DingTalk, Feishu, QQ, Discord, iMessage, and more |
+| [Skills](https://DominusPrime.agentscope.io/docs/skills)                      | Extend and customize capabilities               |
+| [MCP](https://DominusPrime.agentscope.io/docs/skills)                        | Manage MCP clients                               |
+| [Memory](https://DominusPrime.agentscope.io/docs/memory)                     | Context and long-term memory                     |
+| [Magic commands](https://DominusPrime.agentscope.io/docs/commands)           | Control conversation state without waiting for the AI |
+| [Heartbeat](https://DominusPrime.agentscope.io/docs/heartbeat)                | Scheduled check-in and digest                    |
+| [Config & working dir](https://DominusPrime.agentscope.io/docs/config) | Working directory and config file                |
+| [CLI](https://DominusPrime.agentscope.io/docs/cli)                            | Init, cron jobs, skills, clean                   |
+| [FAQ](https://DominusPrime.agentscope.io/docs/faq)                           | Common questions and troubleshooting             |
 
 Full docs in this repo: [website/public/docs/](website/public/docs/).
 
@@ -321,7 +316,7 @@ Full docs in this repo: [website/public/docs/](website/public/docs/).
 
 ## FAQ
 
-For common questions, troubleshooting tips, and known issues, please visit the **[FAQ page](https://copaw.agentscope.io/docs/faq)**.
+For common questions, troubleshooting tips, and known issues, please visit the **[FAQ page](https://DominusPrime.agentscope.io/docs/faq)**.
 
 ---
 
@@ -346,7 +341,7 @@ For common questions, troubleshooting tips, and known issues, please visit the *
 | | Tool/skills security | Planned |
 | | Configurable security levels (user-configurable) | Planned |
 | Sandbox | Deeper integration with AgentScope Runtime sandboxes | Long-term Planning |
-| CoPaw-optimized local models | LLMs tuned for CoPaw's native skills and common tasks; better local personal-assistant usability | Long-term Planning |
+| DominusPrime-optimized local models | LLMs tuned for DominusPrime's native skills and common tasks; better local personal-assistant usability | Long-term Planning |
 | Small + large model collaboration | Local LLMs for sensitive data; cloud LLMs for planning and coding; balance of privacy, performance, and capability | Long-term Planning |
 | Cloud-native | Deeper integration with AgentScope Runtime; leverage cloud compute, storage, and tooling | Long-term Planning |
 | Skills Hub | Enrich the [AgentScope Skills](https://github.com/agentscope-ai/agentscope-skills) repository and improve discoverability of high-quality skills | Long-term Planning |
@@ -355,41 +350,41 @@ For common questions, troubleshooting tips, and known issues, please visit the *
 
 ### Get involved
 
-We are building CoPaw in the open and welcome contributions of all kinds! Check the [Roadmap](#roadmap) above (especially items marked **Seeking Contributors**) to find areas that interest you, and read [CONTRIBUTING](https://github.com/agentscope-ai/CoPaw/blob/main/CONTRIBUTING.md) to get started. We particularly welcome:
+We are building DominusPrime in the open and welcome contributions of all kinds! Check the [Roadmap](#roadmap) above (especially items marked **Seeking Contributors**) to find areas that interest you, and read [CONTRIBUTING](https://github.com/agentscope-ai/DominusPrime/blob/main/CONTRIBUTING.md) to get started. We particularly welcome:
 
 - **Horizontal expansion** — new channels, model providers, skills, MCPs.
 - **Existing feature extension** — display and UX improvements, download hints, Windows path compatibility, and the like.
 
-Join the conversation on [GitHub Discussions](https://github.com/agentscope-ai/CoPaw/discussions) to suggest or pick up work.
+Join the conversation on [GitHub Discussions](https://github.com/agentscope-ai/DominusPrime/discussions) to suggest or pick up work.
 
 ---
 
 ## Install from source
 
 ```bash
-git clone https://github.com/agentscope-ai/CoPaw.git
-cd CoPaw
+git clone https://github.com/agentscope-ai/DominusPrime.git
+cd DominusPrime
 
 # Build console frontend first (required for web UI)
 cd console && npm ci && npm run build
 cd ..
 
 # Copy console build output to package directory
-mkdir -p src/copaw/console
-cp -R console/dist/. src/copaw/console/
+mkdir -p src/DominusPrime/console
+cp -R console/dist/. src/DominusPrime/console/
 
 # Install Python package
 pip install -e .
 ```
 
 - **Dev** (tests, formatting): `pip install -e ".[dev]"`
-- **Then**: Run `copaw init --defaults`, then `copaw app`.
+- **Then**: Run `DominusPrime init --defaults`, then `DominusPrime app`.
 
 ---
 
-## Why CoPaw?
+## Why DominusPrime?
 
-CoPaw represents both a **Co Personal Agent Workstation** and a "co-paw"—a partner always by your side. More than just a cold tool, CoPaw is a warm "little paw" always ready to lend a hand (or a paw!). It is the ultimate teammate for your digital life.
+DominusPrime represents both a **Co Personal Agent Workstation** and a "co-paw"—a partner always by your side. More than just a cold tool, DominusPrime is a warm "little paw" always ready to lend a hand (or a paw!). It is the ultimate teammate for your digital life.
 
 ---
 
@@ -409,7 +404,7 @@ CoPaw represents both a **Co Personal Agent Workstation** and a "co-paw"—a par
 
 ## License
 
-CoPaw is released under the [Apache License 2.0](LICENSE).
+DominusPrime is released under the [Apache License 2.0](LICENSE).
 
 ---
 
@@ -417,6 +412,6 @@ CoPaw is released under the [Apache License 2.0](LICENSE).
 
 All thanks to our contributors:
 
-<a href="https://github.com/agentscope-ai/CoPaw/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=agentscope-ai/CoPaw" alt="Contributors" />
+<a href="https://github.com/agentscope-ai/DominusPrime/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=agentscope-ai/DominusPrime" alt="Contributors" />
 </a>

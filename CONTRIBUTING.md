@@ -1,10 +1,10 @@
-# Contributing to CoPaw
+# Contributing to DominusPrime
 
 ## Welcome! 🐾
 
-Thank you for your interest in contributing to CoPaw! CoPaw is an open-source **personal AI assistant** that runs in your own environment—on your machine or in the cloud. It connects to DingTalk, Feishu, QQ, Discord, iMessage, and other chat apps, supports scheduled tasks and heartbeat, and extends its capabilities through **Skills**. We warmly welcome contributions that help make CoPaw more useful for everyone: whether you add a new channel, a new model provider, a Skill, improve docs, or fix bugs.
+Thank you for your interest in contributing to DominusPrime! DominusPrime is an open-source **personal AI assistant** that runs in your own environment—on your machine or in the cloud. It connects to DingTalk, Feishu, QQ, Discord, iMessage, and other chat apps, supports scheduled tasks and heartbeat, and extends its capabilities through **Skills**. We warmly welcome contributions that help make DominusPrime more useful for everyone: whether you add a new channel, a new model provider, a Skill, improve docs, or fix bugs.
 
-**Quick links:** [GitHub](https://github.com/agentscope-ai/CoPaw) · [Docs](https://copaw.agentscope.io/) · [License: Apache 2.0](LICENSE)
+**Quick links:** [GitHub](https://github.com/agentscope-ai/DominusPrime) · [Docs](https://DominusPrime.agentscope.io/) · [License: Apache 2.0](LICENSE)
 
 ---
 
@@ -16,7 +16,7 @@ To keep collaboration smooth and maintain quality, please follow these guideline
 
 Before starting:
 
-- **Check [Open Issues](https://github.com/agentscope-ai/CoPaw/issues)** and any [Projects](https://github.com/agentscope-ai/CoPaw/projects) or roadmap labels.
+- **Check [Open Issues](https://github.com/agentscope-ai/DominusPrime/issues)** and any [Projects](https://github.com/agentscope-ai/DominusPrime/projects) or roadmap labels.
 - **If a related issue exists** and is open or unassigned: comment to say you want to work on it to avoid duplicate effort.
 - **If no related issue exists**: open a new issue describing your proposal. The maintainers will respond and can help align with the project direction.
 
@@ -88,13 +88,13 @@ docs(skills): document Skills Hub import
 
 ## Types of Contributions
 
-CoPaw is designed to be **extensible**: you can add models, channels, Skills, and more. Below are the main contribution areas we care about.
+DominusPrime is designed to be **extensible**: you can add models, channels, Skills, and more. Below are the main contribution areas we care about.
 
 ---
 
 ### Adding New Models / Model Providers
 
-CoPaw supports **multiple model backends**: cloud APIs (e.g. DashScope, ModelScope), **Ollama**, and local backends (**llama.cpp**, **MLX**). You can contribute in two ways:
+DominusPrime supports **multiple model backends**: cloud APIs (e.g. DashScope, ModelScope), **Ollama**, and local backends (**llama.cpp**, **MLX**). You can contribute in two ways:
 
 #### A. Custom provider (user configuration)
 
@@ -104,14 +104,14 @@ Users can add **custom providers** via the Console or `providers.json`: any Open
 
 If you want to add a **new built-in provider** or a **new API protocol** that is not OpenAI-compatible:
 
-1. **Provider definition** (in `src/copaw/providers/registry.py` or equivalent):
+1. **Provider definition** (in `src/DominusPrime/providers/registry.py` or equivalent):
    - Add a `ProviderDefinition` with `id`, `name`, `default_base_url`, `api_key_prefix`, and optionally `models` and `chat_model`.
    - For local/self-hosted backends, set `is_local` as appropriate.
 
 2. **Chat model class** (if the API is not OpenAI-compatible):
-   - Implement a class inheriting from `agentscope.model.ChatModelBase` (or CoPaw’s local/remote wrappers where applicable).
+   - Implement a class inheriting from `agentscope.model.ChatModelBase` (or DominusPrime’s local/remote wrappers where applicable).
    - Support streaming and non-streaming if the agent uses both; respect `tool_choice` and tools API if used.
-   - Register the class in the registry’s chat model map so the runtime can resolve it by name (see `_CHAT_MODEL_MAP` in `src/copaw/providers/registry.py`).
+   - Register the class in the registry’s chat model map so the runtime can resolve it by name (see `_CHAT_MODEL_MAP` in `src/DominusPrime/providers/registry.py`).
 
 3. **Documentation:** Document the new provider or model in the docs (e.g. under a “Models” or “Providers” section) and mention any env vars or config keys.
 
@@ -121,19 +121,19 @@ Adding a fully new API (new message format, token counting, tools) is a larger c
 
 ### Adding New Channels
 
-Channels are how CoPaw talks to **DingTalk, Feishu, QQ, Discord, iMessage**, etc. You can add a new channel so CoPaw can work with your favorite IM or bot platform.
+Channels are how DominusPrime talks to **DingTalk, Feishu, QQ, Discord, iMessage**, etc. You can add a new channel so DominusPrime can work with your favorite IM or bot platform.
 
 - **Protocol:** All channels use a unified in-process contract: **native payload → `content_parts`** (e.g. `TextContent`, `ImageContent`, `FileContent`). The agent receives `AgentRequest` with these content parts; replies are sent back via the channel’s send path.
-- **Implementation:** Implement a **subclass of `BaseChannel`** (in `src/copaw/app/channels/base.py`):
+- **Implementation:** Implement a **subclass of `BaseChannel`** (in `src/DominusPrime/app/channels/base.py`):
   - Set the class attribute `channel` to a unique channel key (e.g. `"telegram"`).
   - Implement the lifecycle and message handling (e.g. receive → `content_parts` → `process` → send response).
   - Use the manager’s queue and consumer loop if the channel is long-lived (default).
-- **Discovery:** Built-in channels are registered in `src/copaw/app/channels/registry.py`. **Custom channels** are loaded from the working directory: place a module (e.g. `custom_channels/telegram.py` or a package `custom_channels/telegram/`) that defines a `BaseChannel` subclass with a `channel` attribute.
+- **Discovery:** Built-in channels are registered in `src/DominusPrime/app/channels/registry.py`. **Custom channels** are loaded from the working directory: place a module (e.g. `custom_channels/telegram.py` or a package `custom_channels/telegram/`) that defines a `BaseChannel` subclass with a `channel` attribute.
 - **CLI:** Users install/add channels with:
-  - `copaw channels install <key>` — create a template or copy from `--path` / `--url`
-  - `copaw channels add <key>` — install and add to config
-  - `copaw channels remove <key>` — remove custom channel from `custom_channels/`
-  - `copaw channels config` — interactive config
+  - `DominusPrime channels install <key>` — create a template or copy from `--path` / `--url`
+  - `DominusPrime channels add <key>` — install and add to config
+  - `DominusPrime channels remove <key>` — remove custom channel from `custom_channels/`
+  - `DominusPrime channels config` — interactive config
 
 If you contribute a **new built-in channel**, add it to the registry and, if needed, a configurator so it appears in the Console and CLI. Document the new channel (auth, webhooks, etc.) in `website/public/docs/channels.*.md`.
 
@@ -141,15 +141,15 @@ If you contribute a **new built-in channel**, add it to the registry and, if nee
 
 ### Adding Base Skills
 
-**Skills** define what CoPaw can do: cron, file reading, PDF/Office, news, browser, etc. We welcome **broadly useful** base skills (productivity, documents, communication, automation) that fit the majority of users.
+**Skills** define what DominusPrime can do: cron, file reading, PDF/Office, news, browser, etc. We welcome **broadly useful** base skills (productivity, documents, communication, automation) that fit the majority of users.
 
 - **Structure:** Each skill is a **directory** containing:
   - **`SKILL.md`** — Markdown instructions for the agent. Use YAML front matter for at least `name` and `description`; optional `metadata` (e.g. for Console).
   - **`references/`** (optional) — Reference documents the agent can use.
   - **`scripts/`** (optional) — Scripts or tools the skill uses.
-- **Location:** Built-in skills live under `src/copaw/agents/skills/<skill_name>/`. The app merges built-in and user **customized_skills** from the working dir into **active_skills**; no extra registration is needed beyond placing a valid `SKILL.md` in a directory.
+- **Location:** Built-in skills live under `src/DominusPrime/agents/skills/<skill_name>/`. The app merges built-in and user **customized_skills** from the working dir into **active_skills**; no extra registration is needed beyond placing a valid `SKILL.md` in a directory.
 - **Content:** Write clear, task-oriented instructions. Describe **when** the skill should be used and **how** (steps, commands, file formats). Avoid overly niche or personal workflows if targeting the **base** repository; those are great as custom or community Skills.
-- **Skills Hub:** CoPaw supports importing skills from a community hub (e.g. ClawHub). If you want your skill to be installable via hub, follow the same `SKILL.md` + `references/`/`scripts/` layout and the hub’s packaging format.
+- **Skills Hub:** DominusPrime supports importing skills from a community hub (e.g. ClawHub). If you want your skill to be installable via hub, follow the same `SKILL.md` + `references/`/`scripts/` layout and the hub’s packaging format.
 
 Examples of in-repo base skills: **cron**, **file_reader**, **news**, **pdf**, **docx**, **pptx**, **xlsx**, **browser_visible**. Contributing a new base skill usually means: add the directory under `agents/skills/`, add a short entry in the docs (e.g. Skills table in `website/public/docs/skills.*.md`), and ensure it syncs correctly to the working directory.
 
@@ -193,10 +193,10 @@ description: "Use this skill whenever user wants to [main functionality]. Trigge
 
 ### Platform support (Windows, Linux, macOS, etc.)
 
-CoPaw aims to run on **Windows**, **Linux**, and **macOS**. Contributions that improve support on a specific platform are welcome.
+DominusPrime aims to run on **Windows**, **Linux**, and **macOS**. Contributions that improve support on a specific platform are welcome.
 
 - **Compatibility fixes:** Path handling, line endings, shell commands, or dependencies that behave differently per OS. For example: Windows compatibility for the memory/vector stack, or install scripts that work on both Linux and macOS.
-- **Install and run:** One-line install (`install.sh`), `pip` install, and `copaw init` / `copaw app` should work (or be clearly documented) on each supported platform. Fixes to install or startup on a given OS are valuable.
+- **Install and run:** One-line install (`install.sh`), `pip` install, and `DominusPrime init` / `DominusPrime app` should work (or be clearly documented) on each supported platform. Fixes to install or startup on a given OS are valuable.
 - **Platform-specific features:** Optional integrations (e.g. notifying only when supported) are fine as long as they don’t break other platforms. Use runtime checks or optional dependencies where appropriate.
 - **Documentation:** Document any platform-specific steps, known limitations, or recommended setups (e.g. WSL on Windows, Apple Silicon vs x86) in the docs or README.
 
@@ -206,8 +206,8 @@ If you add or change platform support, please test on the affected OS and mentio
 
 ### Other Contributions
 
-- **MCP (Model Context Protocol):** CoPaw supports runtime **MCP tool** discovery and hot-plug. Contributing new MCP servers or tools (or docs on how to attach them) helps users extend the agent without changing core code.
-- **Documentation:** Fixes and improvements to [the docs](https://copaw.agentscope.io/) (under `website/public/docs/`) and README are always welcome.
+- **MCP (Model Context Protocol):** DominusPrime supports runtime **MCP tool** discovery and hot-plug. Contributing new MCP servers or tools (or docs on how to attach them) helps users extend the agent without changing core code.
+- **Documentation:** Fixes and improvements to [the docs](https://DominusPrime.agentscope.io/) (under `website/public/docs/`) and README are always welcome.
 - **Bug fixes and refactors:** Small fixes, clearer error messages, and refactors that keep behavior the same are valuable. Prefer opening an issue for larger refactors so we can align on approach.
 - **Examples and workflows:** Tutorials or example workflows (e.g. “daily digest to DingTalk”, “local model + cron”) can be documented or linked from the repo/docs.
 - **Any other useful things!**
@@ -236,8 +236,8 @@ If you add or change platform support, please test on the affected OS and mentio
 
 ## Getting Help
 
-- **Discussions:** [GitHub Discussions](https://github.com/agentscope-ai/CoPaw/discussions)
-- **Bugs and features:** [GitHub Issues](https://github.com/agentscope-ai/CoPaw/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/agentscope-ai/DominusPrime/discussions)
+- **Bugs and features:** [GitHub Issues](https://github.com/agentscope-ai/DominusPrime/issues)
 - **Community:** DingTalk group (see [README](README.md)) and [Discord](https://discord.gg/eYMpfnkG8h)
 
-Thank you for contributing to CoPaw. Your work helps make it a better assistant for everyone. 🐾
+Thank you for contributing to DominusPrime. Your work helps make it a better assistant for everyone. 🐾

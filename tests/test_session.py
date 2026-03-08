@@ -2,7 +2,7 @@
 """Tests for CallSession and CallSessionManager."""
 from unittest.mock import MagicMock
 
-from copaw.app.channels.voice.session import CallSessionManager
+from dominusprime.app.channels.voice.session import CallSessionManager
 
 
 class TestCallSessionManager:

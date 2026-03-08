@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from copaw.agents.react_agent import normalize_reasoning_tool_choice
+from dominusprime.agents.react_agent import normalize_reasoning_tool_choice
 
 
 @pytest.mark.parametrize(

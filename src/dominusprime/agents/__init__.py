@@ -1,32 +1,32 @@
 # -*- coding: utf-8 -*-
-"""CoPaw Agents Module.
+"""DominusPrime Agents Module.
 
 This module provides the main agent implementation and supporting utilities
 for building AI agents with tools, skills, and memory management.
 
 Public API:
-- CoPawAgent: Main agent class
+- DominusPrimeAgent: Main agent class
 - create_model_and_formatter: Factory for creating models and formatters
 
 Example:
-    >>> from copaw.agents import CoPawAgent, create_model_and_formatter
-    >>> agent = CoPawAgent()
+    >>> from dominusprime.agents import DominusPrimeAgent, create_model_and_formatter
+    >>> agent = DominusPrimeAgent()
     >>> # Or with custom model
     >>> model, formatter = create_model_and_formatter()
 """
 
-# CoPawAgent is lazy-loaded so that importing agents.skills_manager (e.g.
+# DominusPrimeAgent is lazy-loaded so that importing agents.skills_manager (e.g.
 # from CLI init_cmd/skills_cmd) does not pull react_agent, agentscope, tools.
 # pylint: disable=undefined-all-variable
-__all__ = ["CoPawAgent", "create_model_and_formatter"]
+__all__ = ["DominusPrimeAgent", "create_model_and_formatter"]
 
 
 def __getattr__(name: str):
     """Lazy load heavy imports."""
-    if name == "CoPawAgent":
-        from .react_agent import CoPawAgent
+    if name == "DominusPrimeAgent":
+        from .react_agent import DominusPrimeAgent
 
-        return CoPawAgent
+        return DominusPrimeAgent
     if name == "create_model_and_formatter":
         from .model_factory import create_model_and_formatter
 

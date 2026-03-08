@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Tests for Cloudflare Tunnel driver (mocked subprocess)."""
-from copaw.tunnel.cloudflare import _URL_RE, TunnelInfo
+from dominusprime.tunnel.cloudflare import _URL_RE, TunnelInfo
 
 
 class TestUrlPattern:

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from types import SimpleNamespace
 from typing import Any
 
-from copaw.agents.hooks.memory_compaction import MemoryCompactionHook
+from dominusprime.agents.hooks.memory_compaction import MemoryCompactionHook
 
 
 @dataclass

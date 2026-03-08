@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Tests for VoiceChannelConfig."""
-from copaw.config.config import VoiceChannelConfig, ChannelConfig
+from dominusprime.config.config import VoiceChannelConfig, ChannelConfig
 
 
 class TestVoiceChannelConfig:

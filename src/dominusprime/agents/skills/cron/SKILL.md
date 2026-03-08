@@ -1,96 +1,96 @@
 ---
 name: cron
-description: 通过 copaw 命令管理定时任务 - 创建、查询、暂停、恢复、删除任务
-metadata: { "copaw": { "emoji": "⏰" } }
+description: Manage scheduled tasks via dominusprime command - create, query, pause, resume, delete tasks
+metadata: { "dominusprime": { "emoji": "⏰" } }
 ---
 
-# 定时任务管理
+# Scheduled Task Management
 
-使用 `copaw cron` 命令管理定时任务。
+Use `dominusprime cron` command to manage scheduled tasks.
 
-## 常用命令
+## Common Commands
 
 ```bash
-# 列出所有任务
-copaw cron list
+# List all tasks
+dominusprime cron list
 
-# 查看任务详情
-copaw cron get <job_id>
+# View task details
+dominusprime cron get <job_id>
 
-# 查看任务状态
-copaw cron state <job_id>
+# View task status
+dominusprime cron state <job_id>
 
-# 删除任务
-copaw cron delete <job_id>
+# Delete task
+dominusprime cron delete <job_id>
 
-# 暂停/恢复任务
-copaw cron pause <job_id>
-copaw cron resume <job_id>
+# Pause/resume task
+dominusprime cron pause <job_id>
+dominusprime cron resume <job_id>
 
-# 立即执行一次
-copaw cron run <job_id>
+# Execute immediately once
+dominusprime cron run <job_id>
 ```
 
-## 创建任务
+## Create Tasks
 
-支持两种任务类型：
-- **text**：定时向频道发送固定消息
-- **agent**：定时向 Agent 提问并发送回复到频道
+Supports two task types:
+- **text**: Send fixed messages to channel on schedule
+- **agent**: Ask Agent questions on schedule and send replies to channel
 
-### 快速创建
+### Quick Creation
 
 ```bash
-# 每天 9:00 发送文本消息
-copaw cron create \
+# Send text message daily at 9:00 AM
+dominusprime cron create \
   --type text \
-  --name "每日早安" \
+  --name "Daily Morning Greeting" \
   --cron "0 9 * * *" \
   --channel imessage \
   --target-user "CHANGEME" \
   --target-session "CHANGEME" \
-  --text "早上好！"
+  --text "Good morning!"
 
-# 每 2 小时向 Agent 提问
-copaw cron create \
+# Ask Agent every 2 hours
+dominusprime cron create \
   --type agent \
-  --name "检查待办" \
+  --name "Check TODO Items" \
   --cron "0 */2 * * *" \
   --channel dingtalk \
   --target-user "CHANGEME" \
   --target-session "CHANGEME" \
-  --text "我有什么待办事项？"
+  --text "What are my pending tasks?"
 ```
 
-### 必填参数
+### Required Parameters
 
-创建任务需要：
-- `--type`：任务类型（text 或 agent）
-- `--name`：任务名称
-- `--cron`：cron 表达式（如 `"0 9 * * *"` 表示每天 9:00）
-- `--channel`：目标频道（imessage / discord / dingtalk / qq / console）
-- `--target-user`：用户标识
-- `--target-session`：会话标识
-- `--text`：消息内容（text 类型）或提问内容（agent 类型）
+Creating a task requires:
+- `--type`: Task type (text or agent)
+- `--name`: Task name
+- `--cron`: Cron expression (e.g., `"0 9 * * *"` means daily at 9:00 AM)
+- `--channel`: Target channel (imessage / discord / dingtalk / qq / console)
+- `--target-user`: User identifier
+- `--target-session`: Session identifier
+- `--text`: Message content (text type) or question content (agent type)
 
-### 从 JSON 创建（复杂配置）
+### Create from JSON (Complex Configuration)
 
 ```bash
-copaw cron create -f job_spec.json
+dominusprime cron create -f job_spec.json
 ```
 
-## Cron 表达式示例
+## Cron Expression Examples
 
 ```
-0 9 * * *      # 每天 9:00
-0 */2 * * *    # 每 2 小时
-30 8 * * 1-5   # 工作日 8:30
-0 0 * * 0      # 每周日零点
-*/15 * * * *   # 每 15 分钟
+0 9 * * *      # Daily at 9:00 AM
+0 */2 * * *    # Every 2 hours
+30 8 * * 1-5   # Weekdays at 8:30 AM
+0 0 * * 0      # Every Sunday at midnight
+*/15 * * * *   # Every 15 minutes
 ```
 
-## 使用建议
+## Usage Recommendations
 
-- 缺少参数时，询问用户补充后再创建
-- 暂停/删除/恢复前，用 `copaw cron list` 查找 job_id
-- 排查问题时，用 `copaw cron state <job_id>` 查看状态
-- 给用户的命令要完整、可直接复制执行
+- When parameters are missing, ask the user for details before creating
+- Before pausing/deleting/resuming, use `dominusprime cron list` to find job_id
+- When troubleshooting, use `dominusprime cron state <job_id>` to check status
+- Provide complete commands to users that can be copied and executed directly

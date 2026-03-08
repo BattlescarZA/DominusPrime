@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# CoPaw Installer
+# dominusprime Installer
 # Usage: curl -fsSL <url>/install.sh | bash
 #    or: bash install.sh [--version X.Y.Z] [--from-source]
 #
-# Installs CoPaw into ~/.copaw with a uv-managed Python environment.
+# Installs dominusprime into ~/.dominusprime with a uv-managed Python environment.
 # Users do NOT need Python pre-installed — uv handles everything.
 set -euo pipefail
 
 # ── Defaults ──────────────────────────────────────────────────────────────────
-COPAW_HOME="${COPAW_HOME:-$HOME/.copaw}"
-COPAW_VENV="$COPAW_HOME/venv"
-COPAW_BIN="$COPAW_HOME/bin"
+dominusprime_HOME="${dominusprime_HOME:-$HOME/.dominusprime}"
+dominusprime_VENV="$dominusprime_HOME/venv"
+dominusprime_BIN="$dominusprime_HOME/bin"
 PYTHON_VERSION="3.12"
-COPAW_REPO="https://github.com/BattlescarZA/DominusPrime.git"
+dominusprime_REPO="https://github.com/BattlescarZA/DominusPrime.git"
 
 VERSION=""
 FROM_SOURCE=false
@@ -30,9 +30,9 @@ else
     BOLD="" GREEN="" YELLOW="" RED="" RESET=""
 fi
 
-info()  { printf "${GREEN}[copaw]${RESET} %s\n" "$*"; }
-warn()  { printf "${YELLOW}[copaw]${RESET} %s\n" "$*"; }
-error() { printf "${RED}[copaw]${RESET} %s\n" "$*" >&2; }
+info()  { printf "${GREEN}[dominusprime]${RESET} %s\n" "$*"; }
+warn()  { printf "${YELLOW}[dominusprime]${RESET} %s\n" "$*"; }
+error() { printf "${RED}[dominusprime]${RESET} %s\n" "$*" >&2; }
 die()   { error "$@"; exit 1; }
 
 # ── Parse args ────────────────────────────────────────────────────────────────
@@ -52,7 +52,7 @@ while [[ $# -gt 0 ]]; do
             EXTRAS="$2"; shift 2 ;;
         -h|--help)
             cat <<EOF
-CoPaw Installer
+dominusprime Installer
 
 Usage: bash install.sh [OPTIONS]
 
@@ -65,7 +65,7 @@ Options:
   -h, --help            Show this help
 
 Environment:
-  COPAW_HOME        Installation directory (default: ~/.copaw)
+  dominusprime_HOME        Installation directory (default: ~/.dominusprime)
 EOF
             exit 0 ;;
         *)
@@ -80,7 +80,7 @@ case "$OS" in
     *) die "Unsupported OS: $OS. This installer supports Linux and macOS only." ;;
 esac
 
-printf "${GREEN}[copaw]${RESET} Installing CoPaw into ${BOLD}%s${RESET}\n" "$COPAW_HOME"
+printf "${GREEN}[dominusprime]${RESET} Installing dominusprime into ${BOLD}%s${RESET}\n" "$dominusprime_HOME"
 
 # ── Step 1: Ensure uv is available ───────────────────────────────────────────
 ensure_uv() {
@@ -115,33 +115,33 @@ ensure_uv() {
 ensure_uv
 
 # ── Step 2: Create / update virtual environment ──────────────────────────────
-if [ -d "$COPAW_VENV" ]; then
+if [ -d "$dominusprime_VENV" ]; then
     info "Existing environment found, upgrading..."
 else
     info "Creating Python $PYTHON_VERSION environment..."
 fi
 
-uv venv "$COPAW_VENV" --python "$PYTHON_VERSION" --quiet
+uv venv "$dominusprime_VENV" --python "$PYTHON_VERSION" --quiet
 
 # Verify the venv was created
-[ -x "$COPAW_VENV/bin/python" ] || die "Failed to create virtual environment"
-info "Python environment ready ($("$COPAW_VENV/bin/python" --version))"
+[ -x "$dominusprime_VENV/bin/python" ] || die "Failed to create virtual environment"
+info "Python environment ready ($("$dominusprime_VENV/bin/python" --version))"
 
-# ── Step 3: Install CoPaw ────────────────────────────────────────────────────
+# ── Step 3: Install dominusprime ────────────────────────────────────────────────────
 # Build extras suffix: "" or "[llamacpp,mlx]"
 EXTRAS_SUFFIX=""
 if [ -n "$EXTRAS" ]; then
     EXTRAS_SUFFIX="[$EXTRAS]"
 fi
 
-## Ensure console frontend assets are in src/copaw/console/ for source installs.
+## Ensure console frontend assets are in src/dominusprime/console/ for source installs.
 ## Sets _CONSOLE_COPIED=1 if we populated the directory (so we can clean up).
 _CONSOLE_COPIED=0
 _CONSOLE_AVAILABLE=0
 prepare_console() {
     local repo_dir="$1"
     local console_src="$repo_dir/console/dist"
-    local console_dest="$repo_dir/src/copaw/console"
+    local console_dest="$repo_dir/src/dominusprime/console"
 
     # Already populated
     if [ -f "$console_dest/index.html" ]; then
@@ -190,63 +190,63 @@ prepare_console() {
 cleanup_console() {
     local repo_dir="$1"
     if [ "$_CONSOLE_COPIED" = 1 ]; then
-        rm -rf "$repo_dir/src/copaw/console/"*
+        rm -rf "$repo_dir/src/dominusprime/console/"*
     fi
 }
 
 if [ "$FROM_SOURCE" = true ]; then
     if [ -n "$SOURCE_DIR" ]; then
-        info "Installing CoPaw from local source: $SOURCE_DIR"
+        info "Installing dominusprime from local source: $SOURCE_DIR"
         prepare_console "$SOURCE_DIR"
         info "Installing package from source..."
-        uv pip install "${SOURCE_DIR}${EXTRAS_SUFFIX}" --python "$COPAW_VENV/bin/python" --prerelease=allow
+        uv pip install "${SOURCE_DIR}${EXTRAS_SUFFIX}" --python "$dominusprime_VENV/bin/python" --prerelease=allow
         cleanup_console "$SOURCE_DIR"
     else
-        info "Installing CoPaw from source (GitHub)..."
+        info "Installing dominusprime from source (GitHub)..."
         CLONE_DIR="$(mktemp -d)"
         trap 'rm -rf "$CLONE_DIR"' EXIT
-        git clone --depth 1 "$COPAW_REPO" "$CLONE_DIR"
+        git clone --depth 1 "$dominusprime_REPO" "$CLONE_DIR"
         prepare_console "$CLONE_DIR"
         info "Installing package from source..."
-        uv pip install "${CLONE_DIR}${EXTRAS_SUFFIX}" --python "$COPAW_VENV/bin/python" --prerelease=allow
+        uv pip install "${CLONE_DIR}${EXTRAS_SUFFIX}" --python "$dominusprime_VENV/bin/python" --prerelease=allow
         # CLONE_DIR is cleaned up by trap; no need for cleanup_console
     fi
 else
-    PACKAGE="copaw"
+    PACKAGE="dominusprime"
     if [ -n "$VERSION" ]; then
-        PACKAGE="copaw==$VERSION"
+        PACKAGE="dominusprime==$VERSION"
     fi
 
     info "Installing ${PACKAGE}${EXTRAS_SUFFIX} from PyPI..."
-    uv pip install "${PACKAGE}${EXTRAS_SUFFIX}" --python "$COPAW_VENV/bin/python" --prerelease=allow --quiet
+    uv pip install "${PACKAGE}${EXTRAS_SUFFIX}" --python "$dominusprime_VENV/bin/python" --prerelease=allow --quiet
 fi
 
 # Verify the CLI entry point exists
-[ -x "$COPAW_VENV/bin/copaw" ] || die "Installation failed: copaw CLI not found in venv"
-info "CoPaw installed successfully"
+[ -x "$dominusprime_VENV/bin/dominusprime" ] || die "Installation failed: dominusprime CLI not found in venv"
+info "dominusprime installed successfully"
 
 # Check console availability (for PyPI installs, check the installed package)
 if [ "$_CONSOLE_AVAILABLE" = 0 ]; then
     # Check if console assets were included in the installed package
-    CONSOLE_CHECK="$("$COPAW_VENV/bin/python" -c "import importlib.resources, copaw; p=importlib.resources.files('copaw')/'console'/'index.html'; print('yes' if p.is_file() else 'no')" 2>/dev/null || echo 'no')"
+    CONSOLE_CHECK="$("$dominusprime_VENV/bin/python" -c "import importlib.resources, dominusprime; p=importlib.resources.files('dominusprime')/'console'/'index.html'; print('yes' if p.is_file() else 'no')" 2>/dev/null || echo 'no')"
     if [ "$CONSOLE_CHECK" = "yes" ]; then
         _CONSOLE_AVAILABLE=1
     fi
 fi
 
 # ── Step 4: Create wrapper script ────────────────────────────────────────────
-mkdir -p "$COPAW_BIN"
+mkdir -p "$dominusprime_BIN"
 
-cat > "$COPAW_BIN/copaw" << 'WRAPPER'
+cat > "$dominusprime_BIN/dominusprime" << 'WRAPPER'
 #!/usr/bin/env bash
-# CoPaw CLI wrapper — delegates to the uv-managed environment.
+# dominusprime CLI wrapper — delegates to the uv-managed environment.
 set -euo pipefail
 
-COPAW_HOME="${COPAW_HOME:-$HOME/.copaw}"
-REAL_BIN="$COPAW_HOME/venv/bin/copaw"
+dominusprime_HOME="${dominusprime_HOME:-$HOME/.dominusprime}"
+REAL_BIN="$dominusprime_HOME/venv/bin/dominusprime"
 
 if [ ! -x "$REAL_BIN" ]; then
-    echo "Error: CoPaw environment not found at $COPAW_HOME/venv" >&2
+    echo "Error: dominusprime environment not found at $dominusprime_HOME/venv" >&2
     echo "Please reinstall: curl -fsSL <install-url> | bash" >&2
     exit 1
 fi
@@ -254,19 +254,19 @@ fi
 exec "$REAL_BIN" "$@"
 WRAPPER
 
-chmod +x "$COPAW_BIN/copaw"
-info "Wrapper created at $COPAW_BIN/copaw"
+chmod +x "$dominusprime_BIN/dominusprime"
+info "Wrapper created at $dominusprime_BIN/dominusprime"
 
 # ── Step 5: Update PATH in shell profile ─────────────────────────────────────
-PATH_ENTRY="export PATH=\"\$HOME/.copaw/bin:\$PATH\""
+PATH_ENTRY="export PATH=\"\$HOME/.dominusprime/bin:\$PATH\""
 
 add_to_profile() {
     local profile="$1"
-    if [ -f "$profile" ] && grep -qF '.copaw/bin' "$profile"; then
+    if [ -f "$profile" ] && grep -qF '.dominusprime/bin' "$profile"; then
         return 0  # already present
     fi
     if [ -f "$profile" ] || [ "$2" = "create" ]; then
-        printf '\n# CoPaw\n%s\n' "$PATH_ENTRY" >> "$profile"
+        printf '\n# dominusprime\n%s\n' "$PATH_ENTRY" >> "$profile"
         info "Updated $profile"
         return 0
     fi
@@ -290,12 +290,12 @@ esac
 
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""
-printf "${GREEN}${BOLD}CoPaw installed successfully!${RESET}\n"
+printf "${GREEN}${BOLD}dominusprime installed successfully!${RESET}\n"
 echo ""
 
 # Install summary
-printf "  Install location:  ${BOLD}%s${RESET}\n" "$COPAW_HOME"
-printf "  Python:            ${BOLD}%s${RESET}\n" "$("$COPAW_VENV/bin/python" --version 2>&1)"
+printf "  Install location:  ${BOLD}%s${RESET}\n" "$dominusprime_HOME"
+printf "  Python:            ${BOLD}%s${RESET}\n" "$("$dominusprime_VENV/bin/python" --version 2>&1)"
 if [ "$_CONSOLE_AVAILABLE" = 1 ]; then
     printf "  Console (web UI):  ${GREEN}available${RESET}\n"
 else
@@ -313,8 +313,8 @@ fi
 
 echo "Then run:"
 echo ""
-printf "  ${BOLD}copaw init${RESET}       # first-time setup\n"
-printf "  ${BOLD}copaw app${RESET}        # start CoPaw\n"
+printf "  ${BOLD}dominusprime init${RESET}       # first-time setup\n"
+printf "  ${BOLD}dominusprime app${RESET}        # start dominusprime\n"
 echo ""
 printf "To upgrade later, re-run this installer.\n"
-printf "To uninstall, run: ${BOLD}copaw uninstall${RESET}\n"
+printf "To uninstall, run: ${BOLD}dominusprime uninstall${RESET}\n"

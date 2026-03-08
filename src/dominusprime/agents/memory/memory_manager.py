@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=too-many-branches
-"""Memory Manager for CoPaw agents.
+"""Memory Manager for DominusPrime agents.
 
 Inherits from ReMeCopaw to provide memory management capabilities including:
 - Message compaction and summarization
@@ -36,7 +36,7 @@ except ImportError:
 
 
 class MemoryManager(ReMeCopaw):
-    """Memory manager that extends ReMeCopaw functionality for CoPaw agents.
+    """Memory manager that extends ReMeCopaw functionality for DominusPrime agents.
 
     This class provides memory management capabilities including:
     - Memory compaction for long conversations

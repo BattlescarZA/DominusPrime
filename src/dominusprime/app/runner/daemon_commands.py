@@ -2,7 +2,7 @@
 """Daemon command execution layer and DaemonCommandHandlerMixin.
 
 Shared by in-chat /daemon <sub> and CLI `copaw daemon <sub>`.
-Logs: tail WORKING_DIR / "copaw.log". Restart: in-process reload of channels,
+Logs: tail WORKING_DIR / "dominusprime.log". Restart: in-process reload of channels,
 cron and MCP (no process exit); works on Mac/Windows without a process manager.
 """
 # pylint: disable=too-many-return-statements
@@ -157,13 +157,13 @@ def run_daemon_version(context: DaemonContext) -> str:
         f"**Daemon version**\n\n"
         f"- Version: {ver}\n"
         f"- Working dir: {context.working_dir}\n"
-        f"- Log file: {context.working_dir / 'copaw.log'}"
+        f"- Log file: {context.working_dir / 'dominusprime.log'}"
     )
 
 
 def run_daemon_logs(context: DaemonContext, lines: int = 100) -> str:
-    """Tail last N lines from WORKING_DIR / copaw.log."""
-    log_path = context.working_dir / "copaw.log"
+    """Tail last N lines from WORKING_DIR / dominusprime.log."""
+    log_path = context.working_dir / "dominusprime.log"
     content = _get_last_lines(log_path, lines=lines)
     return f"**Console log (last {lines} lines)**\n\n```\n{content}\n```"
 

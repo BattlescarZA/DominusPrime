@@ -52,8 +52,8 @@ def _ensure_ollama():
         raise ImportError(
             "The 'ollama' Python package is required. You may have "
             "installed Ollama via their CLI or desktop app, but you "
-            "also need the Python SDK to manage models from CoPaw. "
-            "Please install it with: pip install 'copaw[ollama]'",
+            "also need the Python SDK to manage models from DominusPrime. "
+            "Please install it with: pip install 'dominusprime[ollama]'",
         ) from e
     return ollama
 

@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 TELEGRAM_MAX_MESSAGE_LENGTH = 4096
 TELEGRAM_SEND_CHUNK_SIZE = 4000
 
-_DEFAULT_MEDIA_DIR = Path("~/.copaw/media/telegram").expanduser()
+_DEFAULT_MEDIA_DIR = Path("~/.dominusprime/media/telegram").expanduser()
 _TYPING_TIMEOUT_S = 180
 
 _MEDIA_ATTRS: list[tuple[str, type, Any, str]] = [

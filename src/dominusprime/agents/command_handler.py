@@ -56,7 +56,7 @@ class CommandHandler(ConversationCommandHandlerMixin):
     def __init__(
         self,
         agent_name: str,
-        memory: "CoPawInMemoryMemory",
+        memory: "DominusPrimeInMemoryMemory",
         memory_manager: "MemoryManager | None" = None,
         enable_memory_manager: bool = True,
     ):

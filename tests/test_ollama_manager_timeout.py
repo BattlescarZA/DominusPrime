@@ -25,7 +25,7 @@ def test_list_models_uses_default_timeout(monkeypatch) -> None:
         {"models": [{"model": "qwen2:7b", "size": 1}]},
     )
 
-    monkeypatch.delenv("COPAW_MODEL_PROVIDER_CHECK_TIMEOUT", raising=False)
+    monkeypatch.delenv("DOMINUSPRIME_MODEL_PROVIDER_CHECK_TIMEOUT", raising=False)
     monkeypatch.setattr(
         ollama_manager,
         "_ensure_ollama",

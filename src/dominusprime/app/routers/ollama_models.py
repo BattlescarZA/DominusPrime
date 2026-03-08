@@ -93,7 +93,7 @@ async def list_ollama_models() -> List[OllamaModelResponse]:
         raise HTTPException(
             status_code=501,
             detail="Ollama SDK not installed. Install with: "
-            "pip install 'copaw[ollama]'",
+            "pip install 'dominusprime[ollama]'",
         ) from exc
     except Exception as exc:
         if _is_ollama_connection_error(exc):
@@ -178,7 +178,7 @@ async def _run_pull_in_background(
             DownloadTaskStatus.FAILED,
             error=(
                 "Ollama SDK not installed. "
-                "Install with: pip install 'copaw[ollama]'"
+                "Install with: pip install 'dominusprime[ollama]'"
             ),
         )
     except Exception as exc:  # pragma: no cover - defensive
@@ -231,7 +231,7 @@ async def delete_ollama_model(name: str) -> dict:
         raise HTTPException(
             status_code=501,
             detail="Ollama SDK not installed. Install with: "
-            "pip install 'copaw[ollama]'",
+            "pip install 'dominusprime[ollama]'",
         ) from exc
     except Exception as exc:  # pragma: no cover - defensive
         logger.exception("Failed to delete Ollama model: %s", exc)

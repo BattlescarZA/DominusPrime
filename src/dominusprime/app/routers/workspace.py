@@ -100,7 +100,7 @@ async def download_workspace():
     buf = _zip_directory(WORKING_DIR)
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
-    filename = f"copaw_workspace_{timestamp}.zip"
+    filename = f"dominusprime_workspace_{timestamp}.zip"
 
     return StreamingResponse(
         buf,
@@ -150,7 +150,7 @@ async def upload_workspace(  # pylint: disable=too-many-branches
 
     tmp_dir = None
     try:
-        tmp_dir = Path(tempfile.mkdtemp(prefix="copaw_upload_"))
+        tmp_dir = Path(tempfile.mkdtemp(prefix="dominusprime_upload_"))
         with zipfile.ZipFile(io.BytesIO(data)) as zf:
             zf.extractall(tmp_dir)
 

@@ -112,7 +112,7 @@ def log_init_timings() -> None:
 )
 @click.pass_context
 def cli(ctx: click.Context, host: str | None, port: int | None) -> None:
-    """CoPaw CLI."""
+    """DominusPrime CLI."""
     # default from last run if not provided
     last = read_last_api()
     if host is None or port is None:

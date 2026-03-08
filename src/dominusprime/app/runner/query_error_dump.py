@@ -83,7 +83,7 @@ def write_query_error_dump(
             "ts_utc": datetime.utcnow().isoformat() + "Z",
         }
         fd, path = tempfile.mkstemp(
-            prefix="copaw_query_error_",
+            prefix="dominusprime_query_error_",
             suffix=".json",
             dir=tempfile.gettempdir(),
             text=True,

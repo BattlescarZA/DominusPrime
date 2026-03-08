@@ -94,7 +94,7 @@ def test_run_daemon_version() -> None:
     ctx = DaemonContext()
     out = run_daemon_version(ctx)
     assert "version" in out.lower() or "Version" in out
-    assert "copaw.log" in out
+    assert "dominusprime.log" in out
 
 
 def test_run_daemon_restart_no_callback() -> None:

@@ -20,14 +20,14 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 _BOOTSTRAP_WORKING_DIR = (
-    Path(os.environ.get("COPAW_WORKING_DIR", "~/.copaw"))
+    Path(os.environ.get("DOMINUSPRIME_WORKING_DIR", "~/.dominusprime"))
     .expanduser()
     .resolve()
 )
 _BOOTSTRAP_SECRET_DIR = (
     Path(
         os.environ.get(
-            "COPAW_SECRET_DIR",
+            "DOMINUSPRIME_SECRET_DIR",
             f"{_BOOTSTRAP_WORKING_DIR}.secret",
         ),
     )
@@ -94,8 +94,8 @@ def _migrate_legacy_envs_json(path: Path) -> None:
 # not persisted envs.json.
 _PROTECTED_BOOTSTRAP_KEYS = frozenset(
     {
-        "COPAW_WORKING_DIR",
-        "COPAW_SECRET_DIR",
+        "DOMINUSPRIME_WORKING_DIR",
+        "DOMINUSPRIME_SECRET_DIR",
     },
 )
 

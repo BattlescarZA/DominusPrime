@@ -79,7 +79,7 @@ def test_build_client_attaches_rebuild_info(tmp_path: Path) -> None:
     )
 
     client = MCPClientManager._build_client(cfg)
-    rebuild_info = getattr(client, "_copaw_rebuild_info", None)
+    rebuild_info = getattr(client, "_dominusprime_rebuild_info", None)
 
     assert isinstance(rebuild_info, dict)
     assert rebuild_info["transport"] == "stdio"

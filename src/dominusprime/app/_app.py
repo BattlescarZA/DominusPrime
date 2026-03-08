@@ -21,7 +21,7 @@ from ..config import (  # pylint: disable=no-name-in-module
 from ..config.utils import get_jobs_path, get_chats_path, get_config_path
 from ..constant import DOCS_ENABLED, LOG_LEVEL_ENV, CORS_ORIGINS, WORKING_DIR
 from ..__version__ import __version__
-from ..utils.logging import setup_logger, add_copaw_file_handler
+from ..utils.logging import setup_logger, add_dominusprime_file_handler
 from .channels import ChannelManager  # pylint: disable=no-name-in-module
 from .channels.utils import make_process_from_runner
 from .mcp import MCPClientManager, MCPConfigWatcher  # MCP hot-reload support
@@ -61,7 +61,7 @@ agent_app = AgentApp(
 async def lifespan(
     app: FastAPI,
 ):  # pylint: disable=too-many-statements,too-many-branches
-    add_copaw_file_handler(WORKING_DIR / "copaw.log")
+    add_dominusprime_file_handler(WORKING_DIR / "dominusprime.log")
     await runner.start()
 
     # --- MCP client manager init (independent module, hot-reloadable) ---
@@ -448,7 +448,7 @@ if CORS_ORIGINS:
 
 
 # Console static dir: env, or copaw package data (console), or cwd.
-_CONSOLE_STATIC_ENV = "COPAW_CONSOLE_STATIC_DIR"
+_CONSOLE_STATIC_ENV = "DOMINUSPRIME_CONSOLE_STATIC_DIR"
 
 
 def _resolve_console_static_dir() -> str:

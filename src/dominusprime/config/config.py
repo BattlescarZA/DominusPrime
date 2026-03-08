@@ -21,7 +21,7 @@ class BaseChannelConfig(BaseModel):
 class IMessageChannelConfig(BaseChannelConfig):
     db_path: str = "~/Library/Messages/chat.db"
     poll_sec: float = 1.0
-    media_dir: str = "~/.copaw/media"
+    media_dir: str = "~/.dominusprime/media"
     max_decoded_size: int = (
         10 * 1024 * 1024
     )  # 10MB default limit for Base64 data
@@ -44,7 +44,7 @@ class DingTalkConfig(BaseChannelConfig):
 
     client_id: str = ""
     client_secret: str = ""
-    media_dir: str = "~/.copaw/media"
+    media_dir: str = "~/.dominusprime/media"
     dm_policy: Literal["open", "allowlist"] = "open"
     group_policy: Literal["open", "allowlist"] = "open"
     allow_from: List[str] = Field(default_factory=list)
@@ -59,7 +59,7 @@ class FeishuConfig(BaseChannelConfig):
     app_secret: str = ""
     encrypt_key: str = ""
     verification_token: str = ""
-    media_dir: str = "~/.copaw/media"
+    media_dir: str = "~/.dominusprime/media"
 
 
 class QQConfig(BaseChannelConfig):
@@ -105,7 +105,7 @@ class VoiceChannelConfig(BaseChannelConfig):
     tts_voice: str = "en-US-Journey-D"
     stt_provider: str = "deepgram"
     language: str = "en-US"
-    welcome_greeting: str = "Hi! This is CoPaw. How can I help you?"
+    welcome_greeting: str = "Hi! This is DominusPrime. How can I help you?"
 
 
 class ChannelConfig(BaseModel):

@@ -14,7 +14,7 @@ from dominusprime.app.channels.voice.session import CallSessionManager
 
 def _make_handler(
     messages=None,
-    process_response="Hello from CoPaw!",
+    process_response="Hello from DominusPrime!",
 ):
     """Create a handler with a mock WebSocket and process."""
     ws = AsyncMock()
@@ -92,7 +92,7 @@ class TestConversationRelayHandler:
         ]
         assert len(token_msgs) >= 2
         # First should be the response content with last=False
-        assert token_msgs[0]["token"] == "Hello from CoPaw!"
+        assert token_msgs[0]["token"] == "Hello from DominusPrime!"
         assert token_msgs[0]["last"] is False
         # Last should be the empty final marker with last=True
         assert token_msgs[-1]["token"] == ""

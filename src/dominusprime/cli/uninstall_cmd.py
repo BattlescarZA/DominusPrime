@@ -32,7 +32,7 @@ def _remove_path_entry(profile: Path) -> bool:
     text = profile.read_text()
     # Remove the "# CoPaw" comment line and the export PATH line
     cleaned = re.sub(
-        r"\n?# CoPaw\nexport PATH=\"\$HOME/\.copaw/bin:\$PATH\"\n?",
+        r"\n?# CoPaw\nexport PATH=\"\$HOME/\.dominusprime/bin:\$PATH\"\n?",
         "\n",
         text,
     )
@@ -86,4 +86,4 @@ def uninstall_cmd(purge: bool, yes: bool) -> None:
             click.echo(f"  Cleaned {profile}")
 
     click.echo("")
-    click.echo("CoPaw uninstalled. Please restart your terminal.")
+    click.echo("DominusPrime uninstalled. Please restart your terminal.")

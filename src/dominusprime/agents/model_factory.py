@@ -422,7 +422,7 @@ def _create_remote_model_instance(
         client_kwargs["default_headers"] = {
             "x-dashscope-agentapp": json.dumps(
                 {
-                    "agentType": "CoPaw",
+                    "agentType": "DominusPrime",
                     "deployType": "UnKnown",
                     "moduleCode": "model",
                     "agentCode": "UnKnown",

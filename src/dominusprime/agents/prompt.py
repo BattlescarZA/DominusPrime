@@ -139,7 +139,7 @@ def build_system_prompt_from_working_dir() -> str:
     Build system prompt by reading markdown files from working directory.
 
     This function constructs the system prompt by loading markdown files from
-    WORKING_DIR (~/.copaw by default). These files define the agent's behavior,
+    WORKING_DIR (~/.dominusprime by default). These files define the agent's behavior,
     personality, and operational guidelines.
 
     Loading order and priority:

@@ -155,7 +155,7 @@ class FeishuChannel(BaseChannel):
         bot_prefix: str,
         encrypt_key: str = "",
         verification_token: str = "",
-        media_dir: str = "~/.copaw/media",
+        media_dir: str = "~/.dominusprime/media",
         on_reply_sent: OnReplySent = None,
         show_tool_details: bool = True,
         filter_tool_messages: bool = False,
@@ -212,7 +212,7 @@ class FeishuChannel(BaseChannel):
             bot_prefix=os.getenv("FEISHU_BOT_PREFIX", "[BOT] "),
             encrypt_key=os.getenv("FEISHU_ENCRYPT_KEY", ""),
             verification_token=os.getenv("FEISHU_VERIFICATION_TOKEN", ""),
-            media_dir=os.getenv("FEISHU_MEDIA_DIR", "~/.copaw/media"),
+            media_dir=os.getenv("FEISHU_MEDIA_DIR", "~/.dominusprime/media"),
             on_reply_sent=on_reply_sent,
         )
 
@@ -234,7 +234,7 @@ class FeishuChannel(BaseChannel):
             bot_prefix=config.bot_prefix or "[BOT] ",
             encrypt_key=config.encrypt_key or "",
             verification_token=config.verification_token or "",
-            media_dir=config.media_dir or "~/.copaw/media",
+            media_dir=config.media_dir or "~/.dominusprime/media",
             on_reply_sent=on_reply_sent,
             show_tool_details=show_tool_details,
             filter_tool_messages=filter_tool_messages,

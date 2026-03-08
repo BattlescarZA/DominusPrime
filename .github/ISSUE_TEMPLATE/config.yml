@@ -5,8 +5,8 @@ blank_issues_enabled: true
 
 contact_links:
   - name: GitHub Discussions
-    url: https://github.com/agentscope-ai/CoPaw/discussions
-    about: Ask questions, share ideas, or discuss CoPaw here.
+    url: https://github.com/BattlescarZA/DominusPrime/discussions
+    about: Ask questions, share ideas, or discuss DominusPrime here.
   - name: View docs
     url: https://copaw.agentscope.io/
     about: CoPaw docs and guides.

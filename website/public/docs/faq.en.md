@@ -119,12 +119,12 @@ open Console and customize settings. See
 ### Open-source repository
 
 CoPaw is open source. Official repository:
-`https://github.com/agentscope-ai/CoPaw`
+`https://github.com/BattlescarZA/DominusPrime`
 
 ### Where to check latest version upgrade details
 
 You can check version changes in CoPaw GitHub
-[Releases](https://github.com/agentscope-ai/CoPaw/releases).
+[Releases](https://github.com/BattlescarZA/DominusPrime/releases).
 
 ### How to configure models
 
@@ -219,7 +219,7 @@ https://help.aliyun.com/zh/model-studio/coding-plan-quickstart#2531c37fd64f9
 ### How to get support when errors occur
 
 To speed up troubleshooting and fixes, please open an
-[issue](https://github.com/agentscope-ai/CoPaw/issues) in the CoPaw GitHub
+[issue](https://github.com/BattlescarZA/DominusPrime/issues) in the CoPaw GitHub
 repository and attach the full error message and any error detail file.
 
 Console errors often include a path to an error detail file. For example:

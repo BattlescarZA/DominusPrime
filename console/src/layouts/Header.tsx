@@ -15,10 +15,10 @@ const { Header: AntHeader } = Layout;
 
 // Navigation URLs
 const NAV_URLS = {
-  docs: "https://github.com/quantanova/dominus_prime_ui#readme",
-  faq: "https://github.com/quantanova/dominus_prime_ui/wiki",
-  changelog: "https://github.com/quantanova/dominus_prime_ui/releases",
-  github: "https://github.com/quantanova/dominus_prime_ui",
+  docs: "https://github.com/BattlescarZA/DominusPrime#readme",
+  faq: "https://github.com/BattlescarZA/DominusPrime/wiki",
+  changelog: "https://github.com/BattlescarZA/DominusPrime/releases",
+  github: "https://github.com/BattlescarZA/DominusPrime",
 } as const;
 
 const keyToLabel: Record<string, string> = {

@@ -12,7 +12,7 @@ COPAW_HOME="${COPAW_HOME:-$HOME/.copaw}"
 COPAW_VENV="$COPAW_HOME/venv"
 COPAW_BIN="$COPAW_HOME/bin"
 PYTHON_VERSION="3.12"
-COPAW_REPO="https://github.com/agentscope-ai/CoPaw.git"
+COPAW_REPO="https://github.com/BattlescarZA/DominusPrime.git"
 
 VERSION=""
 FROM_SOURCE=false

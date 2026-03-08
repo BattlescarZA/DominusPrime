@@ -31,7 +31,7 @@ $CopawHome     = if ($env:COPAW_HOME) { $env:COPAW_HOME } else { Join-Path $HOME
 $CopawVenv     = Join-Path $CopawHome "venv"
 $CopawBin      = Join-Path $CopawHome "bin"
 $PythonVersion = "3.12"
-$CopawRepo     = "https://github.com/agentscope-ai/CoPaw.git"
+$CopawRepo     = "https://github.com/BattlescarZA/DominusPrime.git"
 
 # ── Colors ────────────────────────────────────────────────────────────────────
 function Write-Info { param([string]$Message) Write-Host "[copaw] " -ForegroundColor Green  -NoNewline; Write-Host $Message }

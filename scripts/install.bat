@@ -22,7 +22,7 @@ if defined COPAW_HOME (
 set "COPAW_VENV=%COPAW_HOME%\venv"
 set "COPAW_BIN=%COPAW_HOME%\bin"
 set "PYTHON_VERSION=3.12"
-set "COPAW_REPO=https://github.com/agentscope-ai/CoPaw.git"
+set "COPAW_REPO=https://github.com/BattlescarZA/DominusPrime.git"
 
 REM ──── Argument defaults ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 set "ARG_VERSION="

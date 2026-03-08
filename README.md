@@ -274,6 +274,30 @@ DominusPrime models # select the downloaded model
 DominusPrime app # start the server
 ```
 
+### Recommended: llama-server Auto-Setup
+
+For the best local model experience, we recommend using our automated llama-server installer with the **Qwen3.5-9B-VL** model. This script will:
+
+- Build llama.cpp with CUDA GPU acceleration
+- Download and configure the Qwen3.5-9B-VL model (~5.5GB)
+- Auto-detect your GPU VRAM and set optimal context size
+- Create a grammar-safe proxy for DominusPrime compatibility
+- Set up auto-start services (systemd on Linux, start scripts on Windows)
+
+**macOS / Linux:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/BattlescarZA/DominusPrime/main/scripts/install_llama_server.sh | bash
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://raw.githubusercontent.com/BattlescarZA/DominusPrime/main/scripts/install_llama_server.ps1 | iex
+```
+
+For detailed manual setup instructions, see [LLAMA_CPP_SETUP.md](LLAMA_CPP_SETUP.md).
+
 ---
 
 ## Documentation

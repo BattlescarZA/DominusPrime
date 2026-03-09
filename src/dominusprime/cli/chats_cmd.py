@@ -31,11 +31,11 @@ def chats_group() -> None:
 
     \b
     Common examples:
-      copaw chats list                    # List all chats
-      copaw chats list --user-id alice    # Filter by user
-      copaw chats get <chat_id>           # View details
-      copaw chats create --session-id s1 --user-id u1
-      copaw chats delete <chat_id>        # Delete a chat
+      dominusprime chats list                    # List all chats
+      dominusprime chats list --user-id alice    # Filter by user
+      dominusprime chats get <chat_id>           # View details
+      dominusprime chats create --session-id s1 --user-id u1
+      dominusprime chats delete <chat_id>        # Delete a chat
     """
 
 
@@ -66,10 +66,10 @@ def list_chats(
 
     \b
     Examples:
-      copaw chats list
-      copaw chats list --user-id alice
-      copaw chats list --channel discord
-      copaw chats list --user-id alice --channel discord
+      dominusprime chats list
+      dominusprime chats list --user-id alice
+      dominusprime chats list --channel discord
+      dominusprime chats list --user-id alice --channel discord
     """
     base_url = _base_url(ctx, base_url)
     params: dict[str, str] = {}
@@ -95,11 +95,11 @@ def get_chat(
     """View details of a specific chat (including message history).
 
     \b
-    CHAT_ID  Chat UUID, obtainable via `copaw chats list`.
+    CHAT_ID  Chat UUID, obtainable via `dominusprime chats list`.
 
     \b
     Examples:
-      copaw chats get 823845fe-dd13-43c2-ab8b-d05870602fd8
+      dominusprime chats get 823845fe-dd13-43c2-ab8b-d05870602fd8
     """
     base_url = _base_url(ctx, base_url)
     with client(base_url) as c:
@@ -159,14 +159,14 @@ def create_chat(
 
     \b
     Inline creation examples:
-      copaw chats create --session-id "discord:alice" \\
+      dominusprime chats create --session-id "discord:alice" \\
         --user-id alice --name "My Chat"
-      copaw chats create --session-id s1 --user-id u1 \\
+      dominusprime chats create --session-id s1 --user-id u1 \\
         --channel imessage
 
     \b
     JSON file creation example:
-      copaw chats create -f chat.json
+      dominusprime chats create -f chat.json
     """
     base_url = _base_url(ctx, base_url)
     if file_ is not None:
@@ -208,11 +208,11 @@ def update_chat(
     """Update chat name.
 
     \b
-    CHAT_ID  Chat UUID, obtainable via `copaw chats list`.
+    CHAT_ID  Chat UUID, obtainable via `dominusprime chats list`.
 
     \b
     Examples:
-      copaw chats update <chat_id> --name "Renamed Chat"
+      dominusprime chats update <chat_id> --name "Renamed Chat"
     """
     base_url = _base_url(ctx, base_url)
 
@@ -250,11 +250,11 @@ def delete_chat(
     Only deletes Chat metadata; does not clear Redis session state.
 
     \b
-    CHAT_ID  Chat UUID, obtainable via `copaw chats list`.
+    CHAT_ID  Chat UUID, obtainable via `dominusprime chats list`.
 
     \b
     Examples:
-      copaw chats delete 823845fe-dd13-43c2-ab8b-d05870602fd8
+      dominusprime chats delete 823845fe-dd13-43c2-ab8b-d05870602fd8
     """
     base_url = _base_url(ctx, base_url)
     with client(base_url) as c:

@@ -454,13 +454,13 @@ _CONSOLE_STATIC_ENV = "DOMINUSPRIME_CONSOLE_STATIC_DIR"
 def _resolve_console_static_dir() -> str:
     if os.environ.get(_CONSOLE_STATIC_ENV):
         return os.environ[_CONSOLE_STATIC_ENV]
-    # Shipped dist lives in copaw package as static data (not a Python pkg).
+    # Shipped dist lives in dominusprime package as static data (not a Python pkg).
     pkg_dir = Path(__file__).resolve().parent.parent
     candidate = pkg_dir / "console"
     if candidate.is_dir() and (candidate / "index.html").exists():
         return str(candidate)
     # the following code can be removed after next release,
-    # because the console will be output to copaw's
+    # because the console will be output to dominusprime\'s
     # `src/copaw/console/` directory directly by vite.
     cwd = Path(os.getcwd())
     for subdir in ("console/dist", "console_dist"):
@@ -493,7 +493,7 @@ def read_root():
 
 @app.get("/api/version")
 def get_version():
-    """Return the current CoPaw version."""
+    """Return the current DominusPrime version."""
     return {"version": __version__}
 
 

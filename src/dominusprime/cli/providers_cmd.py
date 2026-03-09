@@ -75,7 +75,7 @@ def configure_provider_api_key_interactive(
         )
         click.echo(
             "To add a custom provider, first run:\n"
-            f"  copaw models add-provider {provider_id} "
+            f"  dominusprime models add-provider {provider_id} "
             f'-n "My Provider"',
         )
         raise SystemExit(1)
@@ -84,8 +84,8 @@ def configure_provider_api_key_interactive(
     if defn.is_local:
         click.echo(f"{defn.name} does not require API key configuration.")
         click.echo(
-            "Use 'copaw models download' to add models, "
-            "then 'copaw models set-llm' to activate.",
+            "Use 'dominusprime models download' to add models, "
+            "then 'dominusprime models set-llm' to activate.",
         )
         return provider_id
 
@@ -245,7 +245,7 @@ def configure_llm_slot_interactive(*, use_defaults: bool = False) -> None:
     if not eligible:
         if use_defaults:
             click.echo(
-                "No LLM provider configured. Run 'copaw models config' "
+                "No LLM provider configured. Run 'dominusprime models config' "
                 "to configure later.",
             )
             return
@@ -298,7 +298,7 @@ def configure_llm_slot_interactive(*, use_defaults: bool = False) -> None:
     if not model and use_defaults:
         click.echo(
             f"No default model for {defn.name}. "
-            "Run 'copaw models config' to set one.",
+            "Run 'dominusprime models config' to set one.",
         )
         return
     set_active_llm(pid, model)
@@ -366,7 +366,7 @@ def list_cmd() -> None:
                     click.echo(f"    - {m.name}")
             else:
                 click.echo("  No models downloaded.")
-                click.echo("  Use 'copaw models download' to add models.")
+                click.echo("  Use 'dominusprime models download' to add models.")
         else:
             if defn.is_custom or not defn.default_base_url:
                 click.echo(f"  {'base_url':16s}: {cur_url or '(not set)'}")
@@ -448,8 +448,8 @@ def add_provider_cmd(
     if base_url:
         click.echo(f"  base_url: {base_url}")
     click.echo(
-        "  Run 'copaw models add-model' to add models, "
-        "then 'copaw models config-key' to set the API key.",
+        "  Run 'dominusprime models add-model' to add models, "
+        "then 'dominusprime models config-key' to set the API key.",
     )
 
 
@@ -569,10 +569,10 @@ def download_cmd(
 
     \b
     Examples:
-      copaw models download TheBloke/Mistral-7B-Instruct-v0.2-GGUF
-      copaw models download TheBloke/Mistral-7B-Instruct-v0.2-GGUF \\
+      dominusprime models download TheBloke/Mistral-7B-Instruct-v0.2-GGUF
+      dominusprime models download TheBloke/Mistral-7B-Instruct-v0.2-GGUF \\
           -f mistral-7b-instruct-v0.2.Q4_K_M.gguf
-      copaw models download Qwen/Qwen2-0.5B-Instruct-GGUF --source modelscope
+      dominusprime models download Qwen/Qwen2-0.5B-Instruct-GGUF --source modelscope
     """
     try:
         from ..local_models import (
@@ -617,7 +617,7 @@ def download_cmd(
     click.echo(f"  Backend: {info.backend.value}")
     click.echo(
         f"\nTo use this model, run:\n"
-        f"  copaw models set-llm  (select '{backend}' provider)",
+        f"  dominusprime models set-llm  (select '{backend}' provider)",
     )
 
 
@@ -645,7 +645,7 @@ def list_local_cmd(backend: str | None) -> None:
 
     if not models:
         click.echo("No local models downloaded.")
-        click.echo("Use 'copaw models download <repo_id>' to download one.")
+        click.echo("Use 'dominusprime models download <repo_id>' to download one.")
         return
 
     click.echo(f"\n=== Local Models ({len(models)}) ===")
@@ -701,8 +701,8 @@ def ollama_pull_cmd(model_name: str) -> None:
 
     \b
     Examples:
-      copaw models ollama-pull mistral:7b
-      copaw models ollama-pull qwen2.5:3b
+      dominusprime models ollama-pull mistral:7b
+      dominusprime models ollama-pull qwen2.5:3b
     """
     from ..providers.ollama_manager import OllamaModelManager
     from ..providers.store import get_ollama_host
@@ -712,7 +712,7 @@ def ollama_pull_cmd(model_name: str) -> None:
         host = get_ollama_host()
         OllamaModelManager.pull_model(model_name, host=host)
         click.echo(f"✓ Model '{model_name}' downloaded successfully.")
-        click.echo("\nTo use this model, run:\n  copaw models set-llm")
+        click.echo("\nTo use this model, run:\n  dominusprime models set-llm")
     except ImportError as exc:
         click.echo(
             click.style(
@@ -749,7 +749,7 @@ def ollama_list_cmd() -> None:
 
     if not models:
         click.echo("No Ollama models found.")
-        click.echo("Use 'copaw models ollama-pull <model>' to download one.")
+        click.echo("Use 'dominusprime models ollama-pull <model>' to download one.")
         return
 
     click.echo(f"\n=== Ollama Models ({len(models)}) ===")
@@ -772,8 +772,8 @@ def ollama_remove_cmd(model_name: str, yes: bool) -> None:
 
     \b
     Examples:
-      copaw models ollama-remove mistral:7b
-      copaw models ollama-remove qwen2.5:3b -y
+      dominusprime models ollama-remove mistral:7b
+      dominusprime models ollama-remove qwen2.5:3b -y
     """
     from ..providers.ollama_manager import OllamaModelManager
     from ..providers.store import get_ollama_host

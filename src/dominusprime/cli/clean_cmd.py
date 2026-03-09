@@ -23,7 +23,7 @@ def _iter_children(p: Path) -> list[Path]:
     help="List what would be deleted, but do not delete",
 )
 def clean_cmd(yes: bool, dry_run: bool) -> None:
-    """Clear CoPaw WORKING_DIR (~/.dominusprime by default)."""
+    """Clear DominusPrime WORKING_DIR (~/.dominusprime by default)."""
     wd = WORKING_DIR
 
     if not wd.exists():

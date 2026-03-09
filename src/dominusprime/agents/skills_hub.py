@@ -136,7 +136,7 @@ def _http_get(
         full_url,
         headers={
             "Accept": accept,
-            "User-Agent": "copaw-skills-hub/1.0",
+            "User-Agent": "dominusprime-skills-hub/1.0",
         },
     )
     parsed = urlparse(full_url)

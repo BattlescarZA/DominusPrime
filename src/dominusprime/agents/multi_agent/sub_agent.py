@@ -3,11 +3,10 @@
 
 import asyncio
 import logging
-from typing import Any, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from agentscope.message import Msg
 
-from ..react_agent import DominusPrimeAgent
 from .communication import AgentCommunicationBus
 from .models import (
     AgentMessage,
@@ -17,6 +16,9 @@ from .models import (
     TaskResult,
     TaskStatus,
 )
+
+if TYPE_CHECKING:
+    from ..react_agent import DominusPrimeAgent
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +51,7 @@ class SubAgent:
         self.comm_bus = communication_bus
         self.main_agent_id = main_agent_id
 
-        self._agent: Optional[DominusPrimeAgent] = None
+        self._agent: Optional["DominusPrimeAgent"] = None
         self._task: Optional[asyncio.Task] = None
         self._cancelled = False
         self._start_time: Optional[float] = None
@@ -57,6 +59,9 @@ class SubAgent:
 
     async def initialize(self) -> None:
         """Initialize the underlying agent."""
+        # Lazy import to avoid circular dependency
+        from ..react_agent import DominusPrimeAgent
+        
         # Create agent with limited resources
         self._agent = DominusPrimeAgent(
             env_context=self.spec.context,

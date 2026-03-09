@@ -6,7 +6,7 @@ import re
 from typing import Any, List, Optional
 
 from agentscope.message import Msg
-from agentscope.models import ModelWrapperBase
+from agentscope.model import ChatModelBase
 
 from .complexity_analyzer import TaskComplexityAnalyzer
 from .models import ExecutionMode, SubTask, TaskComplexity
@@ -33,7 +33,7 @@ class TaskDecomposer:
 
     def __init__(
         self,
-        model: ModelWrapperBase,
+        model: ChatModelBase,
         complexity_analyzer: Optional[TaskComplexityAnalyzer] = None,
     ):
         """Initialize the TaskDecomposer.

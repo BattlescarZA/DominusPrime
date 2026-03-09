@@ -245,6 +245,84 @@ export function ChannelDrawer({
             </Form.Item>
           </>
         );
+      case "whatsapp":
+        return (
+          <>
+            <Alert
+              type="info"
+              showIcon
+              message="WhatsApp uses QR code authentication like WhatsApp Web. When enabled, scan the QR code with your WhatsApp mobile app."
+              style={{ marginBottom: 16 }}
+            />
+            <Form.Item
+              name="session_dir"
+              label="Session Directory"
+              tooltip="Directory to store WhatsApp session data"
+            >
+              <Input placeholder="~/.dominusprime/whatsapp/session" />
+            </Form.Item>
+            <Form.Item
+              name="media_dir"
+              label="Media Directory"
+              tooltip="Directory to store received media files"
+            >
+              <Input placeholder="~/.dominusprime/media/whatsapp" />
+            </Form.Item>
+            <Form.Item
+              name="show_typing"
+              label="Show Typing"
+              valuePropName="checked"
+              tooltip="Show typing indicators when agent is processing"
+            >
+              <Switch />
+            </Form.Item>
+            <Form.Item
+              name="dm_policy"
+              label={t("channels.dmPolicy")}
+              tooltip={t("channels.dmPolicyTooltip")}
+              initialValue="open"
+            >
+              <Select
+                options={[
+                  { value: "open", label: t("channels.policyOpen") },
+                  { value: "allowlist", label: t("channels.policyAllowlist") },
+                ]}
+              />
+            </Form.Item>
+            <Form.Item
+              name="group_policy"
+              label={t("channels.groupPolicy")}
+              tooltip={t("channels.groupPolicyTooltip")}
+              initialValue="open"
+            >
+              <Select
+                options={[
+                  { value: "open", label: t("channels.policyOpen") },
+                  { value: "allowlist", label: t("channels.policyAllowlist") },
+                ]}
+              />
+            </Form.Item>
+            <Form.Item
+              name="allow_from"
+              label={t("channels.allowFrom")}
+              tooltip={t("channels.allowFromTooltip")}
+              initialValue={[]}
+            >
+              <Select
+                mode="tags"
+                placeholder={t("channels.allowFromPlaceholder")}
+                tokenSeparators={[","]}
+              />
+            </Form.Item>
+            <Form.Item
+              name="deny_message"
+              label={t("channels.denyMessage")}
+              tooltip={t("channels.denyMessageTooltip")}
+            >
+              <Input.TextArea rows={3} />
+            </Form.Item>
+          </>
+        );
       case "voice":
         return (
           <>

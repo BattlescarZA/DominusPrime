@@ -31,6 +31,7 @@ from .crons.manager import CronManager
 from .runner.manager import ChatManager
 from .routers import router as api_router
 from .routers.voice import voice_router
+from .routers.whatsapp import router as whatsapp_router
 from ..envs import load_envs_into_environ
 
 # Apply log level on load so reload child process gets same level as CLI.
@@ -508,6 +509,10 @@ app.include_router(
 # Voice channel: Twilio-facing endpoints at root level (not under /api/).
 # POST /voice/incoming, WS /voice/ws, POST /voice/status-callback
 app.include_router(voice_router, tags=["voice"])
+
+# WhatsApp channel: QR code and status endpoints
+# GET /whatsapp/qr, GET /whatsapp/status
+app.include_router(whatsapp_router, tags=["whatsapp"])
 
 # Mount console: root static files (logo.png etc.) then assets, then SPA
 # fallback.

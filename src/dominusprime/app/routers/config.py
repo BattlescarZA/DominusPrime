@@ -175,6 +175,10 @@ async def put_channel(
         from ...config.config import VoiceChannelConfig
 
         channel_config = VoiceChannelConfig(**single_channel_config)
+    elif channel_name == "whatsapp":
+        from ...config.config import WhatsAppConfig
+
+        channel_config = WhatsAppConfig(**single_channel_config)
     else:
         # For custom channels, just use the dict
         channel_config = single_channel_config

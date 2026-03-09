@@ -8,6 +8,7 @@ Public API:
 - AgentOrchestrator: Main orchestration class
 - TaskComplexityAnalyzer: Analyze task complexity
 - TaskDecomposer: Decompose complex tasks
+- ExecutionMonitor: Track execution progress
 - SubTask, TaskResult: Data models
 - TaskComplexity: Complexity levels
 """
@@ -15,6 +16,7 @@ Public API:
 from .agent_pool import AgentPool
 from .communication import AgentCommunicationBus
 from .complexity_analyzer import TaskComplexityAnalyzer
+from .execution_monitor import ExecutionMonitor, ExecutionState, SubtaskProgress
 from .models import (
     AgentMessage,
     AggregatedResult,
@@ -38,6 +40,10 @@ __all__ = [
     # Task analysis
     "TaskComplexityAnalyzer",
     "TaskDecomposer",
+    # Monitoring
+    "ExecutionMonitor",
+    "ExecutionState",
+    "SubtaskProgress",
     # Data models
     "AgentMessage",
     "AggregatedResult",

@@ -3,10 +3,11 @@
 
 import asyncio
 import logging
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Callable
 
 from .agent_pool import AgentPool
 from .communication import AgentCommunicationBus
+from .execution_monitor import ExecutionMonitor, ExecutionState
 from .models import (
     AggregatedResult,
     AgentSpec,
@@ -27,6 +28,7 @@ class AgentOrchestrator:
     - Sequential and parallel execution
     - Dependency resolution
     - Result aggregation
+    - Execution monitoring and progress tracking
     """
 
     def __init__(
@@ -34,6 +36,7 @@ class AgentOrchestrator:
         max_concurrent: int = 5,
         agent_timeout: int = 300,
         main_agent_id: str = "main",
+        enable_monitoring: bool = True,
     ):
         """Initialize orchestrator.
 
@@ -41,6 +44,7 @@ class AgentOrchestrator:
             max_concurrent: Maximum concurrent sub-agents
             agent_timeout: Default timeout per agent (seconds)
             main_agent_id: ID of the main coordinating agent
+            enable_monitoring: Enable execution monitoring
         """
         self.max_concurrent = max_concurrent
         self.agent_timeout = agent_timeout
@@ -53,6 +57,9 @@ class AgentOrchestrator:
             agent_timeout=agent_timeout,
         )
 
+        # Execution monitoring
+        self.monitor = ExecutionMonitor(enable_streaming=enable_monitoring) if enable_monitoring else None
+        
         self._started = False
 
     async def start(self) -> None:
@@ -81,19 +88,38 @@ class AgentOrchestrator:
         if not self._started:
             await self.start()
 
-        # Build dependency graph
-        dependency_graph = self._build_dependency_graph(subtasks)
+        # Initialize monitoring
+        if self.monitor:
+            await self.monitor.set_state(ExecutionState.SPAWNING)
+            self.monitor.initialize_subtasks(subtasks)
+            await self.monitor.set_state(ExecutionState.EXECUTING)
 
-        # Execute tasks respecting dependencies
-        results = await self._execute_with_dependencies(
-            subtasks,
-            dependency_graph,
-        )
+        try:
+            # Build dependency graph
+            dependency_graph = self._build_dependency_graph(subtasks)
 
-        # Aggregate results
-        aggregated = await self._aggregate_results(results, subtasks)
+            # Execute tasks respecting dependencies
+            results = await self._execute_with_dependencies(
+                subtasks,
+                dependency_graph,
+            )
 
-        return aggregated
+            # Aggregate results
+            if self.monitor:
+                await self.monitor.set_state(ExecutionState.AGGREGATING)
+            
+            aggregated = await self._aggregate_results(results, subtasks)
+
+            # Mark as completed
+            if self.monitor:
+                await self.monitor.set_state(ExecutionState.COMPLETED)
+
+            return aggregated
+            
+        except Exception as e:
+            if self.monitor:
+                await self.monitor.set_state(ExecutionState.FAILED)
+            raise
 
     def _build_dependency_graph(
         self,

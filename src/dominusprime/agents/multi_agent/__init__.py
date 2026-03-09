@@ -9,6 +9,7 @@ Public API:
 - TaskComplexityAnalyzer: Analyze task complexity
 - TaskDecomposer: Decompose complex tasks
 - ExecutionMonitor: Track execution progress
+- ErrorRecoveryManager: Error handling and recovery
 - SubTask, TaskResult: Data models
 - TaskComplexity: Complexity levels
 """
@@ -16,6 +17,18 @@ Public API:
 from .agent_pool import AgentPool
 from .communication import AgentCommunicationBus
 from .complexity_analyzer import TaskComplexityAnalyzer
+from .error_recovery import (
+    CircuitBreaker,
+    CircuitBreakerConfig,
+    CircuitBreakerOpenError,
+    CircuitState,
+    ErrorRecoveryManager,
+    HealthCheckConfig,
+    HealthMonitor,
+    HealthStatus,
+    RetryConfig,
+    RetryManager,
+)
 from .execution_monitor import ExecutionMonitor, ExecutionState, SubtaskProgress
 from .models import (
     AgentMessage,
@@ -44,6 +57,17 @@ __all__ = [
     "ExecutionMonitor",
     "ExecutionState",
     "SubtaskProgress",
+    # Error recovery
+    "ErrorRecoveryManager",
+    "CircuitBreaker",
+    "CircuitBreakerConfig",
+    "CircuitBreakerOpenError",
+    "CircuitState",
+    "RetryManager",
+    "RetryConfig",
+    "HealthMonitor",
+    "HealthStatus",
+    "HealthCheckConfig",
     # Data models
     "AgentMessage",
     "AggregatedResult",

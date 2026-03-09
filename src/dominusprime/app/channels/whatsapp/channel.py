@@ -114,11 +114,20 @@ class WhatsAppChannel(BaseChannel):
     def __init__(
         self,
         process: ProcessHandler,
+        enabled: bool,
+        session_dir: str,
+        media_dir: str,
         on_reply_sent: OnReplySent = None,
-        config: Optional[WhatsAppChannelConfig] = None,
         show_tool_details: bool = True,
         filter_tool_messages: bool = False,
         filter_thinking: bool = False,
+        show_typing: bool = True,
+        dm_policy: str = "open",
+        group_policy: str = "open",
+        allow_from: list = None,
+        deny_message: str = "",
+        max_retries: int = 3,
+        retry_delay: int = 5,
     ):
         super().__init__(
             process,
@@ -127,16 +136,16 @@ class WhatsAppChannel(BaseChannel):
             filter_tool_messages,
             filter_thinking,
         )
-        self._config = config or WhatsAppChannelConfig()
-        self._session_dir = Path(self._config.session_dir).expanduser()
-        self._media_dir = Path(self._config.media_dir).expanduser()
-        self._show_typing = self._config.show_typing
-        self._dm_policy = self._config.dm_policy
-        self._group_policy = self._config.group_policy
-        self._allow_from = set(self._config.allow_from)
-        self._deny_message = self._config.deny_message
-        self._max_retries = self._config.max_retries
-        self._retry_delay = self._config.retry_delay
+        self._enabled = enabled
+        self._session_dir = Path(session_dir).expanduser()
+        self._media_dir = Path(media_dir).expanduser()
+        self._show_typing = show_typing
+        self._dm_policy = dm_policy
+        self._group_policy = group_policy
+        self._allow_from = set(allow_from or [])
+        self._deny_message = deny_message
+        self._max_retries = max_retries
+        self._retry_delay = retry_delay
         
         # WhatsApp client (will be initialized in start())
         self._client: Optional[Any] = None
@@ -147,6 +156,47 @@ class WhatsAppChannel(BaseChannel):
         # Session state
         self._authenticated = False
         self._qr_code: Optional[str] = None
+
+    @classmethod
+    def from_config(
+        cls,
+        process: ProcessHandler,
+        config: Union[WhatsAppChannelConfig, dict],
+        on_reply_sent: OnReplySent = None,
+        show_tool_details: bool = True,
+        filter_tool_messages: bool = False,
+        filter_thinking: bool = False,
+    ) -> "WhatsAppChannel":
+        """Create WhatsAppChannel from config."""
+        if isinstance(config, dict):
+            c = config
+        else:
+            c = config.model_dump()
+
+        def _get_str(key: str) -> str:
+            return (c.get(key) or "").strip()
+
+        show_typing = c.get("show_typing")
+        if show_typing is None:
+            show_typing = True
+
+        return cls(
+            process=process,
+            enabled=bool(c.get("enabled", False)),
+            session_dir=_get_str("session_dir") or "~/.dominusprime/whatsapp/session",
+            media_dir=_get_str("media_dir") or "~/.dominusprime/media/whatsapp",
+            on_reply_sent=on_reply_sent,
+            show_tool_details=show_tool_details,
+            filter_tool_messages=filter_tool_messages,
+            filter_thinking=filter_thinking,
+            show_typing=show_typing,
+            dm_policy=c.get("dm_policy") or "open",
+            group_policy=c.get("group_policy") or "open",
+            allow_from=c.get("allow_from") or [],
+            deny_message=c.get("deny_message") or "",
+            max_retries=c.get("max_retries") or 3,
+            retry_delay=c.get("retry_delay") or 5,
+        )
 
     async def start(self) -> None:
         """Start WhatsApp client with QR code authentication."""

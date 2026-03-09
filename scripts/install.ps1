@@ -1,9 +1,9 @@
-# CoPaw Installer for Windows (self-contained: includes uv download via GitHub)
+# DominusPrime Installer for Windows (self-contained: includes uv download via GitHub)
 # Usage: irm <url>/install.ps1 | iex
 #    or: .\install.ps1 [-Version X.Y.Z] [-FromSource] [-SourceDir DIR]
 #                            [-Extras "llamacpp,mlx"] [-UvPath PATH]
 #
-# Installs CoPaw into ~/.copaw with a uv-managed Python environment.
+# Installs DominusPrime into ~/.dominusprime with a uv-managed Python environment.
 # Users do NOT need Python pre-installed — uv handles everything.
 #
 # uv is obtained automatically (no action required from the user):
@@ -27,27 +27,27 @@ param(
 $ErrorActionPreference = "Stop"
 
 # ── Defaults ──────────────────────────────────────────────────────────────────
-$CopawHome     = if ($env:COPAW_HOME) { $env:COPAW_HOME } else { Join-Path $HOME ".copaw" }
-$CopawVenv     = Join-Path $CopawHome "venv"
-$CopawBin      = Join-Path $CopawHome "bin"
+$DominusPrimeHome     = if ($env:DOMINUSPRIME_HOME) { $env:DOMINUSPRIME_HOME } else { Join-Path $HOME ".dominusprime" }
+$DominusPrimeVenv     = Join-Path $DominusPrimeHome "venv"
+$DominusPrimeBin      = Join-Path $DominusPrimeHome "bin"
 $PythonVersion = "3.12"
-$CopawRepo     = "https://github.com/BattlescarZA/DominusPrime.git"
+$DominusPrimeRepo     = "https://github.com/BattlescarZA/DominusPrime.git"
 
 # ── Colors ────────────────────────────────────────────────────────────────────
-function Write-Info { param([string]$Message) Write-Host "[copaw] " -ForegroundColor Green  -NoNewline; Write-Host $Message }
-function Write-Warn { param([string]$Message) Write-Host "[copaw] " -ForegroundColor Yellow -NoNewline; Write-Host $Message }
-function Write-Err  { param([string]$Message) Write-Host "[copaw] " -ForegroundColor Red    -NoNewline; Write-Host $Message }
+function Write-Info { param([string]$Message) Write-Host "[dominusprime] " -ForegroundColor Green  -NoNewline; Write-Host $Message }
+function Write-Warn { param([string]$Message) Write-Host "[dominusprime] " -ForegroundColor Yellow -NoNewline; Write-Host $Message }
+function Write-Err  { param([string]$Message) Write-Host "[dominusprime] " -ForegroundColor Red    -NoNewline; Write-Host $Message }
 function Stop-WithError { param([string]$Message) Write-Err $Message; exit 1 }
 
 # ── Help ──────────────────────────────────────────────────────────────────────
 if ($Help) {
     @"
-CoPaw Installer for Windows
+DominusPrime Installer for Windows
 
 Usage: .\install.ps1 [OPTIONS]
 
 Options:
-  -Version <VER>        Install a specific version (e.g. 0.0.2)
+  -Version <VER>        Install a specific version (e.g. 0.9.4)
   -FromSource           Install from source (requires git, or use -SourceDir)
   -SourceDir <DIR>      Local source directory (used with -FromSource)
   -Extras <EXTRAS>      Comma-separated optional extras to install
@@ -56,14 +56,14 @@ Options:
   -Help                 Show this help
 
 Environment:
-  COPAW_HOME            Installation directory (default: ~/.copaw)
+  DOMINUSPRIME_HOME     Installation directory (default: ~/.dominusprime)
 "@
     exit 0
 }
 
-Write-Host "[copaw] " -ForegroundColor Green -NoNewline
-Write-Host "Installing CoPaw into " -NoNewline
-Write-Host "$CopawHome" -ForegroundColor White
+Write-Host "[dominusprime] " -ForegroundColor Green -NoNewline
+Write-Host "Installing DominusPrime into " -NoNewline
+Write-Host "$DominusPrimeHome" -ForegroundColor White
 
 # ── Execution Policy Check ────────────────────────────────────────────────────
 $policy = Get-ExecutionPolicy
@@ -193,22 +193,22 @@ function Ensure-Uv {
 Ensure-Uv
 
 # ── Step 2: Create / update virtual environment ──────────────────────────────
-if (Test-Path $CopawVenv) {
+if (Test-Path $DominusPrimeVenv) {
     Write-Info "Existing environment found, upgrading..."
 } else {
     Write-Info "Creating Python $PythonVersion environment..."
 }
 
-uv venv $CopawVenv --python $PythonVersion --quiet --clear
+uv venv $DominusPrimeVenv --python $PythonVersion --quiet --clear
 if ($LASTEXITCODE -ne 0) { Stop-WithError "Failed to create virtual environment" }
 
-$VenvPython = Join-Path $CopawVenv "Scripts\python.exe"
+$VenvPython = Join-Path $DominusPrimeVenv "Scripts\python.exe"
 if (-not (Test-Path $VenvPython)) { Stop-WithError "Failed to create virtual environment" }
 
 $pyVersion = & $VenvPython --version 2>&1
 Write-Info "Python environment ready ($pyVersion)"
 
-# ── Step 3: Install CoPaw ────────────────────────────────────────────────────
+# ── Step 3: Install DominusPrime ─────────────────────────────────────────────
 $ExtrasSuffix = ""
 if ($Extras) { $ExtrasSuffix = "[$Extras]" }
 
@@ -219,7 +219,7 @@ function Prepare-Console {
     param([string]$RepoDir)
 
     $consoleSrc  = Join-Path $RepoDir "console\dist"
-    $consoleDest = Join-Path $RepoDir "src\copaw\console"
+    $consoleDest = Join-Path $RepoDir "src\dominusprime\console"
 
     # Already populated
     if (Test-Path (Join-Path $consoleDest "index.html")) { $script:ConsoleAvailable = $true; return }
@@ -273,19 +273,19 @@ function Prepare-Console {
 function Cleanup-Console {
     param([string]$RepoDir)
     if ($script:ConsoleCopied) {
-        $consoleDest = Join-Path $RepoDir "src\copaw\console"
+        $consoleDest = Join-Path $RepoDir "src\dominusprime\console"
         if (Test-Path $consoleDest) {
             Remove-Item -Path "$consoleDest\*" -Recurse -Force -ErrorAction SilentlyContinue
         }
     }
 }
 
-$VenvCopaw = Join-Path $CopawVenv "Scripts\copaw.exe"
+$VenvDominusPrime = Join-Path $DominusPrimeVenv "Scripts\dominusprime.exe"
 
 if ($FromSource) {
     if ($SourceDir) {
         $SourceDir = (Resolve-Path $SourceDir).Path
-        Write-Info "Installing CoPaw from local source: $SourceDir"
+        Write-Info "Installing DominusPrime from local source: $SourceDir"
         Prepare-Console $SourceDir
         Write-Info "Installing package from source..."
         uv pip install "${SourceDir}${ExtrasSuffix}" --python $VenvPython --prerelease=allow
@@ -293,12 +293,12 @@ if ($FromSource) {
         Cleanup-Console $SourceDir
     } else {
         if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
-            Stop-WithError "git is required for -FromSource without a local directory. Please install Git from https://git-scm.com/ or pass a local path: .\install.ps1 -FromSource -SourceDir C:\path\to\CoPaw"
+            Stop-WithError "git is required for -FromSource without a local directory. Please install Git from https://git-scm.com/ or pass a local path: .\install.ps1 -FromSource -SourceDir C:\path\to\DominusPrime"
         }
-        Write-Info "Installing CoPaw from source (GitHub)..."
-        $cloneDir = Join-Path $env:TEMP "copaw-install-$(Get-Random)"
+        Write-Info "Installing DominusPrime from source (GitHub)..."
+        $cloneDir = Join-Path $env:TEMP "dominusprime-install-$(Get-Random)"
         try {
-            git clone --depth 1 $CopawRepo $cloneDir
+            git clone --depth 1 $DominusPrimeRepo $cloneDir
             if ($LASTEXITCODE -ne 0) { Stop-WithError "Failed to clone repository" }
             Prepare-Console $cloneDir
             Write-Info "Installing package from source..."
@@ -311,8 +311,8 @@ if ($FromSource) {
         }
     }
 } else {
-    $package = "copaw"
-    if ($Version) { $package = "copaw==$Version" }
+    $package = "dominusprime"
+    if ($Version) { $package = "dominusprime==$Version" }
 
     Write-Info "Installing ${package}${ExtrasSuffix} from PyPI..."
     uv pip install "${package}${ExtrasSuffix}" --python $VenvPython --prerelease=allow --quiet
@@ -320,29 +320,29 @@ if ($FromSource) {
 }
 
 # Verify the CLI entry point exists
-if (-not (Test-Path $VenvCopaw)) { Stop-WithError "Installation failed: copaw CLI not found in venv" }
+if (-not (Test-Path $VenvDominusPrime)) { Stop-WithError "Installation failed: dominusprime CLI not found in venv" }
 
-Write-Info "CoPaw installed successfully"
+Write-Info "DominusPrime installed successfully"
 
 # Check console availability (for PyPI installs, check the installed package)
 if (-not $script:ConsoleAvailable) {
-    $consoleCheck = & $VenvPython -c "import importlib.resources, copaw; p=importlib.resources.files('copaw')/'console'/'index.html'; print('yes' if p.is_file() else 'no')" 2>&1
+    $consoleCheck = & $VenvPython -c "import importlib.resources, dominusprime; p=importlib.resources.files('dominusprime')/'console'/'index.html'; print('yes' if p.is_file() else 'no')" 2>&1
     if ($consoleCheck -eq "yes") { $script:ConsoleAvailable = $true }
 }
 
 # ── Step 4: Create wrapper scripts ───────────────────────────────────────────
-New-Item -ItemType Directory -Path $CopawBin -Force | Out-Null
+New-Item -ItemType Directory -Path $DominusPrimeBin -Force | Out-Null
 
-$wrapperPath = Join-Path $CopawBin "copaw.ps1"
+$wrapperPath = Join-Path $DominusPrimeBin "dominusprime.ps1"
 $wrapperContent = @'
-# CoPaw CLI wrapper — delegates to the uv-managed environment.
+# DominusPrime CLI wrapper — delegates to the uv-managed environment.
 $ErrorActionPreference = "Stop"
 
-$CopawHome = if ($env:COPAW_HOME) { $env:COPAW_HOME } else { Join-Path $HOME ".copaw" }
-$RealBin   = Join-Path $CopawHome "venv\Scripts\copaw.exe"
+$DominusPrimeHome = if ($env:DOMINUSPRIME_HOME) { $env:DOMINUSPRIME_HOME } else { Join-Path $HOME ".dominusprime" }
+$RealBin   = Join-Path $DominusPrimeHome "venv\Scripts\dominusprime.exe"
 
 if (-not (Test-Path $RealBin)) {
-    Write-Error "CoPaw environment not found at $CopawHome\venv"
+    Write-Error "DominusPrime environment not found at $DominusPrimeHome\venv"
     Write-Error "Please reinstall: irm <install-url> | iex"
     exit 1
 }
@@ -354,15 +354,15 @@ Set-Content -Path $wrapperPath -Value $wrapperContent -Encoding UTF8
 Write-Info "Wrapper created at $wrapperPath"
 
 # Also create a .cmd wrapper for use from cmd.exe
-$cmdWrapperPath = Join-Path $CopawBin "copaw.cmd"
+$cmdWrapperPath = Join-Path $DominusPrimeBin "dominusprime.cmd"
 $cmdWrapperContent = @"
 @echo off
-REM CoPaw CLI wrapper — delegates to the uv-managed environment.
-set "COPAW_HOME=%COPAW_HOME%"
-if "%COPAW_HOME%"=="" set "COPAW_HOME=%USERPROFILE%\.copaw"
-set "REAL_BIN=%COPAW_HOME%\venv\Scripts\copaw.exe"
+REM DominusPrime CLI wrapper — delegates to the uv-managed environment.
+set "DOMINUSPRIME_HOME=%DOMINUSPRIME_HOME%"
+if "%DOMINUSPRIME_HOME%"=="" set "DOMINUSPRIME_HOME=%USERPROFILE%\.dominusprime"
+set "REAL_BIN=%DOMINUSPRIME_HOME%\venv\Scripts\dominusprime.exe"
 if not exist "%REAL_BIN%" (
-    echo Error: CoPaw environment not found at %COPAW_HOME%\venv >&2
+    echo Error: DominusPrime environment not found at %DOMINUSPRIME_HOME%\venv >&2
     echo Please reinstall: irm ^<install-url^> ^| iex >&2
     exit /b 1
 )
@@ -373,52 +373,52 @@ Set-Content -Path $cmdWrapperPath -Value $cmdWrapperContent -Encoding UTF8
 Write-Info "CMD wrapper created at $cmdWrapperPath"
 
 # ──Step 5: Update PATH via User Environment Variable ────────────────────────
-$targetPath = $CopawBin
+$targetPath = $DominusPrimeBin
 $registryPath = "HKCU:\Environment"
 $registryName = "Path"
 
-# 1. 安全获取当前的 User PATH (直接从注册表读取，避免污染 Machine PATH)
+# 1. Safely get current User PATH (read directly from registry to avoid polluting Machine PATH)
 try {
     $currentUserPath = (Get-ItemProperty -Path $registryPath -Name $registryName -ErrorAction SilentlyContinue).Path
     if (-not $currentUserPath) { $currentUserPath = "" }
 } catch {
-    # 如果连读都失败（极罕见），则从头开始
+    # If even reading fails (extremely rare), start fresh
     $currentUserPath = ""
     Write-Debug "Could not read User Path from registry, starting fresh."
 }
 
-# 2. 精确检查是否已存在 (解决前缀匹配误判)
-# 分割路径并去除空格
+# 2. Precise check for existence (resolves prefix matching false positives)
+# Split paths and trim whitespace
 $pathArray = $currentUserPath -split ';' | ForEach-Object { $_.Trim() }
 $isAlreadyAdded = $pathArray -contains $targetPath
 
 if (-not $isAlreadyAdded) {
-    # 构建新的 User PATH 字符串
+    # Build new User PATH string
     if ($currentUserPath) {
         $newUserPath = "$targetPath;$currentUserPath"
     } else {
         $newUserPath = $targetPath
     }
 
-    # 3. 核心修复：使用 SetItemProperty 代替 [Environment]::SetEnvironmentVariable
-    #    这是原生 cmdlet，在 Constrained Language Mode 下通常可用
+    # 3. Core fix: Use SetItemProperty instead of [Environment]::SetEnvironmentVariable
+    #    This is a native cmdlet, usually available in Constrained Language Mode
     try {
-        # 确保注册表路径存在 (HKCU:\Environment 通常默认存在，但为了健壮性检查一下)
+        # Ensure registry path exists (HKCU:\Environment usually exists by default, but check for robustness)
         if (-not (Test-Path $registryPath)) {
-            # 这种情况极少见，但如果发生，尝试创建（通常需要权限，若失败则进入 catch）
+            # This is extremely rare, but if it happens, try to create (usually needs permission, will enter catch if fails)
             New-Item -Path $registryPath -Force | Out-Null
         }
 
-        # 写入注册表
-        SetItemProperty -Path $registryPath -Name $registryName -Value $newUserPath
+        # Write to registry
+        Set-ItemProperty -Path $registryPath -Name $registryName -Value $newUserPath
 
-        # 更新当前进程的环境变量，使当前终端立即生效
+        # Update current process environment variable to make it immediately effective in current terminal
         $env:Path = "$targetPath;$env:Path"
 
         Write-Info "Successfully added $targetPath to User PATH (via Registry)"
 
     } catch {
-        # 如果连 SetItemProperty 都失败（例如注册表被组策略完全锁定）
+        # If even SetItemProperty fails (e.g. registry completely locked by group policy)
         $errorMsg = $_.Exception.Message
 
         Write-Host ""
@@ -426,7 +426,7 @@ if (-not $isAlreadyAdded) {
         Write-Host "   Reason: $errorMsg"
         Write-Host "   Context: Your system policy strictly blocks environment modifications."
         Write-Host ""
-        Write-Host "ACTION REQUIRED: You must manually add the path to use CoPaw."
+        Write-Host "ACTION REQUIRED: You must manually add the path to use DominusPrime."
         Write-Host "   Target Path: $targetPath"
         Write-Host ""
         Write-Host "Manual Steps (User Variables):"
@@ -439,8 +439,8 @@ if (-not $isAlreadyAdded) {
         Write-Host "   6. CLOSE and REOPEN your terminal."
         Write-Host ""
 
-        # 即使注册表写入失败，也尝试更新当前会话以便用户测试（如果不报错的话）
-        # 注意：如果策略极严，这行也可能无效，但尝试一下无害
+        # Even if registry write fails, try to update current session for user testing (if it doesn't error)
+        # Note: If policy is extremely strict, this line may also be ineffective, but trying it is harmless
         try {
             $env:Path = "$targetPath;$env:Path"
         } catch {}
@@ -451,10 +451,10 @@ if (-not $isAlreadyAdded) {
 
 # ── Done ──────────────────────────────────────────────────────────────────────
 Write-Host ""
-Write-Host "CoPaw installed successfully!" -ForegroundColor Green
+Write-Host "DominusPrime installed successfully!" -ForegroundColor Green
 Write-Host ""
 
-Write-Host "  Install location:  " -NoNewline; Write-Host "$CopawHome" -ForegroundColor White
+Write-Host "  Install location:  " -NoNewline; Write-Host "$DominusPrimeHome" -ForegroundColor White
 Write-Host "  Python:            " -NoNewline; Write-Host "$pyVersion"  -ForegroundColor White
 if ($script:ConsoleAvailable) {
     Write-Host "  Console (web UI):  " -NoNewline; Write-Host "available"     -ForegroundColor Green
@@ -466,11 +466,11 @@ Write-Host ""
 
 Write-Host "To get started, open a new terminal and run:"
 Write-Host ""
-Write-Host "  copaw init" -ForegroundColor White -NoNewline; Write-Host "       # first-time setup"
-Write-Host "  copaw app"  -ForegroundColor White -NoNewline; Write-Host "        # start CoPaw"
+Write-Host "  dominusprime init" -ForegroundColor White -NoNewline; Write-Host "       # first-time setup"
+Write-Host "  dominusprime app"  -ForegroundColor White -NoNewline; Write-Host "        # start DominusPrime"
 Write-Host ""
 Write-Host "To upgrade later, re-run this installer."
 Write-Host "To uninstall, run: " -NoNewline
-Write-Host "copaw uninstall" -ForegroundColor White
+Write-Host "dominusprime uninstall" -ForegroundColor White
 
 } @args

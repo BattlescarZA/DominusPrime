@@ -229,7 +229,7 @@ For detailed manual setup instructions, see [LLAMA_CPP_SETUP.md](LLAMA_CPP_SETUP
 | [CLI](https://DominusPrime.agentscope.io/docs/cli)                            | Init, cron jobs, skills, clean                   |
 | [FAQ](https://github.com/BattlescarZA/DominusPrime/wiki)                     | Common questions and troubleshooting             |
 
-Full docs in this repo: [website/public/docs/](website/public/docs/).
+Full documentation can be found in the project repository.
 
 ---
 

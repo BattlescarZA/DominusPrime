@@ -77,12 +77,11 @@ docs(skills): document Skills Hub import
 - **If pre-commit modifies files:** Commit those changes, then rerun
   `pre-commit run --all-files` until it passes cleanly.
 - **CI policy:** Pull requests with failing pre-commit checks are not merge-ready.
-- **Frontend formatting:** If your changes involve the `console` or `website` directories, run the formatter before committing:
+- **Frontend formatting:** If your changes involve the `console` directory, run the formatter before committing:
   ```bash
   cd console && npm run format
-  cd website && npm run format
   ```
-- **Documentation:** Update docs and README when you add or change user-facing behavior. The docs live under `website/public/docs/`.
+- **Documentation:** Update docs and README when you add or change user-facing behavior.
 
 ---
 
@@ -135,7 +134,7 @@ Channels are how DominusPrime talks to **DingTalk, Feishu, QQ, Discord, iMessage
   - `DominusPrime channels remove <key>` — remove custom channel from `custom_channels/`
   - `DominusPrime channels config` — interactive config
 
-If you contribute a **new built-in channel**, add it to the registry and, if needed, a configurator so it appears in the Console and CLI. Document the new channel (auth, webhooks, etc.) in `website/public/docs/channels.*.md`.
+If you contribute a **new built-in channel**, add it to the registry and, if needed, a configurator so it appears in the Console and CLI. Document the new channel (auth, webhooks, etc.) in the project documentation.
 
 ---
 
@@ -151,7 +150,7 @@ If you contribute a **new built-in channel**, add it to the registry and, if nee
 - **Content:** Write clear, task-oriented instructions. Describe **when** the skill should be used and **how** (steps, commands, file formats). Avoid overly niche or personal workflows if targeting the **base** repository; those are great as custom or community Skills.
 - **Skills Hub:** DominusPrime supports importing skills from a community hub (e.g. ClawHub). If you want your skill to be installable via hub, follow the same `SKILL.md` + `references/`/`scripts/` layout and the hub’s packaging format.
 
-Examples of in-repo base skills: **cron**, **file_reader**, **news**, **pdf**, **docx**, **pptx**, **xlsx**, **browser_visible**. Contributing a new base skill usually means: add the directory under `agents/skills/`, add a short entry in the docs (e.g. Skills table in `website/public/docs/skills.*.md`), and ensure it syncs correctly to the working directory.
+Examples of in-repo base skills: **cron**, **file_reader**, **news**, **pdf**, **docx**, **pptx**, **xlsx**, **browser_visible**. Contributing a new base skill usually means: add the directory under `agents/skills/`, add a short entry in the docs, and ensure it syncs correctly to the working directory.
 
 #### Writing Effective Skill Descriptions
 
@@ -207,7 +206,7 @@ If you add or change platform support, please test on the affected OS and mentio
 ### Other Contributions
 
 - **MCP (Model Context Protocol):** DominusPrime supports runtime **MCP tool** discovery and hot-plug. Contributing new MCP servers or tools (or docs on how to attach them) helps users extend the agent without changing core code.
-- **Documentation:** Fixes and improvements to [the docs](https://DominusPrime.agentscope.io/) (under `website/public/docs/`) and README are always welcome.
+- **Documentation:** Fixes and improvements to the docs and README are always welcome.
 - **Bug fixes and refactors:** Small fixes, clearer error messages, and refactors that keep behavior the same are valuable. Prefer opening an issue for larger refactors so we can align on approach.
 - **Examples and workflows:** Tutorials or example workflows (e.g. “daily digest to DingTalk”, “local model + cron”) can be documented or linked from the repo/docs.
 - **Any other useful things!**

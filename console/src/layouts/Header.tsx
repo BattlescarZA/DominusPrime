@@ -68,6 +68,13 @@ export default function Header({ selectedKey, onMenuClick, isMobile }: HeaderPro
         </span>
       </div>
       <Space size={isMobile ? "small" : "middle"} className={styles.headerRight}>
+        <Tooltip title={isDarkMode ? "Light Mode" : "Dark Mode"}>
+          <Button
+            icon={isDarkMode ? <BulbFilled /> : <BulbOutlined />}
+            type="text"
+            onClick={toggleTheme}
+          />
+        </Tooltip>
         {!isMobile && (
           <>
             <Tooltip title={t("header.changelog")}>
@@ -107,13 +114,6 @@ export default function Header({ selectedKey, onMenuClick, isMobile }: HeaderPro
           >
             {!isMobile && t("header.github")}
           </Button>
-        </Tooltip>
-        <Tooltip title={isDarkMode ? "Light Mode" : "Dark Mode"}>
-          <Button
-            icon={isDarkMode ? <BulbFilled /> : <BulbOutlined />}
-            type="text"
-            onClick={toggleTheme}
-          />
         </Tooltip>
         <LanguageSwitcher />
       </Space>

@@ -12,6 +12,7 @@ import { LinkOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import type { FormInstance } from "antd";
 import { getChannelLabel, type ChannelKey } from "./constants";
+import { WhatsAppQRDisplay } from "./WhatsAppQRDisplay";
 import styles from "../index.module.less";
 
 interface ChannelDrawerProps {
@@ -505,6 +506,13 @@ export function ChannelDrawer({
           {isBuiltin
             ? renderBuiltinExtraFields(activeKey)
             : renderCustomExtraFields(initialValues)}
+
+          {activeKey === "whatsapp" && (
+            <WhatsAppQRDisplay
+              channelKey={activeKey}
+              enabled={Boolean(initialValues?.enabled)}
+            />
+          )}
 
           <Form.Item>
             <div className={styles.formActions}>

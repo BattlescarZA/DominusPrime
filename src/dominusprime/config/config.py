@@ -153,6 +153,49 @@ class AgentsDefaultsConfig(BaseModel):
     heartbeat: Optional[HeartbeatConfig] = None
 
 
+class MultiAgentConfig(BaseModel):
+    """Multi-agent spawning system configuration."""
+
+    enabled: bool = Field(
+        default=False,
+        description="Enable multi-agent spawning for complex tasks",
+    )
+    complexity_threshold: str = Field(
+        default="MODERATE",
+        description=(
+            "Minimum complexity to trigger delegation (SIMPLE/MODERATE/COMPLEX/VERY_COMPLEX)"
+        ),
+    )
+    max_concurrent_agents: int = Field(
+        default=5,
+        ge=1,
+        le=20,
+        description="Maximum number of sub-agents running concurrently",
+    )
+    max_subtasks: int = Field(
+        default=10,
+        ge=1,
+        le=50,
+        description="Maximum number of subtasks per decomposition",
+    )
+    default_subtask_timeout: int = Field(
+        default=300,
+        ge=10,
+        le=3600,
+        description="Default timeout for subtasks in seconds",
+    )
+    enable_parallel_execution: bool = Field(
+        default=True,
+        description="Allow parallel execution of independent subtasks",
+    )
+    communication_queue_size: int = Field(
+        default=1000,
+        ge=10,
+        le=10000,
+        description="Size of inter-agent message queues",
+    )
+
+
 class AgentsRunningConfig(BaseModel):
     """Agent runtime behavior configuration."""
 
@@ -169,6 +212,10 @@ class AgentsRunningConfig(BaseModel):
         description=(
             "Maximum input length (tokens) for the model context window"
         ),
+    )
+    multi_agent: MultiAgentConfig = Field(
+        default_factory=MultiAgentConfig,
+        description="Multi-agent spawning system configuration",
     )
 
 

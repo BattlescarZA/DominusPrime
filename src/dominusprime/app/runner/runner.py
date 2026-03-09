@@ -113,6 +113,7 @@ class AgentRunner(Runner):
             config = load_config()
             max_iters = config.agents.running.max_iters
             max_input_length = config.agents.running.max_input_length
+            multi_agent_config = config.agents.running.multi_agent
 
             agent = DominusPrimeAgent(
                 env_context=env_context,
@@ -120,6 +121,7 @@ class AgentRunner(Runner):
                 memory_manager=self.memory_manager,
                 max_iters=max_iters,
                 max_input_length=max_input_length,
+                multi_agent_config=multi_agent_config,
             )
             await agent.register_mcp_clients()
             agent.set_console_output_enabled(enabled=False)

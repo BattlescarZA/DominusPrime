@@ -20,6 +20,13 @@ from pydantic import BaseModel
 from .command_handler import CommandHandler
 from .hooks import BootstrapHook, MemoryCompactionHook
 from .model_factory import create_model_and_formatter
+from .multi_agent import (
+    AgentOrchestrator,
+    AgentPool,
+    TaskComplexityAnalyzer,
+    TaskDecomposer,
+    TaskComplexity,
+)
 from .prompt import build_system_prompt_from_working_dir
 from .skills_manager import (
     ensure_skills_initialized,
@@ -82,6 +89,7 @@ class DominusPrimeAgent(ReActAgent):
         max_iters: int = 50,
         max_input_length: int = 128 * 1024,  # 128K = 131072 tokens
         namesake_strategy: NamesakeStrategy = "skip",
+        multi_agent_config: Optional[Any] = None,
     ):
         """Initialize DominusPrimeAgent.
 
@@ -99,11 +107,13 @@ class DominusPrimeAgent(ReActAgent):
             namesake_strategy: Strategy to handle namesake tool functions.
                 Options: "override", "skip", "raise", "rename"
                 (default: "skip")
+            multi_agent_config: Optional multi-agent configuration
         """
         self._env_context = env_context
         self._max_input_length = max_input_length
         self._mcp_clients = mcp_clients or []
         self._namesake_strategy = namesake_strategy
+        self._multi_agent_config = multi_agent_config
 
         # Memory compaction threshold: configurable ratio of max_input_length
         self._memory_compact_threshold = int(
@@ -147,6 +157,9 @@ class DominusPrimeAgent(ReActAgent):
             memory_manager=self.memory_manager,
             enable_memory_manager=self._enable_memory_manager,
         )
+
+        # Setup multi-agent system
+        self._setup_multi_agent_system()
 
         # Register hooks
         self._register_hooks()
@@ -289,6 +302,49 @@ class DominusPrimeAgent(ReActAgent):
                 namesake_strategy=namesake_strategy,
             )
             logger.debug("Registered memory_search tool")
+
+    def _setup_multi_agent_system(self) -> None:
+        """Setup multi-agent system components if enabled."""
+        self.complexity_analyzer: Optional[TaskComplexityAnalyzer] = None
+        self.task_decomposer: Optional[TaskDecomposer] = None
+        self.orchestrator: Optional[AgentOrchestrator] = None
+        
+        # Check if multi-agent is enabled via config
+        if self._multi_agent_config is None:
+            config = load_config()
+            self._multi_agent_config = config.agents.running.multi_agent
+        
+        if not self._multi_agent_config.enabled:
+            logger.debug("Multi-agent system disabled")
+            return
+        
+        logger.info("Initializing multi-agent system")
+        
+        # Initialize complexity analyzer
+        self.complexity_analyzer = TaskComplexityAnalyzer()
+        
+        # Initialize task decomposer with model
+        self.task_decomposer = TaskDecomposer(
+            model=self.model,
+            complexity_analyzer=self.complexity_analyzer,
+        )
+        
+        # Initialize agent pool
+        agent_pool = AgentPool(
+            max_concurrent=self._multi_agent_config.max_concurrent_agents,
+        )
+        
+        # Initialize orchestrator
+        self.orchestrator = AgentOrchestrator(
+            agent_pool=agent_pool,
+            enable_parallel=self._multi_agent_config.enable_parallel_execution,
+        )
+        
+        logger.info(
+            "Multi-agent system initialized (threshold: %s, max_concurrent: %d)",
+            self._multi_agent_config.complexity_threshold,
+            self._multi_agent_config.max_concurrent_agents,
+        )
 
     def _register_hooks(self) -> None:
         """Register pre-reasoning hooks for bootstrap and memory compaction."""
@@ -553,8 +609,152 @@ class DominusPrimeAgent(ReActAgent):
             await self.print(msg)
             return msg
 
+        # Check if multi-agent delegation should be used
+        if await self._should_delegate_to_multi_agent(query):
+            logger.info("Delegating complex task to multi-agent system")
+            return await self._delegate_to_multi_agent(query, msg)
+
         # Normal message processing
         return await super().reply(msg=msg, structured_model=structured_model)
+
+    async def _should_delegate_to_multi_agent(
+        self,
+        query: Optional[str],
+    ) -> bool:
+        """Check if task should be delegated to multi-agent system.
+        
+        Args:
+            query: User query text
+            
+        Returns:
+            True if delegation is recommended
+        """
+        if not query or not self.complexity_analyzer or not self.task_decomposer:
+            return False
+        
+        # Analyze task complexity
+        context = [msg for msg, _ in self.memory.content[-5:]]  # Last 5 messages
+        complexity = self.complexity_analyzer.analyze(query, context)
+        
+        # Get threshold from config
+        threshold_str = self._multi_agent_config.complexity_threshold.upper()
+        threshold = TaskComplexity[threshold_str]
+        
+        # Check if complexity exceeds threshold
+        should_delegate = self.complexity_analyzer.should_delegate(
+            complexity,
+            threshold,
+        )
+        
+        if should_delegate:
+            explanation = self.complexity_analyzer.explain_complexity(
+                query,
+                complexity,
+                context,
+            )
+            logger.info(
+                "Task complexity: %s (threshold: %s)\nReason: %s",
+                complexity.value,
+                threshold.value,
+                explanation,
+            )
+        
+        return should_delegate
+
+    async def _delegate_to_multi_agent(
+        self,
+        query: str,
+        original_msg: Msg | list[Msg] | None,
+    ) -> Msg:
+        """Delegate task to multi-agent system.
+        
+        Args:
+            query: User query text
+            original_msg: Original message(s)
+            
+        Returns:
+            Response message with aggregated results
+        """
+        try:
+            # Get conversation context
+            context = [msg for msg, _ in self.memory.content[-10:]]
+            
+            # Decompose task into subtasks
+            subtasks = await self.task_decomposer.decompose(
+                query,
+                context=context,
+                max_subtasks=self._multi_agent_config.max_subtasks,
+            )
+            
+            logger.info("Decomposed task into %d subtasks", len(subtasks))
+            
+            # Inform user about delegation
+            delegation_msg = Msg(
+                name=self.name,
+                role="assistant",
+                content=(
+                    f"🤖 I've analyzed your request and will coordinate "
+                    f"{len(subtasks)} specialized sub-agents to handle this efficiently.\n\n"
+                    f"**Task Breakdown:**\n"
+                    + "\n".join([
+                        f"{i+1}. {task.description}"
+                        for i, task in enumerate(subtasks)
+                    ])
+                    + "\n\n*Processing...*"
+                ),
+            )
+            await self.print(delegation_msg)
+            
+            # Execute subtasks via orchestrator
+            aggregated_result = await self.orchestrator.execute_subtasks(subtasks)
+            
+            # Format results for user
+            result_content = "✅ **Multi-Agent Execution Complete**\n\n"
+            
+            if aggregated_result.success:
+                result_content += f"**Status:** Success ({aggregated_result.successful_count}/{aggregated_result.total_count} tasks completed)\n"
+                result_content += f"**Total Time:** {aggregated_result.total_time:.2f}s\n\n"
+                
+                result_content += "**Results:**\n"
+                for i, result in enumerate(aggregated_result.results):
+                    if result.output:
+                        result_content += f"\n{i+1}. {subtasks[i].description}\n"
+                        result_content += f"   → {result.output}\n"
+                
+                if aggregated_result.summary:
+                    result_content += f"\n**Summary:**\n{aggregated_result.summary}\n"
+            else:
+                result_content += f"**Status:** Partial Success ({aggregated_result.successful_count}/{aggregated_result.total_count} tasks completed)\n"
+                result_content += f"**Total Time:** {aggregated_result.total_time:.2f}s\n\n"
+                
+                if aggregated_result.errors:
+                    result_content += "**Errors:**\n"
+                    for error in aggregated_result.errors[:5]:  # Limit to 5 errors
+                        result_content += f"- {error}\n"
+            
+            response_msg = Msg(
+                name=self.name,
+                role="assistant",
+                content=result_content,
+            )
+            
+            return response_msg
+            
+        except Exception as e:
+            logger.exception("Multi-agent delegation failed: %s", e)
+            
+            # Fall back to normal processing
+            error_msg = Msg(
+                name=self.name,
+                role="assistant",
+                content=(
+                    f"⚠️ Multi-agent coordination encountered an error: {e}\n\n"
+                    f"Falling back to standard processing..."
+                ),
+            )
+            await self.print(error_msg)
+            
+            return await super().reply(msg=original_msg)
 
     async def interrupt(self, msg: Msg | list[Msg] | None = None) -> None:
         """Interrupt the current reply process and wait for cleanup."""

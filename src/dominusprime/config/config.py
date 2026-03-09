@@ -88,6 +88,31 @@ class TelegramConfig(BaseChannelConfig):
     deny_message: str = ""
 
 
+class WhatsAppConfig(BaseChannelConfig):
+    """WhatsApp channel: QR code authentication (like WhatsApp Web).
+
+    Security / allowlist:
+        dm_policy    - "open" (default) or "allowlist" for direct messages
+        group_policy - "open" (default) or "allowlist" for group messages
+        allow_from   - list of sender IDs allowed when policy is "allowlist"
+        deny_message - custom message shown to unauthorized users
+    
+    Storage:
+        session_dir  - directory to store session data (auth credentials)
+        media_dir    - directory to store received media files
+    """
+
+    session_dir: str = "~/.dominusprime/whatsapp/session"
+    media_dir: str = "~/.dominusprime/media/whatsapp"
+    show_typing: Optional[bool] = None
+    dm_policy: Literal["open", "allowlist"] = "open"
+    group_policy: Literal["open", "allowlist"] = "open"
+    allow_from: List[str] = Field(default_factory=list)
+    deny_message: str = ""
+    max_retries: int = 3
+    retry_delay: int = 5
+
+
 class ConsoleConfig(BaseChannelConfig):
     """Console channel: prints agent responses to stdout."""
 
@@ -119,6 +144,7 @@ class ChannelConfig(BaseModel):
     feishu: FeishuConfig = FeishuConfig()
     qq: QQConfig = QQConfig()
     telegram: TelegramConfig = TelegramConfig()
+    whatsapp: WhatsAppConfig = WhatsAppConfig()
     console: ConsoleConfig = ConsoleConfig()
     voice: VoiceChannelConfig = VoiceChannelConfig()
 

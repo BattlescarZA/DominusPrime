@@ -1,7 +1,9 @@
 import { createGlobalStyle } from "antd-style";
 import { ConfigProvider, bailianTheme } from "@agentscope-ai/design";
 import { BrowserRouter } from "react-router-dom";
+import { theme } from "antd";
 import MainLayout from "./layouts/MainLayout";
+import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import "./styles/layout.css";
 import "./styles/form-override.css";
 
@@ -12,13 +14,31 @@ const GlobalStyle = createGlobalStyle`
 }
 `;
 
+function AppContent() {
+  const { isDarkMode } = useTheme();
+
+  return (
+    <ConfigProvider
+      {...bailianTheme}
+      prefix="copaw"
+      prefixCls="copaw"
+      theme={{
+        ...bailianTheme.theme,
+        algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
+      }}
+    >
+      <MainLayout />
+    </ConfigProvider>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
-      <GlobalStyle />
-      <ConfigProvider {...bailianTheme} prefix="copaw" prefixCls="copaw">
-        <MainLayout />
-      </ConfigProvider>
+      <ThemeProvider>
+        <GlobalStyle />
+        <AppContent />
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

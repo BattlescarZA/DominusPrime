@@ -1,0 +1,105 @@
+/* Dark Mode Styles */
+.dark-mode {
+  color-scheme: dark;
+}
+
+/* Enhance dark mode for better visibility */
+.dark-mode body {
+  background-color: #141414;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Code blocks in dark mode */
+.dark-mode pre,
+.dark-mode code {
+  background-color: #1f1f1f;
+  border-color: #303030;
+}
+
+/* Cards and panels */
+.dark-mode .ant-card,
+.dark-mode .copaw-card {
+  background-color: #1f1f1f;
+  border-color: #303030;
+}
+
+/* Tables */
+.dark-mode .ant-table,
+.dark-mode .copaw-table {
+  background-color: #1f1f1f;
+}
+
+.dark-mode .ant-table-thead > tr > th,
+.dark-mode .copaw-table-thead > tr > th {
+  background-color: #262626;
+  border-color: #303030;
+}
+
+/* Modals and Drawers */
+.dark-mode .ant-modal-content,
+.dark-mode .copaw-modal-content,
+.dark-mode .ant-drawer-content,
+.dark-mode .copaw-drawer-content {
+  background-color: #1f1f1f;
+}
+
+/* Forms */
+.dark-mode .ant-input,
+.dark-mode .copaw-input,
+.dark-mode .ant-select-selector,
+.dark-mode .copaw-select-selector {
+  background-color: #1f1f1f;
+  border-color: #434343;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dark-mode .ant-input:hover,
+.dark-mode .copaw-input:hover,
+.dark-mode .ant-select-selector:hover,
+.dark-mode .copaw-select-selector:hover {
+  border-color: #4d4d4d;
+}
+
+/* Dividers */
+.dark-mode .ant-divider,
+.dark-mode .copaw-divider {
+  border-color: #303030;
+}
+
+/* Scrollbars */
+.dark-mode ::-webkit-scrollbar-track {
+  background: #1f1f1f;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background: #434343;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: #4d4d4d;
+}
+
+/* Alerts */
+.dark-mode .ant-alert-info,
+.dark-mode .copaw-alert-info {
+  background-color: #111b26;
+  border-color: #153450;
+}
+
+.dark-mode .ant-alert-success,
+.dark-mode .copaw-alert-success {
+  background-color: #162312;
+  border-color: #274916;
+}
+
+.dark-mode .ant-alert-warning,
+.dark-mode .copaw-alert-warning {
+  background-color: #2b2111;
+  border-color: #594214;
+}
+
+.dark-mode .ant-alert-error,
+.dark-mode .copaw-alert-error {
+  background-color: #2c1618;
+  border-color: #58181c;
+}

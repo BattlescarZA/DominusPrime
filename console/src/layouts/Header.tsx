@@ -1,5 +1,5 @@
 import { Layout, Space } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+import { MenuOutlined, BulbOutlined, BulbFilled } from "@ant-design/icons";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import {
@@ -9,6 +9,7 @@ import {
   GithubOutlined,
 } from "@ant-design/icons";
 import { Button, Tooltip } from "@agentscope-ai/design";
+import { useTheme } from "../contexts/ThemeContext";
 import styles from "./index.module.less";
 
 const { Header: AntHeader } = Layout;
@@ -43,6 +44,7 @@ interface HeaderProps {
 
 export default function Header({ selectedKey, onMenuClick, isMobile }: HeaderProps) {
   const { t } = useTranslation();
+  const { isDarkMode, toggleTheme } = useTheme();
 
   const handleNavClick = (url: string) => {
     if (url) {
@@ -105,6 +107,13 @@ export default function Header({ selectedKey, onMenuClick, isMobile }: HeaderPro
           >
             {!isMobile && t("header.github")}
           </Button>
+        </Tooltip>
+        <Tooltip title={isDarkMode ? "Light Mode" : "Dark Mode"}>
+          <Button
+            icon={isDarkMode ? <BulbFilled /> : <BulbOutlined />}
+            type="text"
+            onClick={toggleTheme}
+          />
         </Tooltip>
         <LanguageSwitcher />
       </Space>

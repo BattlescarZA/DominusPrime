@@ -50,7 +50,7 @@ def _execute_subprocess_sync(
             timeout=timeout,
             encoding=locale.getpreferredencoding(False) or "utf-8",
             errors="replace",
-            check=True,
+            check=False,  # Don't raise exception on non-zero exit codes
         )
         return (
             result.returncode,
@@ -63,8 +63,15 @@ def _execute_subprocess_sync(
             "",
             f"Command execution exceeded the timeout of {timeout} seconds.",
         )
+    except subprocess.CalledProcessError as e:
+        # Handle command failures gracefully
+        return (
+            e.returncode,
+            e.stdout.strip("\n") if e.stdout else "",
+            e.stderr.strip("\n") if e.stderr else str(e),
+        )
     except Exception as e:
-        return -1, "", str(e)
+        return -1, "", f"Unexpected error: {str(e)}"
 
 
 # pylint: disable=too-many-branches, too-many-statements

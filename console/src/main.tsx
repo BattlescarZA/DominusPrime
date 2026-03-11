@@ -4,6 +4,8 @@ import "./i18n";
 import "./styles/layout.css";
 import "./styles/mobile.css";
 import "./styles/dark-mode.css";
+import "./styles/dark-mode-premium.css";
+import "./styles/dark-mode-refined.css";
 
 if (typeof window !== "undefined") {
   const originalError = console.error;

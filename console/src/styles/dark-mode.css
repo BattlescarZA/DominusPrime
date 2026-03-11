@@ -1,169 +1,897 @@
-/* Dark Mode Styles - Black and Gold Theme */
+/* Dark Mode Styles - Premium Black and Gold Theme */
 .dark-mode {
   color-scheme: dark;
   --primary-gold: #FFD700;
   --dark-gold: #B8860B;
   --light-gold: #FFF8DC;
+  --pale-gold: #FAFAD2;
+  --accent-gold: #F4C430;
   --black-bg: #000000;
   --dark-bg: #0a0a0a;
-  --card-bg: #121212;
-  --border-color: #2a2a2a;
+  --card-bg: #0f0f0f;
+  --elevated-bg: #1a1a1a;
+  --panel-bg: #141414;
+  --border-gold: #DAA520;
+  --hover-gold: #FFC700;
+  --shadow-gold: rgba(255, 215, 0, 0.15);
+  --shadow-dark: rgba(0, 0, 0, 0.8);
+  --shadow-deep: rgba(0, 0, 0, 0.95);
+  --gradient-gold: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+  --gradient-gold-intense: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(184, 134, 11, 0.1) 100%);
+  --gradient-radial: radial-gradient(circle at center, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+  --glow-gold: 0 0 20px rgba(255, 215, 0, 0.3);
+  --glow-gold-intense: 0 0 30px rgba(255, 215, 0, 0.5);
+  --glow-subtle: 0 0 10px rgba(255, 215, 0, 0.15);
 }
 
-/* Enhance dark mode with black and gold */
-.dark-mode body {
-  background-color: var(--black-bg);
+/* Global dark mode styling with premium backdrop */
+.dark-mode,
+.dark-mode body,
+.dark-mode #root {
+  background: radial-gradient(ellipse at top, var(--dark-bg) 0%, var(--black-bg) 50%, var(--black-bg) 100%) !important;
+  color: var(--light-gold) !important;
+  min-height: 100vh;
+}
+
+/* All text should be gold with better contrast */
+.dark-mode *:not(.ant-btn-primary):not(.copaw-btn-primary) {
   color: var(--light-gold);
 }
 
-/* Code blocks in dark mode */
-.dark-mode pre,
-.dark-mode code {
-  background-color: var(--dark-bg);
-  border-color: var(--border-color);
-  color: var(--light-gold);
+/* Headings with elegant glow */
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+  color: var(--primary-gold) !important;
+  font-weight: 600 !important;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.25) !important;
+  letter-spacing: 0.5px !important;
 }
 
-/* Cards and panels */
+/* Logo styling - ensure it displays with premium presentation */
+.dark-mode img[alt="DominusPrime"],
+.dark-mode img[src*="logo"],
+.dark-mode img[src*="dominus"] {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2), 0 0 40px rgba(255, 215, 0, 0.1) !important;
+  border: 2px solid var(--border-gold) !important;
+  transition: all 0.3s ease !important;
+  background: var(--gradient-gold) !important;
+  padding: 4px !important;
+}
+
+.dark-mode img[alt="DominusPrime"]:hover,
+.dark-mode img[src*="logo"]:hover {
+  box-shadow: 0 6px 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.15) !important;
+  transform: scale(1.02) !important;
+  border-color: var(--hover-gold) !important;
+}
+
+/* Main content areas */
+.dark-mode .page-container,
+.dark-mode .page-content,
+.dark-mode .ant-layout,
+.dark-mode .ant-layout-content {
+  background-color: var(--black-bg) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Cards and panels - black background with gold borders and luxurious shadows */
 .dark-mode .ant-card,
-.dark-mode .copaw-card {
-  background-color: var(--card-bg);
-  border-color: var(--dark-gold);
+.dark-mode .copaw-card,
+.dark-mode .ant-card-body,
+.dark-mode .copaw-card-body {
+  background: var(--gradient-gold), var(--black-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+  box-shadow: var(--glow-gold), 0 4px 16px var(--shadow-dark) !important;
+  transition: all 0.3s ease !important;
+}
+
+.dark-mode .ant-card:hover,
+.dark-mode .copaw-card:hover {
+  border-color: var(--hover-gold) !important;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.4), 0 8px 24px var(--shadow-dark) !important;
+  transform: translateY(-2px) !important;
+}
+
+.dark-mode .ant-card-head,
+.dark-mode .copaw-card-head {
+  background: linear-gradient(135deg, var(--dark-bg) 0%, var(--elevated-bg) 100%) !important;
+  border-bottom: 1px solid var(--border-gold) !important;
+  color: var(--primary-gold) !important;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3) !important;
+}
+
+/* Sidebar and Menu - Luxurious gradient background */
+.dark-mode .ant-layout-sider,
+.dark-mode .ant-menu,
+.dark-mode .copaw-menu {
+  background: linear-gradient(180deg, var(--black-bg) 0%, var(--dark-bg) 50%, var(--black-bg) 100%) !important;
+  border-right: 2px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5), inset -1px 0 30px rgba(255, 215, 0, 0.05) !important;
+}
+
+.dark-mode .ant-menu-item,
+.dark-mode .copaw-menu-item {
+  color: var(--light-gold) !important;
+  transition: all 0.3s ease !important;
+}
+
+.dark-mode .ant-menu-item-selected,
+.dark-mode .copaw-menu-item-selected {
+  background: var(--gradient-gold) !important;
+  color: var(--primary-gold) !important;
+  border-left: 3px solid var(--primary-gold) !important;
+  box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.2) !important;
+  font-weight: 600 !important;
+}
+
+.dark-mode .ant-menu-item:hover,
+.dark-mode .copaw-menu-item:hover {
+  color: var(--hover-gold) !important;
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.1) 0%, transparent 100%) !important;
+  box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.1) !important;
+}
+
+/* Header - Enhanced with gradient and glow */
+.dark-mode .ant-layout-header,
+.dark-mode header {
+  background: linear-gradient(180deg, var(--black-bg) 0%, var(--dark-bg) 100%) !important;
+  border-bottom: 2px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.1) !important;
 }
 
 /* Tables */
 .dark-mode .ant-table,
-.dark-mode .copaw-table {
-  background-color: var(--card-bg);
-  color: var(--light-gold);
+.dark-mode .copaw-table,
+.dark-mode .ant-table-wrapper {
+  background-color: var(--black-bg) !important;
+  color: var(--light-gold) !important;
 }
 
 .dark-mode .ant-table-thead > tr > th,
 .dark-mode .copaw-table-thead > tr > th {
-  background-color: var(--dark-bg);
-  border-color: var(--dark-gold);
-  color: var(--primary-gold);
+  background-color: var(--dark-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--primary-gold) !important;
+  font-weight: bold;
 }
 
-/* Modals and Drawers */
-.dark-mode .ant-modal-content,
-.dark-mode .copaw-modal-content,
-.dark-mode .ant-drawer-content,
-.dark-mode .copaw-drawer-content {
-  background-color: var(--card-bg);
-  color: var(--light-gold);
+.dark-mode .ant-table-tbody > tr > td,
+.dark-mode .copaw-table-tbody > tr > td {
+  background-color: var(--black-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
 }
 
-/* Forms */
+.dark-mode .ant-table-tbody > tr:hover > td,
+.dark-mode .copaw-table-tbody > tr:hover > td {
+  background-color: rgba(255, 215, 0, 0.05) !important;
+}
+
+/* Forms - Enhanced with glow effects and gradients */
 .dark-mode .ant-input,
 .dark-mode .copaw-input,
+.dark-mode .ant-input-number,
 .dark-mode .ant-select-selector,
-.dark-mode .copaw-select-selector {
-  background-color: var(--dark-bg);
-  border-color: var(--dark-gold);
-  color: var(--light-gold);
+.dark-mode .copaw-select-selector,
+.dark-mode .ant-picker,
+.dark-mode textarea {
+  background-color: var(--black-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+  transition: all 0.3s ease !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .ant-input::placeholder,
+.dark-mode textarea::placeholder {
+  color: var(--dark-gold) !important;
+  opacity: 0.6;
 }
 
 .dark-mode .ant-input:hover,
 .dark-mode .copaw-input:hover,
 .dark-mode .ant-select-selector:hover,
 .dark-mode .copaw-select-selector:hover {
-  border-color: var(--primary-gold);
+  border-color: var(--hover-gold) !important;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
 }
 
 .dark-mode .ant-input:focus,
 .dark-mode .copaw-input:focus,
 .dark-mode .ant-select-selector:focus,
-.dark-mode .copaw-select-selector:focus {
-  border-color: var(--primary-gold);
-  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+.dark-mode .copaw-select-selector:focus,
+.dark-mode .ant-input-focused,
+.dark-mode .ant-select-focused .ant-select-selector {
+  border-color: var(--primary-gold) !important;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), 0 0 0 3px rgba(255, 215, 0, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  background: linear-gradient(180deg, var(--black-bg) 0%, var(--dark-bg) 100%) !important;
 }
 
-/* Buttons */
+.dark-mode .ant-input-affix-wrapper {
+  background-color: var(--black-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  transition: all 0.3s ease !important;
+}
+
+.dark-mode .ant-input-affix-wrapper:hover,
+.dark-mode .ant-input-affix-wrapper-focused {
+  border-color: var(--primary-gold) !important;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.25) !important;
+}
+
+/* Dropdowns and Select */
+.dark-mode .ant-select-dropdown,
+.dark-mode .ant-dropdown-menu {
+  background-color: var(--dark-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+}
+
+.dark-mode .ant-select-item,
+.dark-mode .ant-dropdown-menu-item {
+  color: var(--light-gold) !important;
+}
+
+.dark-mode .ant-select-item-option-selected,
+.dark-mode .ant-dropdown-menu-item-selected {
+  background-color: rgba(255, 215, 0, 0.15) !important;
+  color: var(--primary-gold) !important;
+}
+
+.dark-mode .ant-select-item:hover,
+.dark-mode .ant-dropdown-menu-item:hover {
+  background-color: rgba(255, 215, 0, 0.1) !important;
+  color: var(--hover-gold) !important;
+}
+
+/* Buttons - Enhanced with gradients and glow effects */
+.dark-mode .ant-btn,
+.dark-mode .copaw-btn {
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
 .dark-mode .ant-btn-primary,
 .dark-mode .copaw-btn-primary {
-  background-color: var(--primary-gold);
-  border-color: var(--primary-gold);
-  color: var(--black-bg);
+  background: linear-gradient(135deg, var(--primary-gold) 0%, var(--dark-gold) 100%) !important;
+  border-color: var(--primary-gold) !important;
+  color: var(--black-bg) !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3), 0 2px 8px var(--shadow-dark) !important;
 }
 
 .dark-mode .ant-btn-primary:hover,
 .dark-mode .copaw-btn-primary:hover {
-  background-color: var(--dark-gold);
-  border-color: var(--dark-gold);
+  background: linear-gradient(135deg, var(--hover-gold) 0%, var(--primary-gold) 100%) !important;
+  border-color: var(--hover-gold) !important;
+  color: var(--black-bg) !important;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 4px 16px var(--shadow-dark) !important;
+  transform: translateY(-2px) !important;
+}
+
+.dark-mode .ant-btn-default,
+.dark-mode .ant-btn-text {
+  background-color: transparent !important;
+  color: var(--light-gold) !important;
+}
+
+.dark-mode .ant-btn-default:hover,
+.dark-mode .ant-btn-text:hover {
+  background: var(--gradient-gold) !important;
+  border-color: var(--hover-gold) !important;
+  color: var(--hover-gold) !important;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2) !important;
+}
+
+/* Modals and Drawers - Luxurious with shadows and gradients */
+.dark-mode .ant-modal-content,
+.dark-mode .copaw-modal-content,
+.dark-mode .ant-drawer-content,
+.dark-mode .copaw-drawer-content {
+  background: var(--gradient-gold), var(--black-bg) !important;
+  border: 2px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.3), 0 20px 60px var(--shadow-dark) !important;
+}
+
+.dark-mode .ant-modal-header,
+.dark-mode .copaw-modal-header,
+.dark-mode .ant-drawer-header,
+.dark-mode .copaw-drawer-header {
+  background: linear-gradient(135deg, var(--dark-bg) 0%, var(--elevated-bg) 100%) !important;
+  border-bottom: 2px solid var(--border-gold) !important;
+  color: var(--primary-gold) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark-mode .ant-modal-title,
+.dark-mode .ant-drawer-title {
+  color: var(--primary-gold) !important;
+  font-weight: 600 !important;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3) !important;
+}
+
+.dark-mode .ant-modal-footer,
+.dark-mode .ant-drawer-footer {
+  background-color: var(--dark-bg) !important;
+  border-top: 1px solid var(--border-gold) !important;
+}
+
+/* Alerts - with gold borders */
+.dark-mode .ant-alert,
+.dark-mode .copaw-alert {
+  background-color: var(--dark-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+}
+
+.dark-mode .ant-alert-info {
+  background-color: rgba(255, 215, 0, 0.1) !important;
+  border-color: var(--dark-gold) !important;
+}
+
+.dark-mode .ant-alert-warning {
+  background-color: rgba(255, 215, 0, 0.15) !important;
+  border-color: var(--primary-gold) !important;
+}
+
+.dark-mode .ant-alert-success {
+  background-color: rgba(184, 134, 11, 0.15) !important;
+  border-color: var(--dark-gold) !important;
+}
+
+.dark-mode .ant-alert-error {
+  background-color: rgba(139, 0, 0, 0.2) !important;
+  border-color: #8B0000 !important;
+  color: #FFB6C1 !important;
 }
 
 /* Dividers */
 .dark-mode .ant-divider,
-.dark-mode .copaw-divider {
-  border-color: var(--dark-gold);
+.dark-mode .copaw-divider,
+.dark-mode hr {
+  border-color: var(--border-gold) !important;
+  background-color: var(--border-gold) !important;
+}
+
+/* Tabs */
+.dark-mode .ant-tabs,
+.dark-mode .copaw-tabs {
+  color: var(--light-gold) !important;
+}
+
+.dark-mode .ant-tabs-tab {
+  color: var(--light-gold) !important;
+}
+
+.dark-mode .ant-tabs-tab-active {
+  color: var(--primary-gold) !important;
+}
+
+.dark-mode .ant-tabs-tab:hover {
+  color: var(--hover-gold) !important;
+}
+
+.dark-mode .ant-tabs-ink-bar {
+  background-color: var(--primary-gold) !important;
+}
+
+.dark-mode .ant-tabs-nav {
+  border-bottom: 1px solid var(--border-gold) !important;
+}
+
+/* Code blocks */
+.dark-mode pre,
+.dark-mode code {
+  background-color: var(--dark-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Lists */
+.dark-mode .ant-list,
+.dark-mode .ant-list-item {
+  background-color: var(--black-bg) !important;
+  border-color: var(--border-gold) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Tooltips */
+.dark-mode .ant-tooltip-inner {
+  background-color: var(--dark-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--primary-gold) !important;
+}
+
+.dark-mode .ant-tooltip-arrow-content {
+  background-color: var(--dark-bg) !important;
+}
+
+/* Popover */
+.dark-mode .ant-popover-inner,
+.dark-mode .ant-popover-content {
+  background-color: var(--dark-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
 }
 
 /* Scrollbars */
+.dark-mode ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
 .dark-mode ::-webkit-scrollbar-track {
-  background: var(--dark-bg);
+  background: var(--dark-bg) !important;
+  border: 1px solid var(--border-gold);
 }
 
 .dark-mode ::-webkit-scrollbar-thumb {
-  background: var(--dark-gold);
+  background: var(--dark-gold) !important;
+  border-radius: 5px;
 }
 
 .dark-mode ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-gold);
+  background: var(--primary-gold) !important;
 }
 
-/* Links and text emphasis */
+/* Links */
 .dark-mode a {
-  color: var(--primary-gold);
+  color: var(--primary-gold) !important;
 }
 
 .dark-mode a:hover {
-  color: var(--light-gold);
+  color: var(--hover-gold) !important;
 }
 
-/* Alerts */
-.dark-mode .ant-alert-info,
-.dark-mode .copaw-alert-info {
-  background-color: rgba(255, 215, 0, 0.1);
-  border-color: var(--dark-gold);
-  color: var(--light-gold);
+/* Badges and Tags */
+.dark-mode .ant-badge {
+  color: var(--light-gold) !important;
 }
 
-.dark-mode .ant-alert-success,
-.dark-mode .copaw-alert-success {
-  background-color: rgba(184, 134, 11, 0.15);
-  border-color: var(--dark-gold);
-  color: var(--light-gold);
+.dark-mode .ant-tag {
+  background-color: var(--dark-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
 }
 
-.dark-mode .ant-alert-warning,
-.dark-mode .copaw-alert-warning {
-  background-color: rgba(255, 215, 0, 0.15);
-  border-color: var(--primary-gold);
-  color: var(--primary-gold);
+/* Progress bars */
+.dark-mode .ant-progress-bg {
+  background-color: var(--primary-gold) !important;
 }
 
-.dark-mode .ant-alert-error,
-.dark-mode .copaw-alert-error {
-  background-color: rgba(139, 0, 0, 0.2);
-  border-color: #8B0000;
-  color: #FFB6C1;
+.dark-mode .ant-progress-outer {
+  background-color: var(--dark-bg) !important;
 }
 
-/* Menu and navigation */
-.dark-mode .ant-menu,
-.dark-mode .copaw-menu {
-  background-color: var(--card-bg);
-  color: var(--light-gold);
+/* Spin/Loading */
+.dark-mode .ant-spin-dot-item {
+  background-color: var(--primary-gold) !important;
 }
 
-.dark-mode .ant-menu-item-selected,
-.dark-mode .copaw-menu-item-selected {
-  background-color: rgba(255, 215, 0, 0.1);
-  color: var(--primary-gold);
+/* Empty state */
+.dark-mode .ant-empty-description {
+  color: var(--light-gold) !important;
 }
 
-.dark-mode .ant-menu-item:hover,
-.dark-mode .copaw-menu-item:hover {
-  color: var(--primary-gold);
+/* Collapse/Accordion */
+.dark-mode .ant-collapse,
+.dark-mode .ant-collapse-item {
+  background-color: var(--black-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+}
+
+.dark-mode .ant-collapse-header {
+  color: var(--primary-gold) !important;
+}
+
+.dark-mode .ant-collapse-content {
+  background-color: var(--black-bg) !important;
+  border-top: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Steps */
+.dark-mode .ant-steps-item-title,
+.dark-mode .ant-steps-item-description {
+  color: var(--light-gold) !important;
+}
+
+.dark-mode .ant-steps-item-finish .ant-steps-item-icon {
+  border-color: var(--primary-gold) !important;
+  background-color: var(--primary-gold) !important;
+}
+
+/* Form labels */
+.dark-mode .ant-form-item-label > label {
+  color: var(--primary-gold) !important;
+}
+
+/* Checkboxes and Radio */
+.dark-mode .ant-checkbox-inner,
+.dark-mode .ant-radio-inner {
+  background-color: var(--black-bg) !important;
+  border-color: var(--border-gold) !important;
+}
+
+.dark-mode .ant-checkbox-checked .ant-checkbox-inner,
+.dark-mode .ant-radio-checked .ant-radio-inner {
+  background-color: var(--primary-gold) !important;
+  border-color: var(--primary-gold) !important;
+}
+
+/* Switch */
+.dark-mode .ant-switch {
+  background-color: var(--dark-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+}
+
+.dark-mode .ant-switch-checked {
+  background-color: var(--primary-gold) !important;
+}
+
+/* Pagination */
+.dark-mode .ant-pagination-item {
+  background-color: var(--black-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+}
+
+.dark-mode .ant-pagination-item a {
+  color: var(--light-gold) !important;
+}
+
+.dark-mode .ant-pagination-item-active {
+  border-color: var(--primary-gold) !important;
+  background-color: rgba(255, 215, 0, 0.15) !important;
+}
+
+.dark-mode .ant-pagination-item-active a {
+  color: var(--primary-gold) !important;
+}
+
+/* Tree */
+.dark-mode .ant-tree {
+  background-color: var(--black-bg) !important;
+  color: var(--light-gold) !important;
+}
+
+.dark-mode .ant-tree-node-content-wrapper {
+  color: var(--light-gold) !important;
+}
+
+.dark-mode .ant-tree-node-selected {
+  background-color: rgba(255, 215, 0, 0.15) !important;
+  color: var(--primary-gold) !important;
+}
+
+/* Timeline */
+.dark-mode .ant-timeline-item-content {
+  color: var(--light-gold) !important;
+}
+
+.dark-mode .ant-timeline-item-head {
+  background-color: var(--primary-gold) !important;
+  border-color: var(--primary-gold) !important;
+}
+
+/* Message content areas */
+.dark-mode .message-content,
+.dark-mode .chat-message,
+.dark-mode .response-content {
+  background-color: var(--black-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Chat panels and work areas - CRITICAL FOR MAIN CONTENT AREA */
+.dark-mode .chat-panel,
+.dark-mode .work-panel,
+.dark-mode .chat-list,
+.dark-mode .chat-sidebar,
+.dark-mode .main-panel,
+.dark-mode .content-panel,
+.dark-mode .work-area {
+  background-color: var(--black-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Specific panel sections and containers */
+.dark-mode section,
+.dark-mode .section,
+.dark-mode .panel,
+.dark-mode .container,
+.dark-mode article {
+  background-color: var(--black-bg) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Force black background on all layout wrappers */
+.dark-mode .ant-layout,
+.dark-mode .ant-layout-content,
+.dark-mode .ant-layout-sider,
+.dark-mode .ant-layout-header,
+.dark-mode .ant-layout-footer {
+  background-color: var(--black-bg) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Text color overrides for readability */
+.dark-mode p,
+.dark-mode span:not(.ant-btn-primary span),
+.dark-mode div:not(.ant-btn-primary):not(.ant-progress-bg),
+.dark-mode label,
+.dark-mode li {
+  color: var(--light-gold) !important;
+}
+
+.dark-mode strong,
+.dark-mode b {
+  color: var(--primary-gold) !important;
+  font-weight: bold;
+}
+
+/* Panel titles and headers */
+.dark-mode .panel-title,
+.dark-mode .section-title,
+.dark-mode .header-title,
+.dark-mode .title {
+  color: var(--primary-gold) !important;
+  font-weight: bold;
+}
+
+/* List items in chat/navigation */
+.dark-mode .ant-list-item {
+  background-color: var(--black-bg) !important;
+  border-bottom: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+}
+
+.dark-mode .ant-list-item:hover {
+  background-color: rgba(255, 215, 0, 0.05) !important;
+}
+
+/* Space and Row components */
+.dark-mode .ant-space,
+.dark-mode .ant-row,
+.dark-mode .ant-col {
+  color: var(--light-gold) !important;
+}
+
+/* Ensure all root level divs have black background */
+.dark-mode > div,
+.dark-mode .ant-app,
+.dark-mode #root {
+  background-color: var(--black-bg) !important;
+}
+
+/* Override any white or light backgrounds */
+.dark-mode [style*="background: white"],
+.dark-mode [style*="background-color: white"],
+.dark-mode [style*="background: #fff"],
+.dark-mode [style*="background-color: #fff"] {
+  background-color: var(--black-bg) !important;
+}
+
+/* Markdown content styling */
+.dark-mode .markdown-body,
+.dark-mode .markdown,
+.dark-mode .md-content {
+  background-color: var(--black-bg) !important;
+  color: var(--light-gold) !important;
+}
+
+.dark-mode .markdown-body h1,
+.dark-mode .markdown-body h2,
+.dark-mode .markdown-body h3,
+.dark-mode .markdown h1,
+.dark-mode .markdown h2,
+.dark-mode .markdown h3 {
+  color: var(--primary-gold) !important;
+  border-bottom-color: var(--border-gold) !important;
+}
+
+.dark-mode .markdown-body blockquote,
+.dark-mode .markdown blockquote {
+  border-left-color: var(--border-gold) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Text areas and content sections */
+.dark-mode textarea,
+.dark-mode .text-area,
+.dark-mode .content-area {
+  background-color: var(--black-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Grid and flex layouts */
+.dark-mode .grid,
+.dark-mode .flex,
+.dark-mode .flex-container {
+  background-color: var(--black-bg) !important;
+}
+
+/* Ensure buttons within panels maintain proper styling */
+.dark-mode .ant-btn:not(.ant-btn-primary) {
+  background-color: transparent !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+}
+
+.dark-mode .ant-btn:not(.ant-btn-primary):hover {
+  background-color: rgba(255, 215, 0, 0.1) !important;
+  border-color: var(--hover-gold) !important;
+  color: var(--hover-gold) !important;
+}
+
+/* AgentScope / Copaw / Bailian Components - Force dark backgrounds */
+.dark-mode [class*="agentscope"],
+.dark-mode [class*="copaw"],
+.dark-mode [class*="bailian"] {
+  background-color: var(--black-bg) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Chat UI specific components */
+.dark-mode [class*="chat-"],
+.dark-mode [class*="Chat"],
+.dark-mode [class*="message-"],
+.dark-mode [class*="Message"] {
+  background-color: var(--black-bg) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Page wrapper elements */
+.dark-mode [class*="page"],
+.dark-mode [class*="Page"],
+.dark-mode [class*="wrapper"],
+.dark-mode [class*="Wrapper"],
+.dark-mode [class*="container"],
+.dark-mode [class*="Container"] {
+  background-color: var(--black-bg) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Layout components */
+.dark-mode [class*="layout"],
+.dark-mode [class*="Layout"],
+.dark-mode [class*="main"],
+.dark-mode [class*="Main"] {
+  background-color: var(--black-bg) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Sidebar components */
+.dark-mode [class*="sidebar"],
+.dark-mode [class*="Sidebar"],
+.dark-mode [class*="sider"],
+.dark-mode [class*="Sider"] {
+  background-color: var(--black-bg) !important;
+  border-right: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Content areas */
+.dark-mode [class*="content"],
+.dark-mode [class*="Content"],
+.dark-mode [class*="body"],
+.dark-mode [class*="Body"] {
+  background-color: var(--black-bg) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Work/Workspace areas */
+.dark-mode [class*="work"],
+.dark-mode [class*="Work"],
+.dark-mode [class*="workspace"],
+.dark-mode [class*="Workspace"] {
+  background-color: var(--black-bg) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Universal div background override - LAST RESORT */
+.dark-mode div:not([class*="ant-btn"]):not([class*="ant-switch"]):not([class*="ant-progress"]):not([class*="ant-badge"]):not([class*="copaw-btn"]) {
+  background-color: inherit;
+}
+
+/* Force all direct children of dark-mode to have black background */
+.dark-mode > div,
+.dark-mode .page-container > div,
+.dark-mode .ant-layout > div {
+  background-color: var(--black-bg) !important;
+}
+
+/* Specific override for any remaining white backgrounds */
+.dark-mode * {
+  scrollbar-color: var(--dark-gold) var(--dark-bg) !important;
+}
+
+/* AgentScope Chat component specific */
+.dark-mode .agentscope-chat,
+.dark-mode .copaw-chat,
+.dark-mode .bailian-chat {
+  background-color: var(--black-bg) !important;
+}
+
+.dark-mode .agentscope-chat-messages,
+.dark-mode .copaw-chat-messages,
+.dark-mode .bailian-chat-messages {
+  background-color: var(--black-bg) !important;
+}
+
+.dark-mode .agentscope-chat-input,
+.dark-mode .copaw-chat-input,
+.dark-mode .bailian-chat-input {
+  background-color: var(--dark-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Welcome screen / Empty states */
+.dark-mode .welcome,
+.dark-mode .Welcome,
+.dark-mode .empty,
+.dark-mode .Empty,
+.dark-mode [class*="welcome"],
+.dark-mode [class*="Welcome"],
+.dark-mode [class*="empty"],
+.dark-mode [class*="Empty"] {
+  background-color: var(--black-bg) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Panel and section backgrounds */
+.dark-mode [class*="panel"],
+.dark-mode [class*="Panel"],
+.dark-mode [class*="section"],
+.dark-mode [class*="Section"] {
+  background-color: var(--black-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Override inline styles if any */
+.dark-mode [style*="background:#fff"],
+.dark-mode [style*="background: #fff"],
+.dark-mode [style*="background:#FFF"],
+.dark-mode [style*="background: #FFF"],
+.dark-mode [style*="background:#ffffff"],
+.dark-mode [style*="background: #ffffff"],
+.dark-mode [style*="background:#FFFFFF"],
+.dark-mode [style*="background: #FFFFFF"],
+.dark-mode [style*="background-color:#fff"],
+.dark-mode [style*="background-color: #fff"],
+.dark-mode [style*="background-color:#FFF"],
+.dark-mode [style*="background-color: #FFF"],
+.dark-mode [style*="background-color:#ffffff"],
+.dark-mode [style*="background-color: #ffffff"],
+.dark-mode [style*="background-color:#FFFFFF"],
+.dark-mode [style*="background-color: #FFFFFF"] {
+  background-color: var(--black-bg) !important;
+}
+
+/* Ant Design overrides for all white backgrounds */
+.dark-mode .ant-layout-has-sider {
+  background-color: var(--black-bg) !important;
+}
+
+.dark-mode .ant-layout-sider-children {
+  background-color: var(--black-bg) !important;
+}
+
+.dark-mode .ant-pro-sider,
+.dark-mode .ant-pro-layout,
+.dark-mode .ant-pro-page-container {
+  background-color: var(--black-bg) !important;
 }

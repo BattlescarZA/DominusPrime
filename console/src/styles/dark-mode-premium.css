@@ -1,0 +1,273 @@
+/* Premium Dark Mode Enhancements - Additional Luxury Styling */
+
+/* Chat and Work Area - Premium Black with Gold Accents */
+.dark-mode [class*="chat"],
+.dark-mode [class*="Chat"],
+.dark-mode [class*="work"],
+.dark-mode [class*="Work"],
+.dark-mode [class*="main"],
+.dark-mode [class*="Main"] {
+  background: radial-gradient(ellipse at top left, var(--dark-bg) 0%, var(--black-bg) 50%) !important;
+  color: var(--light-gold) !important;
+}
+
+/* Text Input Areas - Premium Look with Gold Border Glow */
+.dark-mode textarea,
+.dark-mode input[type="text"],
+.dark-mode input[type="search"] {
+  background: linear-gradient(180deg, #000000 0%, #0a0a0a 100%) !important;
+  border: 2px solid var(--border-gold) !important;
+  color: var(--light-gold) !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.1) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.dark-mode textarea:focus,
+.dark-mode input[type="text"]:focus,
+.dark-mode input[type="search"]:focus {
+  border-color: var(--primary-gold) !important;
+  box-shadow: 
+    inset 0 2px 8px rgba(0, 0, 0, 0.4),
+    0 0 0 3px rgba(255, 215, 0, 0.15),
+    0 0 20px rgba(255, 215, 0, 0.3),
+    0 4px 20px rgba(0, 0, 0, 0.5) !important;
+  outline: none !important;
+  background: linear-gradient(180deg, #000000 0%, #141414 100%) !important;
+}
+
+.dark-mode textarea::placeholder,
+.dark-mode input::placeholder {
+  color: var(--dark-gold) !important;
+  opacity: 0.7 !important;
+  font-style: italic !important;
+}
+
+/* Scrollbars - Elegant Gold Theme */
+.dark-mode ::-webkit-scrollbar {
+  width: 12px !important;
+  height: 12px !important;
+  background: var(--black-bg) !important;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+  background: linear-gradient(180deg, var(--black-bg) 0%, var(--dark-bg) 50%, var(--black-bg) 100%) !important;
+  border-left: 1px solid rgba(218, 165, 32, 0.2) !important;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--dark-gold) 0%, var(--border-gold) 50%, var(--dark-gold) 100%) !important;
+  border-radius: 6px !important;
+  border: 2px solid var(--black-bg) !important;
+  box-shadow: 
+    0 0 10px rgba(255, 215, 0, 0.3),
+    inset 0 0 10px rgba(255, 255, 255, 0.1) !important;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--primary-gold) 0%, var(--hover-gold) 50%, var(--primary-gold) 100%) !important;
+  box-shadow: 
+    0 0 15px rgba(255, 215, 0, 0.5),
+    inset 0 0 10px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Content Panels - Elevated Design */
+.dark-mode [class*="content"],
+.dark-mode [class*="Content"],
+.dark-mode [class*="container"],
+.dark-mode [class*="Container"] {
+  background: var(--black-bg) !important;
+  border-radius: 12px !important;
+}
+
+/* Message Bubbles and Chat Items */
+.dark-mode [class*="message"],
+.dark-mode [class*="Message"],
+.dark-mode [class*="bubble"],
+.dark-mode [class*="Bubble"] {
+  background: var(--gradient-gold-intense), var(--card-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+  border-radius: 12px !important;
+  padding: 16px !important;
+  margin: 8px 0 !important;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(255, 215, 0, 0.1),
+    inset 0 1px 0 rgba(255, 215, 0, 0.1) !important;
+  transition: all 0.3s ease !important;
+}
+
+.dark-mode [class*="message"]:hover,
+.dark-mode [class*="Message"]:hover {
+  border-color: var(--hover-gold) !important;
+  box-shadow: 
+    0 6px 16px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.2),
+    inset 0 1px 0 rgba(255, 215, 0, 0.15) !important;
+  transform: translateX(2px) !important;
+}
+
+/* List Items - Premium Hover Effects */
+.dark-mode [class*="list-item"],
+.dark-mode [class*="listItem"],
+.dark-mode [class*="ListItem"] {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(218, 165, 32, 0.2) !important;
+  transition: all 0.3s ease !important;
+  padding: 12px !important;
+}
+
+.dark-mode [class*="list-item"]:hover,
+.dark-mode [class*="listItem"]:hover,
+.dark-mode [class*="ListItem"]:hover {
+  background: var(--gradient-gold) !important;
+  border-left: 3px solid var(--primary-gold) !important;
+  padding-left: 16px !important;
+  box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.1) !important;
+}
+
+/* Badges and Tags - Luxury Gold */
+.dark-mode .ant-badge,
+.dark-mode .ant-tag {
+  background: linear-gradient(135deg, var(--dark-gold) 0%, var(--border-gold) 100%) !important;
+  border: 1px solid var(--primary-gold) !important;
+  color: var(--black-bg) !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3) !important;
+}
+
+/* Tooltips - Elegant Design */
+.dark-mode .ant-tooltip-inner {
+  background: linear-gradient(135deg, var(--elevated-bg) 0%, var(--dark-bg) 100%) !important;
+  color: var(--primary-gold) !important;
+  border: 1px solid var(--border-gold) !important;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.8),
+    0 0 30px rgba(255, 215, 0, 0.2) !important;
+  font-weight: 500 !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+}
+
+.dark-mode .ant-tooltip-arrow-content {
+  background: var(--elevated-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+}
+
+/* Loading Spinners - Gold Theme */
+.dark-mode .ant-spin-dot-item {
+  background-color: var(--primary-gold) !important;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+}
+
+/* Progress Bars - Luxury Gold */
+.dark-mode .ant-progress-bg {
+  background: linear-gradient(90deg, var(--dark-gold) 0%, var(--primary-gold) 50%, var(--hover-gold) 100%) !important;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4) !important;
+}
+
+.dark-mode .ant-progress-inner {
+  background: var(--dark-bg) !important;
+  border: 1px solid var(--border-gold) !important;
+}
+
+/* Switches - Premium Toggle */
+.dark-mode .ant-switch {
+  background-color: var(--dark-bg) !important;
+  border: 2px solid var(--border-gold) !important;
+}
+
+.dark-mode .ant-switch-checked {
+  background: linear-gradient(90deg, var(--dark-gold) 0%, var(--primary-gold) 100%) !important;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Selection Highlight */
+.dark-mode ::selection {
+  background-color: rgba(255, 215, 0, 0.3) !important;
+  color: var(--primary-gold) !important;
+}
+
+.dark-mode ::-moz-selection {
+  background-color: rgba(255, 215, 0, 0.3) !important;
+  color: var(--primary-gold) !important;
+}
+
+/* Focus Ring - Gold Glow */
+.dark-mode *:focus-visible {
+  outline: 2px solid var(--primary-gold) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.2) !important;
+}
+
+/* Premium Shadows for Depth */
+.dark-mode [class*="elevated"],
+.dark-mode [class*="Elevated"],
+.dark-mode [class*="raised"],
+.dark-mode [class*="Raised"] {
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(255, 215, 0, 0.1),
+    inset 0 1px 0 rgba(255, 215, 0, 0.1) !important;
+}
+
+/* Backdrop and Overlays */
+.dark-mode .ant-modal-mask,
+.dark-mode .ant-drawer-mask {
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.95) 100%) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Premium Border Radius for Cards */
+.dark-mode .ant-card {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+/* Text Emphasis */
+.dark-mode strong,
+.dark-mode b {
+  color: var(--primary-gold) !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.2) !important;
+}
+
+.dark-mode em,
+.dark-mode i {
+  color: var(--accent-gold) !important;
+  font-style: italic !important;
+}
+
+/* Links - Elegant Gold */
+.dark-mode a {
+  color: var(--primary-gold) !important;
+  text-decoration: none !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+}
+
+.dark-mode a:hover {
+  color: var(--hover-gold) !important;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.4) !important;
+}
+
+.dark-mode a::after {
+  content: '' !important;
+  position: absolute !important;
+  bottom: -2px !important;
+  left: 0 !important;
+  width: 0 !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, var(--primary-gold) 0%, var(--hover-gold) 100%) !important;
+  transition: width 0.3s ease !important;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5) !important;
+}
+
+.dark-mode a:hover::after {
+  width: 100% !important;
+}

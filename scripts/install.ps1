@@ -282,41 +282,39 @@ function Cleanup-Console {
 
 $VenvDominusPrime = Join-Path $DominusPrimeVenv "Scripts\dominusprime.exe"
 
-if ($FromSource) {
-    if ($SourceDir) {
-        $SourceDir = (Resolve-Path $SourceDir).Path
-        Write-Info "Installing DominusPrime from local source: $SourceDir"
-        Prepare-Console $SourceDir
-        Write-Info "Installing package from source..."
-        uv pip install "${SourceDir}${ExtrasSuffix}" --python $VenvPython --prerelease=allow
-        if ($LASTEXITCODE -ne 0) { Stop-WithError "Installation from source failed" }
-        Cleanup-Console $SourceDir
-    } else {
-        if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
-            Stop-WithError "git is required for -FromSource without a local directory. Please install Git from https://git-scm.com/ or pass a local path: .\install.ps1 -FromSource -SourceDir C:\path\to\DominusPrime"
-        }
-        Write-Info "Installing DominusPrime from source (GitHub)..."
-        $cloneDir = Join-Path $env:TEMP "dominusprime-install-$(Get-Random)"
-        try {
+# Always install from source (local directory or GitHub clone)
+if ($SourceDir) {
+    $SourceDir = (Resolve-Path $SourceDir).Path
+    Write-Info "Installing DominusPrime from local source: $SourceDir"
+    Prepare-Console $SourceDir
+    Write-Info "Installing package from source..."
+    uv pip install "${SourceDir}${ExtrasSuffix}" --python $VenvPython --prerelease=allow
+    if ($LASTEXITCODE -ne 0) { Stop-WithError "Installation from source failed" }
+    Cleanup-Console $SourceDir
+} else {
+    if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+        Stop-WithError "git is required to install DominusPrime. Please install Git from https://git-scm.com/ or pass a local path: .\install.ps1 -SourceDir C:\path\to\DominusPrime"
+    }
+    Write-Info "Installing DominusPrime from source (GitHub)..."
+    $cloneDir = Join-Path $env:TEMP "dominusprime-install-$(Get-Random)"
+    try {
+        # Clone specific version if provided, otherwise latest
+        if ($Version) {
+            Write-Info "Cloning version $Version..."
+            git clone --depth 1 --branch $Version $DominusPrimeRepo $cloneDir
+        } else {
             git clone --depth 1 $DominusPrimeRepo $cloneDir
-            if ($LASTEXITCODE -ne 0) { Stop-WithError "Failed to clone repository" }
-            Prepare-Console $cloneDir
-            Write-Info "Installing package from source..."
-            uv pip install "${cloneDir}${ExtrasSuffix}" --python $VenvPython --prerelease=allow
-            if ($LASTEXITCODE -ne 0) { Stop-WithError "Installation from source failed" }
-        } finally {
-            if (Test-Path $cloneDir) {
-                Remove-Item -Path $cloneDir -Recurse -Force -ErrorAction SilentlyContinue
-            }
+        }
+        if ($LASTEXITCODE -ne 0) { Stop-WithError "Failed to clone repository" }
+        Prepare-Console $cloneDir
+        Write-Info "Installing package from source..."
+        uv pip install "${cloneDir}${ExtrasSuffix}" --python $VenvPython --prerelease=allow
+        if ($LASTEXITCODE -ne 0) { Stop-WithError "Installation from source failed" }
+    } finally {
+        if (Test-Path $cloneDir) {
+            Remove-Item -Path $cloneDir -Recurse -Force -ErrorAction SilentlyContinue
         }
     }
-} else {
-    $package = "dominusprime"
-    if ($Version) { $package = "dominusprime==$Version" }
-
-    Write-Info "Installing ${package}${ExtrasSuffix} from PyPI..."
-    uv pip install "${package}${ExtrasSuffix}" --python $VenvPython --prerelease=allow --quiet
-    if ($LASTEXITCODE -ne 0) { Stop-WithError "Installation failed" }
 }
 
 # Verify the CLI entry point exists

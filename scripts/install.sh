@@ -194,31 +194,30 @@ cleanup_console() {
     fi
 }
 
-if [ "$FROM_SOURCE" = true ]; then
-    if [ -n "$SOURCE_DIR" ]; then
-        info "Installing dominusprime from local source: $SOURCE_DIR"
-        prepare_console "$SOURCE_DIR"
-        info "Installing package from source..."
-        uv pip install "${SOURCE_DIR}${EXTRAS_SUFFIX}" --python "$dominusprime_VENV/bin/python" --prerelease=allow
-        cleanup_console "$SOURCE_DIR"
-    else
-        info "Installing dominusprime from source (GitHub)..."
-        CLONE_DIR="$(mktemp -d)"
-        trap 'rm -rf "$CLONE_DIR"' EXIT
-        git clone --depth 1 "$dominusprime_REPO" "$CLONE_DIR"
-        prepare_console "$CLONE_DIR"
-        info "Installing package from source..."
-        uv pip install "${CLONE_DIR}${EXTRAS_SUFFIX}" --python "$dominusprime_VENV/bin/python" --prerelease=allow
-        # CLONE_DIR is cleaned up by trap; no need for cleanup_console
-    fi
+# Always install from source (local directory or GitHub clone)
+if [ -n "$SOURCE_DIR" ]; then
+    info "Installing dominusprime from local source: $SOURCE_DIR"
+    prepare_console "$SOURCE_DIR"
+    info "Installing package from source..."
+    uv pip install "${SOURCE_DIR}${EXTRAS_SUFFIX}" --python "$dominusprime_VENV/bin/python" --prerelease=allow
+    cleanup_console "$SOURCE_DIR"
 else
-    PACKAGE="dominusprime"
+    info "Installing dominusprime from source (GitHub)..."
+    CLONE_DIR="$(mktemp -d)"
+    trap 'rm -rf "$CLONE_DIR"' EXIT
+    
+    # Clone specific version if provided, otherwise latest
     if [ -n "$VERSION" ]; then
-        PACKAGE="dominusprime==$VERSION"
+        info "Cloning version $VERSION..."
+        git clone --depth 1 --branch "$VERSION" "$dominusprime_REPO" "$CLONE_DIR"
+    else
+        git clone --depth 1 "$dominusprime_REPO" "$CLONE_DIR"
     fi
-
-    info "Installing ${PACKAGE}${EXTRAS_SUFFIX} from PyPI..."
-    uv pip install "${PACKAGE}${EXTRAS_SUFFIX}" --python "$dominusprime_VENV/bin/python" --prerelease=allow --quiet
+    
+    prepare_console "$CLONE_DIR"
+    info "Installing package from source..."
+    uv pip install "${CLONE_DIR}${EXTRAS_SUFFIX}" --python "$dominusprime_VENV/bin/python" --prerelease=allow
+    # CLONE_DIR is cleaned up by trap; no need for cleanup_console
 fi
 
 # Verify the CLI entry point exists

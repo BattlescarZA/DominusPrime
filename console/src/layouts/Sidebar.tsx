@@ -350,7 +350,7 @@ export default function Sidebar({ selectedKey }: SidebarProps) {
       <div className={styles.siderTop}>
         {!collapsed && (
           <div className={styles.logoWrapper}>
-            <img src="/logo.png" alt="DominusPrime" className={styles.logoImg} />
+            <img src="/logo.jpg" alt="DominusPrime" className={styles.logoImg} />
             {version && (
               <Badge dot={!!hasUpdate} color="red" offset={[4, 18]}>
                 <span

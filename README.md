@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="dominus_logo.jpg" alt="DominusPrime Logo" width="400"/>
+
 # DominusPrime
 
 [![GitHub Repo](https://img.shields.io/badge/GitHub-Repo-black.svg?logo=github)](https://github.com/BattlescarZA/DominusPrime)

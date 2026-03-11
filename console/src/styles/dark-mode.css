@@ -1,38 +1,48 @@
-/* Dark Mode Styles */
+/* Dark Mode Styles - Black and Gold Theme */
 .dark-mode {
   color-scheme: dark;
+  --primary-gold: #FFD700;
+  --dark-gold: #B8860B;
+  --light-gold: #FFF8DC;
+  --black-bg: #000000;
+  --dark-bg: #0a0a0a;
+  --card-bg: #121212;
+  --border-color: #2a2a2a;
 }
 
-/* Enhance dark mode for better visibility */
+/* Enhance dark mode with black and gold */
 .dark-mode body {
-  background-color: #141414;
-  color: rgba(255, 255, 255, 0.85);
+  background-color: var(--black-bg);
+  color: var(--light-gold);
 }
 
 /* Code blocks in dark mode */
 .dark-mode pre,
 .dark-mode code {
-  background-color: #1f1f1f;
-  border-color: #303030;
+  background-color: var(--dark-bg);
+  border-color: var(--border-color);
+  color: var(--light-gold);
 }
 
 /* Cards and panels */
 .dark-mode .ant-card,
 .dark-mode .copaw-card {
-  background-color: #1f1f1f;
-  border-color: #303030;
+  background-color: var(--card-bg);
+  border-color: var(--dark-gold);
 }
 
 /* Tables */
 .dark-mode .ant-table,
 .dark-mode .copaw-table {
-  background-color: #1f1f1f;
+  background-color: var(--card-bg);
+  color: var(--light-gold);
 }
 
 .dark-mode .ant-table-thead > tr > th,
 .dark-mode .copaw-table-thead > tr > th {
-  background-color: #262626;
-  border-color: #303030;
+  background-color: var(--dark-bg);
+  border-color: var(--dark-gold);
+  color: var(--primary-gold);
 }
 
 /* Modals and Drawers */
@@ -40,7 +50,8 @@
 .dark-mode .copaw-modal-content,
 .dark-mode .ant-drawer-content,
 .dark-mode .copaw-drawer-content {
-  background-color: #1f1f1f;
+  background-color: var(--card-bg);
+  color: var(--light-gold);
 }
 
 /* Forms */
@@ -48,58 +59,111 @@
 .dark-mode .copaw-input,
 .dark-mode .ant-select-selector,
 .dark-mode .copaw-select-selector {
-  background-color: #1f1f1f;
-  border-color: #434343;
-  color: rgba(255, 255, 255, 0.85);
+  background-color: var(--dark-bg);
+  border-color: var(--dark-gold);
+  color: var(--light-gold);
 }
 
 .dark-mode .ant-input:hover,
 .dark-mode .copaw-input:hover,
 .dark-mode .ant-select-selector:hover,
 .dark-mode .copaw-select-selector:hover {
-  border-color: #4d4d4d;
+  border-color: var(--primary-gold);
+}
+
+.dark-mode .ant-input:focus,
+.dark-mode .copaw-input:focus,
+.dark-mode .ant-select-selector:focus,
+.dark-mode .copaw-select-selector:focus {
+  border-color: var(--primary-gold);
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+/* Buttons */
+.dark-mode .ant-btn-primary,
+.dark-mode .copaw-btn-primary {
+  background-color: var(--primary-gold);
+  border-color: var(--primary-gold);
+  color: var(--black-bg);
+}
+
+.dark-mode .ant-btn-primary:hover,
+.dark-mode .copaw-btn-primary:hover {
+  background-color: var(--dark-gold);
+  border-color: var(--dark-gold);
 }
 
 /* Dividers */
 .dark-mode .ant-divider,
 .dark-mode .copaw-divider {
-  border-color: #303030;
+  border-color: var(--dark-gold);
 }
 
 /* Scrollbars */
 .dark-mode ::-webkit-scrollbar-track {
-  background: #1f1f1f;
+  background: var(--dark-bg);
 }
 
 .dark-mode ::-webkit-scrollbar-thumb {
-  background: #434343;
+  background: var(--dark-gold);
 }
 
 .dark-mode ::-webkit-scrollbar-thumb:hover {
-  background: #4d4d4d;
+  background: var(--primary-gold);
+}
+
+/* Links and text emphasis */
+.dark-mode a {
+  color: var(--primary-gold);
+}
+
+.dark-mode a:hover {
+  color: var(--light-gold);
 }
 
 /* Alerts */
 .dark-mode .ant-alert-info,
 .dark-mode .copaw-alert-info {
-  background-color: #111b26;
-  border-color: #153450;
+  background-color: rgba(255, 215, 0, 0.1);
+  border-color: var(--dark-gold);
+  color: var(--light-gold);
 }
 
 .dark-mode .ant-alert-success,
 .dark-mode .copaw-alert-success {
-  background-color: #162312;
-  border-color: #274916;
+  background-color: rgba(184, 134, 11, 0.15);
+  border-color: var(--dark-gold);
+  color: var(--light-gold);
 }
 
 .dark-mode .ant-alert-warning,
 .dark-mode .copaw-alert-warning {
-  background-color: #2b2111;
-  border-color: #594214;
+  background-color: rgba(255, 215, 0, 0.15);
+  border-color: var(--primary-gold);
+  color: var(--primary-gold);
 }
 
 .dark-mode .ant-alert-error,
 .dark-mode .copaw-alert-error {
-  background-color: #2c1618;
-  border-color: #58181c;
+  background-color: rgba(139, 0, 0, 0.2);
+  border-color: #8B0000;
+  color: #FFB6C1;
+}
+
+/* Menu and navigation */
+.dark-mode .ant-menu,
+.dark-mode .copaw-menu {
+  background-color: var(--card-bg);
+  color: var(--light-gold);
+}
+
+.dark-mode .ant-menu-item-selected,
+.dark-mode .copaw-menu-item-selected {
+  background-color: rgba(255, 215, 0, 0.1);
+  color: var(--primary-gold);
+}
+
+.dark-mode .ant-menu-item:hover,
+.dark-mode .copaw-menu-item:hover {
+  color: var(--primary-gold);
 }

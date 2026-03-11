@@ -25,6 +25,10 @@ function AppContent() {
       theme={{
         ...bailianTheme.theme,
         algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        token: {
+          colorPrimary: isDarkMode ? "#FFD700" : bailianTheme.theme?.token?.colorPrimary,
+          colorBgBase: isDarkMode ? "#000000" : bailianTheme.theme?.token?.colorBgBase,
+        },
       }}
     >
       <MainLayout />

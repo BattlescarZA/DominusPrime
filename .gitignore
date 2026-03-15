@@ -66,6 +66,10 @@ venv/
 .venv/
 providers.json
 
+# Docker volumes and persistent data
+dominusprime-data/
+data/
+
 # Logs
 logs/
 *.log

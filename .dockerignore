@@ -1,58 +1,71 @@
-# Git and IDE
-.git
-.gitignore
-.idea
-.vscode
-*.md
-!README.md
+# Docker ignore file for DominusPrime
 
-# Python dev and cache
-__pycache__
+# Python
+__pycache__/
 *.py[cod]
 *$py.class
-.venv
-venv
-uv.lock
-.pytest_cache
-.coverage
-htmlcov
-.tox
-.mypy_cache
-.ruff_cache
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Tests (not needed in runtime image)
-tests
-test.py
-*_test.py
-pytest.ini
-.pre-commit-config.yaml
-.flake8
-.eslintrc
-.stylelintrc
+# Virtual environments
+venv/
+ENV/
+env/
 
-# Frontend: exclude build artifacts; ship pre-built src/console/dist in image
-website
-console/node_modules
-console/dist
-console/.vite
-node_modules
-**/node_modules
-**/dist
-!src/copaw/console/dist
-!src/copaw/console/dist/**
-**/.vite
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
-# Example and local config (mount at runtime instead)
-example
-config.json
-jobs.json
-sessions_mount_dir
-
-# Misc
-.env
-.env.*
-!.env.example
+# OS
 .DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data directories (these are mounted as volumes)
+dominusprime-data/
+data/
+
+# Build artifacts
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Logs
 *.log
-logs
-cookbook
+
+# Distribution
+dist/
+build/
+
+# Documentation builds
+docs/_build/
+
+# Node modules (for console)
+node_modules/

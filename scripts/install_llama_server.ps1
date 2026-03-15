@@ -1,148 +1,73 @@
-# Automated llama.cpp server installer for DominusPrime (Windows)
-# Downloads Qwen3.5-9B and sets up llama server with GPU acceleration
+# Install-LlamaServer-GPU-Flash.ps1
+# Downloads latest llama.cpp (CUDA 12.4) + creates your easy-run script
+# Perfect for RTX 2060 + Flash Attention + 64k context
 
 $ErrorActionPreference = "Stop"
+$InstallDir = "D:\folder"
 
-Write-Host "================================" -ForegroundColor Green
-Write-Host "llama.cpp Server Installer" -ForegroundColor Green
-Write-Host "for DominusPrime (Windows)" -ForegroundColor Green
-Write-Host "================================" -ForegroundColor Green
+Write-Host "=== llama.cpp GPU + Flash Attention Installer ===" -ForegroundColor Cyan
+
+# Create folder
+New-Item -Path $InstallDir -ItemType Directory -Force | Out-Null
+
+# Get latest release
+$tag = (Invoke-RestMethod "https://api.github.com/repos/ggml-org/llama.cpp/releases/latest").tag_name
+Write-Host "Latest version: $tag" -ForegroundColor Green
+
+$MainZip   = "https://github.com/ggml-org/llama.cpp/releases/download/$tag/llama-${tag}-bin-win-cuda-12.4-x64.zip"
+$DllsZip   = "https://github.com/ggml-org/llama.cpp/releases/download/$tag/cudart-llama-bin-win-cuda-12.4-x64.zip"
+
+Write-Host "Downloading CUDA binaries..." -ForegroundColor Cyan
+Invoke-WebRequest -Uri $MainZip -OutFile "$env:TEMP\main.zip"
+Invoke-WebRequest -Uri $DllsZip -OutFile "$env:TEMP\dlls.zip"
+
+Write-Host "Extracting to D:\folder ..." -ForegroundColor Cyan
+Expand-Archive "$env:TEMP\main.zip" -DestinationPath $InstallDir -Force
+Expand-Archive "$env:TEMP\dlls.zip" -DestinationPath $InstallDir -Force
+
+# Clean temp files
+Remove-Item "$env:TEMP\main.zip","$env:TEMP\dlls.zip" -Force -ErrorAction SilentlyContinue
+
+# === CREATE THE EASY RUN SCRIPT AUTOMATICALLY ===
+$RunScript = @'
+# Run-Qwen-GPU-Flash.ps1
+# ONE-CLICK script: RTX 2060 + Flash Attention ON + 64k context
+
+param(
+    [int]$GPUlayers = 32   # Change to 30/28 if OOM, or 34 if it loads
+)
+
+$model   = "D:\folder\Qwen3.5-9B-Q4_K_M.gguf"
+$exe     = "D:\folder\llama-server.exe"
+$port    = 9090
+
+Write-Host "🚀 Starting Qwen3.5-9B on RTX 2060 with Flash Attention ON" -ForegroundColor Cyan
+Write-Host "GPU layers : $GPUlayers | Context: 64k | KV cache: Q4 | Port: $port`n"
+
+& $exe `
+    -m $model `
+    --n-gpu-layers $GPUlayers `
+    -c 65536 `
+    --cache-type-k q4_0 `
+    --cache-type-v q4_0 `
+    --port $port `
+    --host 0.0.0.0 `
+    --flash-attn on `
+    --log-colors on `
+    --threads 10 `
+    --flash-attn on   # forced ON for maximum GPU speed
+
+Write-Host "`nServer stopped." -ForegroundColor Yellow
+'@
+
+$RunScript | Out-File "$InstallDir\Run-Qwen-GPU-Flash.ps1" -Encoding UTF8 -Force
+
+Write-Host "`n✅ INSTALLATION COMPLETE!" -ForegroundColor Green
+Write-Host "Folder: D:\folder"
+Write-Host "Executable: llama-server.exe (CUDA ready)"
 Write-Host ""
-
-# Create the llamaserver folder
-Write-Host "[INFO] Creating llamaserver directory..." -ForegroundColor Cyan
-New-Item -Path .\llamaserver -ItemType Directory -Force | Out-Null
-
-# Create the models subfolder
-Write-Host "[INFO] Creating models directory..." -ForegroundColor Cyan
-New-Item -Path .\llamaserver\models -ItemType Directory -Force | Out-Null
-
-# Download the model file
-Write-Host "[INFO] Downloading Qwen3.5-9B-Q4_K_M model (~5.5GB)..." -ForegroundColor Cyan
-Write-Host "       This may take several minutes depending on your connection..." -ForegroundColor Yellow
-$modelUrl = "https://huggingface.co/unsloth/Qwen3.5-9B-GGUF/resolve/main/Qwen3.5-9B-Q4_K_M.gguf?download=true"
-$modelPath = ".\llamaserver\models\Qwen3.5-9B-Q4_K_M.gguf"
-
-if (Test-Path $modelPath) {
-    Write-Host "[INFO] Model already exists, skipping download." -ForegroundColor Green
-} else {
-    try {
-        $ProgressPreference = 'SilentlyContinue'
-        Invoke-WebRequest -Uri $modelUrl -OutFile $modelPath -UseBasicParsing
-        Write-Host "[SUCCESS] Model downloaded successfully!" -ForegroundColor Green
-    } catch {
-        Write-Host "[ERROR] Model download failed: $_" -ForegroundColor Red
-        exit 1
-    }
-}
-
-# Detect GPU
-Write-Host "[INFO] Detecting GPU configuration..." -ForegroundColor Cyan
-$gpus = Get-WmiObject Win32_VideoController | Where-Object { $_.Status -eq "OK" }
-$gpuType = $null
-$detectedGPU = $null
-
-foreach ($gpu in $gpus) {
-    $vramBytes = $gpu.AdapterRAM
-    if ($null -ne $vramBytes -and $vramBytes -is [int]) {
-        $vramGB = $vramBytes / 1GB
-        if ($vramGB -ge 8) {
-            if ($gpu.Name -like "*NVIDIA*") {
-                $gpuType = "NVIDIA"
-                $detectedGPU = $gpu.Name
-                Write-Host "[SUCCESS] Detected NVIDIA GPU: $detectedGPU" -ForegroundColor Green
-                Write-Host "          VRAM: $([math]::Round($vramGB, 2))GB" -ForegroundColor Green
-                break
-            } elseif ($gpu.Name -like "*AMD*" -or $gpu.Name -like "*Radeon*") {
-                $gpuType = "AMD"
-                $detectedGPU = $gpu.Name
-                Write-Host "[SUCCESS] Detected AMD GPU: $detectedGPU" -ForegroundColor Green
-                Write-Host "          VRAM: $([math]::Round($vramGB, 2))GB" -ForegroundColor Green
-                break
-            }
-        }
-    }
-}
-
-if ($null -eq $gpuType) {
-    Write-Host "[ERROR] No compatible GPU with at least 8GB VRAM found." -ForegroundColor Red
-    Write-Host "        Supported GPUs:" -ForegroundColor Yellow
-    Write-Host "        - NVIDIA (8GB+ VRAM)" -ForegroundColor Yellow
-    Write-Host "        - AMD Radeon (8GB+ VRAM)" -ForegroundColor Yellow
-    exit 1
-}
-
-# Set URLs based on GPU type
-$releaseTag = "b8253"
-Write-Host "[INFO] Downloading llama.cpp binaries (release $releaseTag)..." -ForegroundColor Cyan
-
-if ($gpuType -eq "NVIDIA") {
-    $llamaZipUrl = "https://github.com/ggml-org/llama.cpp/releases/download/$releaseTag/llama-$releaseTag-bin-win-cuda-12.4-x64.zip"
-    $dllsUrl = "https://github.com/ggml-org/llama.cpp/releases/download/$releaseTag/cudart-llama-bin-win-cuda-12.4-x64.zip"
-    $llamaZipPath = ".\llamaserver\llama-bin.zip"
-    $dllsZipPath = ".\llamaserver\dlls.zip"
-    
-    Write-Host "       Downloading CUDA binaries..." -ForegroundColor Cyan
-    Invoke-WebRequest -Uri $llamaZipUrl -OutFile $llamaZipPath -UseBasicParsing
-    Write-Host "       Downloading CUDA DLLs..." -ForegroundColor Cyan
-    Invoke-WebRequest -Uri $dllsUrl -OutFile $dllsZipPath -UseBasicParsing
-    
-    Write-Host "       Extracting binaries..." -ForegroundColor Cyan
-    Expand-Archive -Path $llamaZipPath -DestinationPath .\llamaserver -Force
-    Expand-Archive -Path $dllsZipPath -DestinationPath .\llamaserver -Force
-    
-    Remove-Item -Path $llamaZipPath, $dllsZipPath
-    Write-Host "[SUCCESS] NVIDIA CUDA binaries installed!" -ForegroundColor Green
-    
-} elseif ($gpuType -eq "AMD") {
-    $llamaZipUrl = "https://github.com/ggml-org/llama.cpp/releases/download/$releaseTag/llama-$releaseTag-bin-win-hip-radeon-x64.zip"
-    $llamaZipPath = ".\llamaserver\llama-bin.zip"
-    
-    Write-Host "       Downloading AMD ROCm binaries..." -ForegroundColor Cyan
-    Invoke-WebRequest -Uri $llamaZipUrl -OutFile $llamaZipPath -UseBasicParsing
-    
-    Write-Host "       Extracting binaries..." -ForegroundColor Cyan
-    Expand-Archive -Path $llamaZipPath -DestinationPath .\llamaserver -Force
-    
-    Remove-Item -Path $llamaZipPath
-    Write-Host "[SUCCESS] AMD ROCm binaries installed!" -ForegroundColor Green
-}
-
-# Create start script
-$startScript = @"
-@echo off
-echo ========================================
-echo Starting llama.cpp server with GPU acceleration
-echo GPU: $gpuType
-echo ========================================
-echo.
-cd llamaserver
-server.exe -m .\models\Qwen3.5-9B-Q4_K_M.gguf -c 131072 --host 127.0.0.1 --port 9080 --cache-type-k q4_0 --cache-type-v q4_0 -ngl 999
-"@
-
-$startScript | Out-File -FilePath ".\start_llama_server.bat" -Encoding ASCII
-
+Write-Host "To start the server with GPU + Flash Attention:" -ForegroundColor White
+Write-Host "    cd D:\folder" -ForegroundColor Yellow
+Write-Host "    .\Run-Qwen-GPU-Flash.ps1" -ForegroundColor Yellow
 Write-Host ""
-Write-Host "========================================" -ForegroundColor Green
-Write-Host "Installation Complete!" -ForegroundColor Green
-Write-Host "========================================" -ForegroundColor Green
-Write-Host ""
-Write-Host "📊 Configuration:" -ForegroundColor Cyan
-Write-Host "   GPU Type: $gpuType" -ForegroundColor White
-Write-Host "   Model: Qwen3.5-9B-Q4_K_M" -ForegroundColor White
-Write-Host "   Context: 131,072 tokens" -ForegroundColor White
-Write-Host "   GPU Layers: 999 (full offload)" -ForegroundColor White
-Write-Host ""
-Write-Host "🚀 To Start Server:" -ForegroundColor Cyan
-Write-Host "   Run: .\start_llama_server.bat" -ForegroundColor Yellow
-Write-Host ""
-Write-Host "🔌 Server Endpoint:" -ForegroundColor Cyan
-Write-Host "   URL: http://127.0.0.1:9080" -ForegroundColor Yellow
-Write-Host ""
-Write-Host "📝 Configure DominusPrime:" -ForegroundColor Cyan
-Write-Host "   1. Open DominusPrime console" -ForegroundColor White
-Write-Host "   2. Go to Settings → Models" -ForegroundColor White
-Write-Host "   3. Add OpenAI-Compatible Model" -ForegroundColor White
-Write-Host "   4. Base URL: http://127.0.0.1:9080/v1" -ForegroundColor White
-Write-Host "   5. Model Name: Qwen3.5-9B" -ForegroundColor White
-Write-Host ""
+Write-Host "Just double-click Run-Qwen-GPU-Flash.ps1 in File Explorer if you want!" -ForegroundColor Magenta

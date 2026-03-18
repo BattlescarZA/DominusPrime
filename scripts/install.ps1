@@ -17,7 +17,6 @@
 & {
 param(
     [string]$Version   = "",
-    [switch]$FromSource,
     [string]$SourceDir = "",
     [string]$Extras    = "",
     [string]$UvPath    = "",
@@ -47,9 +46,8 @@ DominusPrime Installer for Windows
 Usage: .\install.ps1 [OPTIONS]
 
 Options:
-  -Version <VER>        Install a specific version (e.g. 0.9.4)
-  -FromSource           Install from source (requires git, or use -SourceDir)
-  -SourceDir <DIR>      Local source directory (used with -FromSource)
+  -Version <VER>        Install a specific version/tag from GitHub (e.g. v0.9.6)
+  -SourceDir <DIR>      Install from local source directory instead of GitHub
   -Extras <EXTRAS>      Comma-separated optional extras to install
                         (e.g. llamacpp, mlx, llamacpp,mlx)
   -UvPath <PATH>        Path to a pre-installed uv.exe (skips all auto-install)
@@ -57,6 +55,8 @@ Options:
 
 Environment:
   DOMINUSPRIME_HOME     Installation directory (default: ~/.dominusprime)
+
+Note: This installer always installs from source (GitHub or local directory).
 "@
     exit 0
 }

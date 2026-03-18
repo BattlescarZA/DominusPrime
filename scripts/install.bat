@@ -26,7 +26,6 @@ set "dominusprime_REPO=https://github.com/BattlescarZA/DominusPrime.git"
 
 REM ──── Argument defaults ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 set "ARG_VERSION="
-set "ARG_FROM_SOURCE=0"
 set "ARG_SOURCE_DIR="
 set "ARG_EXTRAS="
 set "ARG_UV_PATH="
@@ -37,7 +36,6 @@ REM ──── Parse arguments ───────────────�
 :parse_args
 if "%~1"=="" goto :done_args
 if /i "%~1"=="-Version"    goto :arg_version
-if /i "%~1"=="-FromSource" goto :arg_fromsource
 if /i "%~1"=="-SourceDir"  goto :arg_sourcedir
 if /i "%~1"=="-Extras"     goto :arg_extras
 if /i "%~1"=="-UvPath"     goto :arg_uvpath
@@ -48,11 +46,6 @@ goto :parse_args
 :arg_version
 set "ARG_VERSION=%~2"
 shift & shift
-goto :parse_args
-
-:arg_fromsource
-set "ARG_FROM_SOURCE=1"
-shift
 goto :parse_args
 
 :arg_sourcedir
@@ -80,16 +73,17 @@ echo.
 echo Usage: install.bat [OPTIONS]
 echo.
 echo Options:
-echo   -Version ^<VER^>        Install a specific version (e.g. 0.0.2)
-echo   -FromSource           Install from source (requires git, or use -SourceDir)
-echo   -SourceDir ^<DIR^>      Local source directory (used with -FromSource)
+echo   -Version ^<VER^>        Install a specific version/tag from GitHub (e.g. v0.9.6)
+echo   -SourceDir ^<DIR^>      Install from local source directory instead of GitHub
 echo   -Extras ^<EXTRAS^>      Comma-separated optional extras to install
 echo                         (e.g. llamacpp, mlx, llamacpp,mlx)
 echo   -UvPath ^<PATH^>        Path to a pre-installed uv.exe (skips all auto-install)
 echo   -Help                 Show this help
 echo.
 echo Environment:
-echo   dominusprime_HOME            Installation directory (default: %%USERPROFILE%%\.dominusprime)
+echo   dominusprime_HOME     Installation directory (default: %%USERPROFILE%%\.dominusprime)
+echo.
+echo Note: This installer always installs from source (GitHub or local directory).
 exit /b 0
 
 REM ──── Helper functions ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -224,6 +218,78 @@ echo [dominusprime] uv installed via astral.sh
 :ensure_uv_done
 exit /b 0
 
+REM ──── Ensure Git ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+:ensure_git
+REM Check if git is already available
+where git >nul 2>&1
+if %errorlevel%==0 (
+    for /f "delims=" %%p in ('where git 2^>nul') do (
+        echo [dominusprime] git found: %%p
+        goto :ensure_git_done
+    )
+)
+
+REM Git not found - offer to install it
+echo [dominusprime] WARNING: Git is not installed.
+echo [dominusprime] Git is required to download DominusPrime from GitHub.
+echo.
+choice /C YN /M "Would you like to install Git for Windows automatically"
+if errorlevel 2 (
+    echo [dominusprime] ERROR: Git is required to install DominusPrime.
+    echo [dominusprime] Please install Git manually from https://git-scm.com/
+    echo [dominusprime] Or use -SourceDir to install from a local directory.
+    exit /b 1
+)
+
+echo [dominusprime] Downloading Git for Windows installer...
+set "_GIT_INSTALLER=%TEMP%\Git-Installer-%RANDOM%.exe"
+set "_GIT_URL=https://github.com/git-for-windows/git/releases/download/v2.47.0.windows.2/Git-2.47.0.2-64-bit.exe"
+
+REM Try curl first, then PowerShell
+where curl >nul 2>&1
+if not errorlevel 1 (
+    curl -L --progress-bar -o "!_GIT_INSTALLER!" "!_GIT_URL!"
+    if not errorlevel 1 goto :install_git_run
+    echo [dominusprime] curl failed, retrying with PowerShell...
+    del "!_GIT_INSTALLER!" >nul 2>&1
+)
+
+powershell -NoProfile -Command "$ProgressPreference='SilentlyContinue'; Invoke-WebRequest -Uri '!_GIT_URL!' -OutFile '!_GIT_INSTALLER!' -UseBasicParsing"
+if errorlevel 1 (
+    echo [dominusprime] ERROR: Failed to download Git installer.
+    echo [dominusprime] Please install Git manually from https://git-scm.com/
+    del "!_GIT_INSTALLER!" >nul 2>&1
+    exit /b 1
+)
+
+:install_git_run
+echo [dominusprime] Installing Git for Windows...
+echo [dominusprime] This may take a few minutes. The installer will run silently.
+"!_GIT_INSTALLER!" /VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /DIR="%ProgramFiles%\Git"
+set "_INST_ERR=%errorlevel%"
+del "!_GIT_INSTALLER!" >nul 2>&1
+
+if %_INST_ERR% neq 0 (
+    echo [dominusprime] ERROR: Git installation failed.
+    echo [dominusprime] Please install Git manually from https://git-scm.com/
+    exit /b 1
+)
+
+REM Add Git to PATH for current session
+set "PATH=%ProgramFiles%\Git\cmd;%ProgramFiles%\Git\bin;!PATH!"
+echo [dominusprime] Git installed successfully: %ProgramFiles%\Git\cmd\git.exe
+
+REM Verify git is now available
+where git >nul 2>&1
+if errorlevel 1 (
+    echo [dominusprime] ERROR: Git was installed but not found on PATH.
+    echo [dominusprime] Please close this terminal and open a new one, then re-run the installer.
+    exit /b 1
+)
+
+:ensure_git_done
+exit /b 0
+
 REM ──── Prepare console frontend ────────────────────────────────────────────────────────────────────────────────────────────────────
 :prepare_console
 REM %~1 = RepoDir
@@ -306,6 +372,13 @@ REM ──── Step 1: Ensure uv ───────────────
 call :ensure_uv
 if errorlevel 1 exit /b 1
 
+REM ──── Step 2: Ensure Git (required for cloning from GitHub) ──────────────────────────────────────────────────────────────────────────
+REM Only check for Git if we're not using a local source directory
+if not defined ARG_SOURCE_DIR (
+    call :ensure_git
+    if errorlevel 1 exit /b 1
+)
+
 REM ──── Step 2: Create / update virtual environment ──────────────────────────────────────────────────────────────
 if exist "%dominusprime_VENV%" (
     echo [dominusprime] Existing environment found, upgrading...
@@ -328,18 +401,13 @@ if not exist "%VENV_PYTHON%" (
 for /f "delims=" %%v in ('"%VENV_PYTHON%" --version 2^>^&1') do set "PY_VERSION=%%v"
 echo [dominusprime] Python environment ready (%PY_VERSION%)
 
-REM ──── Step 3: Install dominusprime ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+REM ──── Step 4: Install dominusprime ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 set "EXTRAS_SUFFIX="
 if defined ARG_EXTRAS set "EXTRAS_SUFFIX=[%ARG_EXTRAS%]"
 
 set "VENV_dominusprime=%dominusprime_VENV%\Scripts\dominusprime.exe"
 
-REM Use goto-based branching to avoid nested parenthesized blocks,
-REM which break when %vars% expand to values containing "(" or ")".
-if "%ARG_FROM_SOURCE%"=="1" goto :install_from_source
-goto :install_from_pypi
-
-:install_from_source
+REM Always install from source (local directory or GitHub clone)
 if defined ARG_SOURCE_DIR goto :install_from_local
 goto :install_from_github_dominusprime
 
@@ -393,16 +461,17 @@ if %_INST_ERR% neq 0 (
 goto :install_verify
 
 :install_from_github_dominusprime
-where git >nul 2>&1
-if errorlevel 1 (
-    echo [dominusprime] ERROR: git is required for -FromSource without a local directory.
-    echo [dominusprime]        Please install Git from https://git-scm.com/ or pass a local path:
-    echo [dominusprime]        install-w-uv.bat -FromSource -SourceDir C:\path\to\dominusprime
-    exit /b 1
-)
 echo [dominusprime] Installing dominusprime from source (GitHub)...
 set "CLONE_DIR=%TEMP%\dominusprime-install-%RANDOM%"
-git clone --depth 1 %dominusprime_REPO% "%CLONE_DIR%"
+
+REM Clone specific version if provided, otherwise latest
+if defined ARG_VERSION (
+    echo [dominusprime] Cloning version %ARG_VERSION%...
+    git clone --depth 1 --branch %ARG_VERSION% %dominusprime_REPO% "%CLONE_DIR%"
+) else (
+    git clone --depth 1 %dominusprime_REPO% "%CLONE_DIR%"
+)
+
 if errorlevel 1 (
     if exist "%CLONE_DIR%" rd /s /q "%CLONE_DIR%"
     echo [dominusprime] ERROR: Failed to clone repository
@@ -415,37 +484,6 @@ set "_INST_ERR=%errorlevel%"
 if exist "%CLONE_DIR%" rd /s /q "%CLONE_DIR%"
 if %_INST_ERR% neq 0 (
     echo [dominusprime] ERROR: Installation from source failed
-    exit /b 1
-)
-goto :install_verify
-
-:install_from_pypi
-set "_PACKAGE=dominusprime"
-
-rem === Secure Validation for ARG_VERSION ===
-if defined ARG_VERSION (
-    rem Version number whitelist: Only permits numbers, letters, periods, comparison symbols (=<>!), hyphens, and tilde characters
-    rem Prohibits spaces, quotation marks, slashes, and other characters potentially used for --index-url injection
-    echo %ARG_VERSION% | findstr /R "[^a-zA-Z0-9\.=<>\!\-~]" >nul 2>&1
-    if not errorlevel 1 (
-        echo [ERROR] Security Alert: ARG_VERSION contains invalid characters.
-        echo [ERROR] Detected unsafe input: %ARG_VERSION%
-        echo [ERROR] Installation aborted.
-        exit /b 1
-    )
-    set "_PACKAGE=dominusprime%ARG_VERSION%"
-)
-rem === End Version Validation ===
-
-echo [dominusprime] Installing %_PACKAGE%%EXTRAS_SUFFIX% from PyPI...
-rem Note: It is also recommended to validate EXTRAS_SUFFIX here. Although it may be undefined in the local scope above,
-rem for safety, if ARG_EXTRAS is defined globally, it is best to reuse the validation logic from above or ensure its source is secure.
-rem Assume EXTRAS_SUFFIX is generated here based on the previously validated ARG_EXTRAS, or is empty.
-rem If ARG_EXTRAS is passed globally, it is recommended to validate it uniformly at the beginning of the script.
-
-uv pip install "%_PACKAGE%%EXTRAS_SUFFIX%" --python "%VENV_PYTHON%" --prerelease=allow --quiet
-if errorlevel 1 (
-    echo [dominusprime] ERROR: Installation failed
     exit /b 1
 )
 
@@ -466,7 +504,7 @@ if "%CONSOLE_AVAILABLE%"=="0" (
     if "!CONSOLE_CHECK!"=="yes" set "CONSOLE_AVAILABLE=1"
 )
 
-REM ──── Step 4: Create wrapper scripts ────────────────────────────────────────────────────────────────────────────────────────
+REM ──── Step 5: Create wrapper scripts ────────────────────────────────────────────────────────────────────────────────────────
 if not exist "%dominusprime_BIN%" mkdir "%dominusprime_BIN%"
 
 REM PowerShell wrapper
@@ -501,7 +539,7 @@ echo ) >> "%WRAPPER_CMD%"
 echo "%%REAL_BIN%%" %%* >> "%WRAPPER_CMD%"
 echo [dominusprime] CMD wrapper created at %WRAPPER_CMD%
 
-REM ──── Step 5: Update PATH via user environment variable ──────────────────────────────────────────────────
+REM ──── Step 6: Update PATH via user environment variable ──────────────────────────────────────────────────
 set "CURRENT_USER_PATH="
 for /f "skip=2 tokens=1,2,*" %%a in ('reg query "HKCU\Environment" /v Path 2^>nul') do (
     if /i "%%a"=="Path" set "CURRENT_USER_PATH=%%c"

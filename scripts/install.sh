@@ -15,7 +15,6 @@ PYTHON_VERSION="3.12"
 dominusprime_REPO="https://github.com/BattlescarZA/DominusPrime.git"
 
 VERSION=""
-FROM_SOURCE=false
 SOURCE_DIR=""
 EXTRAS=""
 
@@ -40,14 +39,9 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         --version)
             VERSION="$2"; shift 2 ;;
-        --from-source)
-            FROM_SOURCE=true
-            # Accept optional path argument (next arg that doesn't start with --)
-            if [[ $# -ge 2 && "$2" != --* ]]; then
-                SOURCE_DIR="$(cd "$2" && pwd)" || die "Directory not found: $2"
-                shift
-            fi
-            shift ;;
+        --source-dir)
+            SOURCE_DIR="$(cd "$2" && pwd)" || die "Directory not found: $2"
+            shift 2 ;;
         --extras)
             EXTRAS="$2"; shift 2 ;;
         -h|--help)
@@ -57,15 +51,16 @@ dominusprime Installer
 Usage: bash install.sh [OPTIONS]
 
 Options:
-  --version <VER>       Install a specific version (e.g. 0.0.2)
-  --from-source [DIR]   Install from source. If DIR is given, use that local
-                        directory; otherwise clone from GitHub.
+  --version <VER>       Install a specific version/tag from GitHub (e.g. v0.9.6)
+  --source-dir <DIR>    Install from local source directory instead of GitHub
   --extras <EXTRAS>     Comma-separated optional extras to install
                         (e.g. llamacpp, mlx, llamacpp,mlx)
   -h, --help            Show this help
 
 Environment:
-  dominusprime_HOME        Installation directory (default: ~/.dominusprime)
+  dominusprime_HOME     Installation directory (default: ~/.dominusprime)
+
+Note: This installer always installs from source (GitHub or local directory).
 EOF
             exit 0 ;;
         *)

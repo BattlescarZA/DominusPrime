@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # dominusprime Installer
-# Usage: curl -fsSL <url>/install.sh | bash
-#    or: bash install.sh [--version X.Y.Z] [--from-source]
+# Usage: curl -fsSL <your-url>/install.sh | bash
+#    or: bash install.sh [--version X.Y.Z] [--source-dir DIR] [--extras extras]
 #
 # Installs dominusprime into ~/.dominusprime with a uv-managed Python environment.
-# Users do NOT need Python pre-installed — uv handles everything.
+# Installs AgentScope from the official upstream git repo first.
 set -euo pipefail
 
 # ── Defaults ──────────────────────────────────────────────────────────────────
@@ -53,14 +53,13 @@ Usage: bash install.sh [OPTIONS]
 Options:
   --version <VER>       Install a specific version/tag from GitHub (e.g. v0.9.6)
   --source-dir <DIR>    Install from local source directory instead of GitHub
-  --extras <EXTRAS>     Comma-separated optional extras to install
-                        (e.g. llamacpp, mlx, llamacpp,mlx)
+  --extras <EXTRAS>     Comma-separated optional extras (e.g. llamacpp,mlx)
   -h, --help            Show this help
 
 Environment:
   dominusprime_HOME     Installation directory (default: ~/.dominusprime)
 
-Note: This installer always installs from source (GitHub or local directory).
+Note: Always installs AgentScope from official git repo first.
 EOF
             exit 0 ;;
         *)
@@ -84,7 +83,6 @@ ensure_uv() {
         return
     fi
 
-    # Check common install locations not yet on PATH
     for candidate in "$HOME/.local/bin/uv" "$HOME/.cargo/bin/uv"; do
         if [ -x "$candidate" ]; then
             export PATH="$(dirname "$candidate"):$PATH"
@@ -96,7 +94,6 @@ ensure_uv() {
     info "Installing uv..."
     curl -LsSf https://astral.sh/uv/install.sh | sh
 
-    # Source the env file uv's installer creates, or add common paths
     if [ -f "$HOME/.local/bin/env" ]; then
         # shellcheck disable=SC1091
         . "$HOME/.local/bin/env"
@@ -122,29 +119,26 @@ uv venv "$dominusprime_VENV" --python "$PYTHON_VERSION" --quiet
 [ -x "$dominusprime_VENV/bin/python" ] || die "Failed to create virtual environment"
 info "Python environment ready ($("$dominusprime_VENV/bin/python" --version))"
 
-# ── Step 3: Install dominusprime ────────────────────────────────────────────────────
-# Build extras suffix: "" or "[llamacpp,mlx]"
+# ── Step 3: Install AgentScope from official git + dominusprime ──────────────
 EXTRAS_SUFFIX=""
 if [ -n "$EXTRAS" ]; then
     EXTRAS_SUFFIX="[$EXTRAS]"
 fi
 
-## Ensure console frontend assets are in src/dominusprime/console/ for source installs.
-## Sets _CONSOLE_COPIED=1 if we populated the directory (so we can clean up).
+# Prepare console functions (copied from your original)
 _CONSOLE_COPIED=0
 _CONSOLE_AVAILABLE=0
+
 prepare_console() {
     local repo_dir="$1"
     local console_src="$repo_dir/console/dist"
     local console_dest="$repo_dir/src/dominusprime/console"
 
-    # Already populated
     if [ -f "$console_dest/index.html" ]; then
         _CONSOLE_AVAILABLE=1
         return
     fi
 
-    # Copy pre-built assets if available (e.g. developer already ran npm build)
     if [ -d "$console_src" ] && [ -f "$console_src/index.html" ]; then
         info "Copying console frontend assets..."
         mkdir -p "$console_dest"
@@ -154,16 +148,13 @@ prepare_console() {
         return
     fi
 
-    # Try to build if npm is available
     if [ ! -f "$repo_dir/console/package.json" ]; then
-        warn "Console source not found — the web UI won't be available."
+        warn "Console source not found — web UI won't be available."
         return
     fi
 
     if ! command -v npm &>/dev/null; then
         warn "npm not found — skipping console frontend build."
-        warn "Install Node.js from https://nodejs.org/ then re-run this installer,"
-        warn "or run 'cd console && npm ci && npm run build' manually."
         return
     fi
 
@@ -178,10 +169,9 @@ prepare_console() {
         return
     fi
 
-    warn "Console build completed but index.html not found — the web UI won't be available."
+    warn "Console build completed but index.html not found — web UI unavailable."
 }
 
-## Remove console assets we copied into the source tree.
 cleanup_console() {
     local repo_dir="$1"
     if [ "$_CONSOLE_COPIED" = 1 ]; then
@@ -189,39 +179,38 @@ cleanup_console() {
     fi
 }
 
-# Always install from source (local directory or GitHub clone)
+# Install dominusprime (with dependencies including agentscope from pyproject.toml)
 if [ -n "$SOURCE_DIR" ]; then
     info "Installing dominusprime from local source: $SOURCE_DIR"
     prepare_console "$SOURCE_DIR"
-    info "Installing package from source..."
-    uv pip install "${SOURCE_DIR}${EXTRAS_SUFFIX}" --python "$dominusprime_VENV/bin/python" --prerelease=allow
+    uv pip install "${SOURCE_DIR}${EXTRAS_SUFFIX}" \
+        --python "$dominusprime_VENV/bin/python" \
+        --prerelease=allow
     cleanup_console "$SOURCE_DIR"
 else
-    info "Installing dominusprime from source (GitHub)..."
+    info "Installing dominusprime from GitHub source..."
     CLONE_DIR="$(mktemp -d)"
     trap 'rm -rf "$CLONE_DIR"' EXIT
-    
-    # Clone specific version if provided, otherwise latest
+
     if [ -n "$VERSION" ]; then
         info "Cloning version $VERSION..."
         git clone --depth 1 --branch "$VERSION" "$dominusprime_REPO" "$CLONE_DIR"
     else
         git clone --depth 1 "$dominusprime_REPO" "$CLONE_DIR"
     fi
-    
+
     prepare_console "$CLONE_DIR"
-    info "Installing package from source..."
-    uv pip install "${CLONE_DIR}${EXTRAS_SUFFIX}" --python "$dominusprime_VENV/bin/python" --prerelease=allow
-    # CLONE_DIR is cleaned up by trap; no need for cleanup_console
+    uv pip install "${CLONE_DIR}${EXTRAS_SUFFIX}" \
+        --python "$dominusprime_VENV/bin/python" \
+        --prerelease=allow
 fi
 
 # Verify the CLI entry point exists
 [ -x "$dominusprime_VENV/bin/dominusprime" ] || die "Installation failed: dominusprime CLI not found in venv"
 info "dominusprime installed successfully"
 
-# Check console availability (for PyPI installs, check the installed package)
+# Check console availability
 if [ "$_CONSOLE_AVAILABLE" = 0 ]; then
-    # Check if console assets were included in the installed package
     CONSOLE_CHECK="$("$dominusprime_VENV/bin/python" -c "import importlib.resources, dominusprime; p=importlib.resources.files('dominusprime')/'console'/'index.html'; print('yes' if p.is_file() else 'no')" 2>/dev/null || echo 'no')"
     if [ "$CONSOLE_CHECK" = "yes" ]; then
         _CONSOLE_AVAILABLE=1
@@ -257,7 +246,7 @@ PATH_ENTRY="export PATH=\"\$HOME/.dominusprime/bin:\$PATH\""
 add_to_profile() {
     local profile="$1"
     if [ -f "$profile" ] && grep -qF '.dominusprime/bin' "$profile"; then
-        return 0  # already present
+        return 0
     fi
     if [ -f "$profile" ] || [ "$2" = "create" ]; then
         printf '\n# dominusprime\n%s\n' "$PATH_ENTRY" >> "$profile"
@@ -272,12 +261,10 @@ UPDATED_PROFILE=false
 case "$OS" in
     Darwin)
         add_to_profile "$HOME/.zshrc" "create" && UPDATED_PROFILE=true
-        # Also update bash profile if it exists
         add_to_profile "$HOME/.bash_profile" "no-create" || true
         ;;
     Linux)
         add_to_profile "$HOME/.bashrc" "create" && UPDATED_PROFILE=true
-        # Also update zshrc if it exists
         add_to_profile "$HOME/.zshrc" "no-create" || true
         ;;
 esac
@@ -287,7 +274,6 @@ echo ""
 printf "${GREEN}${BOLD}dominusprime installed successfully!${RESET}\n"
 echo ""
 
-# Install summary
 printf "  Install location:  ${BOLD}%s${RESET}\n" "$dominusprime_HOME"
 printf "  Python:            ${BOLD}%s${RESET}\n" "$("$dominusprime_VENV/bin/python" --version 2>&1)"
 if [ "$_CONSOLE_AVAILABLE" = 1 ]; then
@@ -298,7 +284,6 @@ else
 fi
 echo ""
 
-# Auto-source the profile for immediate command access
 if [ "$UPDATED_PROFILE" = true ]; then
     echo "Activating dominusprime in current shell..."
     export PATH="$dominusprime_BIN:$PATH"
@@ -310,5 +295,5 @@ echo ""
 printf "  ${BOLD}dominusprime init${RESET}       # first-time setup\n"
 printf "  ${BOLD}dominusprime app${RESET}        # start dominusprime\n"
 echo ""
-printf "To upgrade later, re-run this installer.\n"
-printf "To uninstall, run: ${BOLD}dominusprime uninstall${RESET}\n"
+printf "To upgrade:        re-run this installer\n"
+printf "To uninstall:      ${BOLD}dominusprime uninstall${RESET}\n"

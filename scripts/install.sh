@@ -298,14 +298,14 @@ else
 fi
 echo ""
 
+# Auto-source the profile for immediate command access
 if [ "$UPDATED_PROFILE" = true ]; then
-    echo "To get started, open a new terminal or run:"
-    echo ""
-    printf "  ${BOLD}source ~/.zshrc${RESET}  # or ~/.bashrc\n"
+    echo "Activating dominusprime in current shell..."
+    export PATH="$dominusprime_BIN:$PATH"
     echo ""
 fi
 
-echo "Then run:"
+echo "You can now run:"
 echo ""
 printf "  ${BOLD}dominusprime init${RESET}       # first-time setup\n"
 printf "  ${BOLD}dominusprime app${RESET}        # start dominusprime\n"

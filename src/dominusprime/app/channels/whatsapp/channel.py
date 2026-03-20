@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=too-many-branches
-"""WhatsApp channel: QR code authentication (like WhatsApp Web)."""
+"""WhatsApp channel: QR code authentication via Node.js bridge."""
 
 from __future__ import annotations
 
 import asyncio
 import logging
 import uuid
+import aiohttp
+import json
 from pathlib import Path
 from typing import Any, Optional, Union
+from socketio import AsyncClient
 
 from agentscope_runtime.engine.schemas.agent_schemas import (
     TextContent,
@@ -34,7 +37,7 @@ WHATSAPP_SEND_CHUNK_SIZE = 4000
 
 _DEFAULT_SESSION_DIR = Path("~/.dominusprime/whatsapp/session").expanduser()
 _DEFAULT_MEDIA_DIR = Path("~/.dominusprime/media/whatsapp").expanduser()
-_TYPING_TIMEOUT_S = 180
+_DEFAULT_BRIDGE_URL = "http://localhost:8765"
 
 _MEDIA_ATTRS: list[tuple[str, type, Any, str]] = [
     ("document", FileContent, ContentType.FILE, "file_url"),
@@ -45,58 +48,11 @@ _MEDIA_ATTRS: list[tuple[str, type, Any, str]] = [
 ]
 
 
-async def _download_whatsapp_file(
-    *,
-    message: Any,
-    media_dir: Path,
-    filename_hint: str = "",
-) -> Optional[str]:
-    """Download a WhatsApp file to local media_dir; return local path.
-    
-    Uses whatsapp-web.js downloadMedia() method.
-    """
-    try:
-        media = await message.downloadMedia()
-        if not media:
-            return None
-            
-        media_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Get file extension from mimetype or filename
-        suffix = ""
-        if hasattr(media, "mimetype") and media.mimetype:
-            mime = media.mimetype.lower()
-            if "/" in mime:
-                ext = mime.split("/")[-1]
-                suffix = f".{ext}"
-        
-        if filename_hint and not suffix:
-            suffix = Path(filename_hint).suffix
-            
-        local_name = f"{uuid.uuid4().hex[:12]}{suffix or '.bin'}"
-        local_path = media_dir / local_name
-        
-        # Write media data to file
-        if hasattr(media, "data"):
-            import base64
-            file_data = base64.b64decode(media.data)
-            local_path.write_bytes(file_data)
-            return str(local_path)
-            
-        return None
-    except Exception:
-        logger.exception("whatsapp: download failed for message")
-        return None
-
-
 class WhatsAppChannel(BaseChannel):
-    """WhatsApp channel using QR code authentication (like WhatsApp Web).
+    """WhatsApp channel using QR code authentication via Node.js bridge.
     
-    Uses whatsapp-web.js library for Node.js integration.
-    Requires:
-        - Node.js installed
-        - whatsapp-web.js npm package
-        - Puppeteer for browser automation
+    Communicates with a Node.js service (bridge.js) that handles WhatsApp Web
+    integration using whatsapp-web.js library.
     
     Features:
         - QR code authentication (scan with WhatsApp mobile app)
@@ -115,6 +71,7 @@ class WhatsAppChannel(BaseChannel):
         self,
         process: ProcessHandler,
         enabled: bool,
+        bridge_url: str,
         session_dir: str,
         media_dir: str,
         on_reply_sent: OnReplySent = None,
@@ -137,6 +94,7 @@ class WhatsAppChannel(BaseChannel):
             filter_thinking,
         )
         self._enabled = enabled
+        self._bridge_url = bridge_url.rstrip("/")
         self._session_dir = Path(session_dir).expanduser()
         self._media_dir = Path(media_dir).expanduser()
         self._show_typing = show_typing
@@ -147,8 +105,11 @@ class WhatsAppChannel(BaseChannel):
         self._max_retries = max_retries
         self._retry_delay = retry_delay
         
-        # WhatsApp client (will be initialized in start())
-        self._client: Optional[Any] = None
+        # HTTP session
+        self._session: Optional[aiohttp.ClientSession] = None
+        
+        # WebSocket client
+        self._sio: Optional[AsyncClient] = None
         self._ready = asyncio.Event()
         self._stop_event = asyncio.Event()
         self._typing_tasks: dict[str, asyncio.Task] = {}
@@ -156,6 +117,7 @@ class WhatsAppChannel(BaseChannel):
         # Session state
         self._authenticated = False
         self._qr_code: Optional[str] = None
+        self._client_info: Optional[dict] = None
 
     @classmethod
     def from_config(
@@ -183,6 +145,7 @@ class WhatsAppChannel(BaseChannel):
         return cls(
             process=process,
             enabled=bool(c.get("enabled", False)),
+            bridge_url=_get_str("bridge_url") or _DEFAULT_BRIDGE_URL,
             session_dir=_get_str("session_dir") or "~/.dominusprime/whatsapp/session",
             media_dir=_get_str("media_dir") or "~/.dominusprime/media/whatsapp",
             on_reply_sent=on_reply_sent,
@@ -199,56 +162,82 @@ class WhatsAppChannel(BaseChannel):
         )
 
     async def start(self) -> None:
-        """Start WhatsApp client with QR code authentication."""
+        """Start WhatsApp channel and connect to bridge service."""
         try:
-            # Import whatsapp-web.js (requires Node.js bridge)
-            from whatsapp_web import Client, LocalAuth
-            
-            logger.info("whatsapp: initializing client")
+            logger.info("whatsapp: connecting to bridge service")
             self._session_dir.mkdir(parents=True, exist_ok=True)
+            self._media_dir.mkdir(parents=True, exist_ok=True)
             
-            # Create client with local authentication
-            self._client = Client(
-                auth_strategy=LocalAuth(client_id="dominusprime"),
-                puppeteer_options={
-                    "headless": True,
-                    "args": ["--no-sandbox", "--disable-setuid-sandbox"],
-                },
-                user_data_dir=str(self._session_dir),
-            )
+            # Create HTTP session
+            self._session = aiohttp.ClientSession()
+            
+            # Check bridge health
+            try:
+                async with self._session.get(f"{self._bridge_url}/health", timeout=aiohttp.ClientTimeout(total=5)) as resp:
+                    if resp.status != 200:
+                        raise ConnectionError("Bridge service health check failed")
+                    logger.info("whatsapp: bridge service is healthy")
+            except Exception as e:
+                logger.error(f"whatsapp: cannot connect to bridge service at {self._bridge_url}")
+                logger.error(f"whatsapp: make sure to start the Node.js bridge first:")
+                logger.error(f"whatsapp:   cd src/dominusprime/app/channels/whatsapp && npm install && npm start")
+                raise ConnectionError(f"Bridge service not available: {e}")
+            
+            # Connect via WebSocket for real-time events
+            self._sio = AsyncClient()
             
             # Register event handlers
-            self._client.on("qr", self._on_qr)
-            self._client.on("authenticated", self._on_authenticated)
-            self._client.on("auth_failure", self._on_auth_failure)
-            self._client.on("ready", self._on_ready)
-            self._client.on("message", self._on_message)
-            self._client.on("message_create", self._on_message_create)
-            self._client.on("disconnected", self._on_disconnected)
+            @self._sio.event
+            async def connect():
+                logger.info("whatsapp: websocket connected")
             
-            # Initialize client
-            await self._client.initialize()
+            @self._sio.event
+            async def disconnect():
+                logger.warning("whatsapp: websocket disconnected")
+                self._authenticated = False
+                self._ready.clear()
+            
+            @self._sio.on('qr')
+            async def on_qr(data):
+                await self._on_qr(data.get('qr'))
+            
+            @self._sio.on('authenticated')
+            async def on_authenticated(data):
+                await self._on_authenticated()
+            
+            @self._sio.on('auth_failure')
+            async def on_auth_failure(data):
+                await self._on_auth_failure(data.get('message', 'Unknown error'))
+            
+            @self._sio.on('ready')
+            async def on_ready(data):
+                await self._on_ready(data.get('info'))
+            
+            @self._sio.on('message')
+            async def on_message(data):
+                await self._on_message(data)
+            
+            @self._sio.on('disconnected')
+            async def on_disconnected(data):
+                await self._on_disconnected(data.get('reason', 'Unknown'))
+            
+            # Connect to bridge
+            await self._sio.connect(self._bridge_url)
             
             # Wait for ready or timeout
             try:
                 await asyncio.wait_for(self._ready.wait(), timeout=120)
                 logger.info("whatsapp: client ready")
             except asyncio.TimeoutError:
-                logger.error("whatsapp: initialization timeout")
-                raise
+                logger.warning("whatsapp: initialization timeout (still waiting for QR scan)")
+                # Don't raise - QR code might not be scanned yet
                 
-        except ImportError:
-            logger.error(
-                "whatsapp: whatsapp-web.js not available. "
-                "Install: pip install whatsapp-web.py (Python bridge)"
-            )
-            raise
         except Exception:
             logger.exception("whatsapp: failed to start")
             raise
 
     async def stop(self) -> None:
-        """Stop WhatsApp client."""
+        """Stop WhatsApp channel."""
         logger.info("whatsapp: stopping")
         self._stop_event.set()
         
@@ -258,80 +247,85 @@ class WhatsAppChannel(BaseChannel):
                 task.cancel()
         self._typing_tasks.clear()
         
-        # Destroy client
-        if self._client:
-            try:
-                await self._client.destroy()
-            except Exception:
-                logger.exception("whatsapp: error destroying client")
-            self._client = None
+        # Disconnect WebSocket
+        if self._sio and self._sio.connected:
+            await self._sio.disconnect()
+        
+        # Close HTTP session
+        if self._session:
+            await self._session.close()
             
         logger.info("whatsapp: stopped")
 
-    def _on_qr(self, qr: str) -> None:
+    async def _on_qr(self, qr: str) -> None:
         """Handle QR code generation."""
         self._qr_code = qr
         logger.info("whatsapp: QR code generated")
         logger.info("=" * 50)
         logger.info("WhatsApp QR Code:")
-        logger.info("Please scan this QR code with your WhatsApp mobile app")
-        logger.info("=" * 50)
-        logger.info(qr)
+        logger.info("Scan this QR code with your WhatsApp mobile app")
+        logger.info("Or access it via: http://localhost:8000/whatsapp/qr")
         logger.info("=" * 50)
         
-        # You could also save QR code to file or display in console UI
+        # Try to display QR in terminal
         try:
             import qrcode
-            qr_img = qrcode.make(qr)
-            qr_path = self._session_dir / "qr_code.png"
-            qr_img.save(str(qr_path))
-            logger.info(f"QR code saved to: {qr_path}")
+            qr_obj = qrcode.QRCode()
+            qr_obj.add_data(qr)
+            qr_obj.print_ascii()
         except ImportError:
-            pass
+            logger.info("Install 'qrcode' package to display QR in terminal: pip install qrcode")
 
-    def _on_authenticated(self) -> None:
+    async def _on_authenticated(self) -> None:
         """Handle successful authentication."""
         self._authenticated = True
+        self._qr_code = None
         logger.info("whatsapp: authenticated successfully")
 
-    def _on_auth_failure(self, msg: str) -> None:
+    async def _on_auth_failure(self, msg: str) -> None:
         """Handle authentication failure."""
         logger.error(f"whatsapp: authentication failed: {msg}")
         self._authenticated = False
 
-    def _on_ready(self) -> None:
+    async def _on_ready(self, info: Optional[dict]) -> None:
         """Handle client ready."""
-        logger.info("whatsapp: client is ready")
+        self._client_info = info
+        if info:
+            logger.info(f"whatsapp: ready as {info.get('pushname')} ({info.get('wid', {}).get('user')})")
+        else:
+            logger.info("whatsapp: client is ready")
         self._ready.set()
 
-    def _on_disconnected(self, reason: str) -> None:
+    async def _on_disconnected(self, reason: str) -> None:
         """Handle disconnection."""
         logger.warning(f"whatsapp: disconnected: {reason}")
         self._authenticated = False
         self._ready.clear()
 
-    async def _on_message(self, message: Any) -> None:
-        """Handle incoming message."""
-        if not message or self._stop_event.is_set():
+    async def _on_message(self, data: dict) -> None:
+        """Handle incoming message from bridge."""
+        if not data or self._stop_event.is_set():
             return
-            
+        
         try:
-            # Get message details
-            chat = await message.getChat()
-            contact = await message.getContact()
+            # Extract message details
+            sender_id = data.get("contactId", "")
+            sender_name = data.get("contactName", sender_id)
+            is_group = data.get("isGroup", False)
+            chat_id = data.get("chatId", "")
+            is_from_me = data.get("isFromMe", False)
             
-            # Extract sender info
-            sender_id = contact.id._serialized if hasattr(contact, "id") else str(contact.number)
-            sender_name = contact.name or contact.pushname or sender_id
-            
-            # Check if this is a group message
-            is_group = chat.isGroup if hasattr(chat, "isGroup") else False
-            chat_id = chat.id._serialized if hasattr(chat, "id") else ""
+            # Ignore own messages
+            if is_from_me:
+                return
             
             # Apply security policies
             if not self._is_allowed(sender_id, is_group):
                 if self._deny_message:
-                    await message.reply(self._deny_message)
+                    await self._send_to_bridge("/send", {
+                        "chatId": chat_id,
+                        "message": self._deny_message
+                    })
                 logger.debug(f"whatsapp: message from {sender_id} blocked by policy")
                 return
             
@@ -339,70 +333,64 @@ class WhatsAppChannel(BaseChannel):
             content_parts = []
             
             # Text content
-            if hasattr(message, "body") and message.body:
+            body = data.get("body", "").strip()
+            if body:
                 content_parts.append(
-                    TextContent(text=message.body, type=ContentType.TEXT)
+                    TextContent(text=body, type=ContentType.TEXT)
                 )
             
             # Media content
-            if hasattr(message, "hasMedia") and message.hasMedia:
-                media_type = getattr(message, "type", "").lower()
+            media = data.get("media")
+            if media:
+                media_type = data.get("type", "").lower()
+                mimetype = media.get("mimetype", "")
                 
-                if media_type == "image":
-                    file_path = await _download_whatsapp_file(
-                        message=message,
-                        media_dir=self._media_dir,
-                        filename_hint="image.jpg",
-                    )
-                    if file_path:
-                        content_parts.append(
-                            ImageContent(
-                                image_url=f"file://{file_path}",
-                                type=ContentType.IMAGE,
-                            )
+                # Save media locally
+                import base64
+                media_data = base64.b64decode(media.get("data", ""))
+                filename = media.get("filename") or f"{uuid.uuid4().hex[:12]}"
+                
+                if media_type == "image" or mimetype.startswith("image/"):
+                    file_path = self._media_dir / "images" / filename
+                    file_path.parent.mkdir(parents=True, exist_ok=True)
+                    file_path.write_bytes(media_data)
+                    content_parts.append(
+                        ImageContent(
+                            image_url=f"file://{file_path}",
+                            type=ContentType.IMAGE,
                         )
-                        
-                elif media_type == "video":
-                    file_path = await _download_whatsapp_file(
-                        message=message,
-                        media_dir=self._media_dir,
-                        filename_hint="video.mp4",
                     )
-                    if file_path:
-                        content_parts.append(
-                            VideoContent(
-                                video_url=f"file://{file_path}",
-                                type=ContentType.VIDEO,
-                            )
+                elif media_type == "video" or mimetype.startswith("video/"):
+                    file_path = self._media_dir / "videos" / filename
+                    file_path.parent.mkdir(parents=True, exist_ok=True)
+                    file_path.write_bytes(media_data)
+                    content_parts.append(
+                        VideoContent(
+                            video_url=f"file://{file_path}",
+                            type=ContentType.VIDEO,
                         )
-                        
-                elif media_type in ("audio", "ptt"):  # ptt = voice message
-                    file_path = await _download_whatsapp_file(
-                        message=message,
-                        media_dir=self._media_dir,
-                        filename_hint="audio.ogg",
                     )
-                    if file_path:
-                        content_parts.append(
-                            AudioContent(
-                                data=f"file://{file_path}",
-                                type=ContentType.AUDIO,
-                            )
+                elif media_type in ("audio", "ptt") or mimetype.startswith("audio/"):
+                    file_path = self._media_dir / "audio" / filename
+                    file_path.parent.mkdir(parents=True, exist_ok=True)
+                    file_path.write_bytes(media_data)
+                    content_parts.append(
+                        AudioContent(
+                            data=f"file://{file_path}",
+                            type=ContentType.AUDIO,
                         )
-                        
-                elif media_type == "document":
-                    file_path = await _download_whatsapp_file(
-                        message=message,
-                        media_dir=self._media_dir,
-                        filename_hint="document.pdf",
                     )
-                    if file_path:
-                        content_parts.append(
-                            FileContent(
-                                file_url=f"file://{file_path}",
-                                type=ContentType.FILE,
-                            )
+                else:
+                    # Document/file
+                    file_path = self._media_dir / "files" / filename
+                    file_path.parent.mkdir(parents=True, exist_ok=True)
+                    file_path.write_bytes(media_data)
+                    content_parts.append(
+                        FileContent(
+                            file_url=f"file://{file_path}",
+                            type=ContentType.FILE,
                         )
+                    )
             
             if not content_parts:
                 return
@@ -417,10 +405,9 @@ class WhatsAppChannel(BaseChannel):
                 "sender_id": sender_id,
                 "meta": {
                     "chat_id": chat_id,
-                    "message_id": message.id._serialized if hasattr(message, "id") else "",
+                    "message_id": data.get("id", ""),
                     "sender_name": sender_name,
                     "is_group": is_group,
-                    "message": message,
                 },
             }
             
@@ -429,11 +416,6 @@ class WhatsAppChannel(BaseChannel):
                 
         except Exception:
             logger.exception("whatsapp: error handling message")
-
-    async def _on_message_create(self, message: Any) -> None:
-        """Handle outgoing messages (sent by us)."""
-        # Could be used for tracking sent messages
-        pass
 
     def _is_allowed(self, sender_id: str, is_group: bool) -> bool:
         """Check if sender is allowed based on security policy."""
@@ -447,8 +429,8 @@ class WhatsAppChannel(BaseChannel):
 
     async def consume_one(self, payload: Any) -> None:
         """Send agent response to WhatsApp chat."""
-        if not self._client or not self._authenticated:
-            logger.warning("whatsapp: client not ready, dropping message")
+        if not self._authenticated:
+            logger.warning("whatsapp: not authenticated, dropping message")
             return
             
         try:
@@ -460,19 +442,13 @@ class WhatsAppChannel(BaseChannel):
                 logger.warning("whatsapp: no chat_id in payload")
                 return
             
-            # Get chat
-            chat = await self._client.getChatById(chat_id)
-            if not chat:
-                logger.warning(f"whatsapp: chat not found: {chat_id}")
-                return
-            
             # Show typing indicator
             if self._show_typing:
-                await self._start_typing(chat_id, chat)
+                await self._start_typing(chat_id)
             
             # Send content parts
             for part in content_parts:
-                await self._send_content_part(chat, part)
+                await self._send_content_part(chat_id, part)
                 await asyncio.sleep(0.5)  # Small delay between messages
             
             # Stop typing
@@ -482,8 +458,8 @@ class WhatsAppChannel(BaseChannel):
         except Exception:
             logger.exception("whatsapp: error sending message")
 
-    async def _send_content_part(self, chat: Any, part: OutgoingContentPart) -> None:
-        """Send a single content part to WhatsApp."""
+    async def _send_content_part(self, chat_id: str, part: OutgoingContentPart) -> None:
+        """Send a single content part to WhatsApp via bridge."""
         try:
             if isinstance(part, TextContent):
                 text = part.text or ""
@@ -497,47 +473,62 @@ class WhatsAppChannel(BaseChannel):
                         for i in range(0, len(text), WHATSAPP_SEND_CHUNK_SIZE)
                     ]
                     for chunk in chunks:
-                        await chat.sendMessage(chunk)
+                        await self._send_to_bridge("/send", {
+                            "chatId": chat_id,
+                            "message": chunk
+                        })
                         await asyncio.sleep(0.3)
                 else:
-                    await chat.sendMessage(text)
+                    await self._send_to_bridge("/send", {
+                        "chatId": chat_id,
+                        "message": text
+                    })
                     
-            elif isinstance(part, ImageContent):
-                url = part.image_url or ""
-                if url.startswith("file://"):
+            elif isinstance(part, (ImageContent, VideoContent, AudioContent, FileContent)):
+                # Get file path
+                url = None
+                if isinstance(part, ImageContent):
+                    url = part.image_url
+                elif isinstance(part, VideoContent):
+                    url = part.video_url
+                elif isinstance(part, AudioContent):
+                    url = part.data
+                elif isinstance(part, FileContent):
+                    url = part.file_url
+                
+                if url and url.startswith("file://"):
                     path = url[7:]
-                    from whatsapp_web import MessageMedia
-                    media = MessageMedia.fromFilePath(path)
-                    await chat.sendMessage(media)
-                    
-            elif isinstance(part, VideoContent):
-                url = part.video_url or ""
-                if url.startswith("file://"):
-                    path = url[7:]
-                    from whatsapp_web import MessageMedia
-                    media = MessageMedia.fromFilePath(path)
-                    await chat.sendMessage(media)
-                    
-            elif isinstance(part, AudioContent):
-                data = part.data or ""
-                if data.startswith("file://"):
-                    path = data[7:]
-                    from whatsapp_web import MessageMedia
-                    media = MessageMedia.fromFilePath(path)
-                    await chat.sendMessage(media, {"sendAudioAsVoice": True})
-                    
-            elif isinstance(part, FileContent):
-                url = part.file_url or ""
-                if url.startswith("file://"):
-                    path = url[7:]
-                    from whatsapp_web import MessageMedia
-                    media = MessageMedia.fromFilePath(path)
-                    await chat.sendMessage(media)
+                    await self._send_to_bridge("/send", {
+                        "chatId": chat_id,
+                        "mediaPath": path,
+                        "mediaOptions": {"sendAudioAsVoice": True} if isinstance(part, AudioContent) else {}
+                    })
                     
         except Exception:
             logger.exception("whatsapp: error sending content part")
 
-    async def _start_typing(self, chat_id: str, chat: Any) -> None:
+    async def _send_to_bridge(self, endpoint: str, data: dict) -> Optional[dict]:
+        """Send HTTP request to bridge service."""
+        if not self._session:
+            return None
+        
+        try:
+            async with self._session.post(
+                f"{self._bridge_url}{endpoint}",
+                json=data,
+                timeout=aiohttp.ClientTimeout(total=30)
+            ) as resp:
+                if resp.status == 200:
+                    return await resp.json()
+                else:
+                    error_text = await resp.text()
+                    logger.error(f"whatsapp: bridge error ({resp.status}): {error_text}")
+                    return None
+        except Exception as e:
+            logger.error(f"whatsapp: bridge request failed: {e}")
+            return None
+
+    async def _start_typing(self, chat_id: str) -> None:
         """Start showing typing indicator."""
         if chat_id in self._typing_tasks:
             return
@@ -545,7 +536,7 @@ class WhatsAppChannel(BaseChannel):
         async def typing_loop():
             try:
                 while not self._stop_event.is_set():
-                    await chat.sendStateTyping()
+                    await self._send_to_bridge(f"/typing/{chat_id}", {})
                     await asyncio.sleep(3)  # Refresh typing state every 3s
             except asyncio.CancelledError:
                 pass
@@ -571,12 +562,3 @@ class WhatsAppChannel(BaseChannel):
             meta = payload.get("meta") or {}
             return meta.get("chat_id", "") or payload.get("session_id", "")
         return super().get_debounce_key(payload)
-
-
-def _is_whatsapp_available() -> bool:
-    """Check if WhatsApp Web bridge is available."""
-    try:
-        import whatsapp_web
-        return True
-    except ImportError:
-        return False

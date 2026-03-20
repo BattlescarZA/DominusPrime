@@ -91,6 +91,9 @@ class TelegramConfig(BaseChannelConfig):
 class WhatsAppConfig(BaseChannelConfig):
     """WhatsApp channel: QR code authentication (like WhatsApp Web).
 
+    Bridge:
+        bridge_url   - URL of the Node.js bridge service (default: http://localhost:8765)
+    
     Security / allowlist:
         dm_policy    - "open" (default) or "allowlist" for direct messages
         group_policy - "open" (default) or "allowlist" for group messages
@@ -102,6 +105,7 @@ class WhatsAppConfig(BaseChannelConfig):
         media_dir    - directory to store received media files
     """
 
+    bridge_url: str = "http://localhost:8765"
     session_dir: str = "~/.dominusprime/whatsapp/session"
     media_dir: str = "~/.dominusprime/media/whatsapp"
     show_typing: Optional[bool] = None

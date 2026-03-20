@@ -1,139 +1,101 @@
-# WhatsApp Channel
+# WhatsApp Web Integration
 
-WhatsApp channel integration for DominusPrime using QR code authentication (like WhatsApp Web).
+This directory contains the WhatsApp Web bridge service for DominusPrime.
 
-## Features
+## Architecture
 
-- **QR Code Authentication**: Scan QR code with your WhatsApp mobile app to authenticate
-- **Send/Receive Messages**: Full text message support
-- **Media Support**: Send and receive images, videos, audio, and documents
-- **Group Chat Support**: Works in both individual and group chats
-- **Typing Indicators**: Shows typing status while agent is processing
-- **Security Policies**: Allowlist support for controlling who can interact with the agent
-- **Session Persistence**: Authentication persists across restarts
-
-## Requirements
-
-### Python Dependencies
-
-```bash
-pip install whatsapp-web.py  # Python bridge to whatsapp-web.js
-pip install qrcode[pil]      # Optional: for QR code image generation
+```
+┌─────────────────┐         HTTP/WS          ┌──────────────────┐
+│  Python         │ <──────────────────────> │  Node.js Bridge  │
+│  WhatsAppChannel│                           │  (bridge.js)     │
+└─────────────────┘                           └──────────────────┘
+                                                       │
+                                                       │ whatsapp-web.js
+                                                       │
+                                                       ▼
+                                              ┌──────────────────┐
+                                              │  WhatsApp Web    │
+                                              │  (Puppeteer)     │
+                                              └──────────────────┘
 ```
 
-### Node.js Dependencies
+## Installation
 
-WhatsApp channel requires Node.js and the following npm packages:
+### 1. Install Node.js Dependencies
 
 ```bash
-npm install whatsapp-web.js
-npm install puppeteer
+cd src/dominusprime/app/channels/whatsapp
+npm install
 ```
 
-**Note**: `whatsapp-web.js` uses Puppeteer to automate a headless Chrome/Chromium browser that connects to WhatsApp Web.
+### 2. Start the Bridge Service
+
+#### Option A: Standalone (Recommended for Development)
+```bash
+npm start
+```
+
+#### Option B: As a Service (Production)
+
+**Linux/macOS with systemd:**
+```bash
+# Create service file
+sudo nano /etc/systemd/system/whatsapp-bridge.service
+```
+
+```ini
+[Unit]
+Description=DominusPrime WhatsApp Bridge
+After=network.target
+
+[Service]
+Type=simple
+User=YOUR_USER
+WorkingDirectory=/path/to/src/dominusprime/app/channels/whatsapp
+ExecStart=/usr/bin/node bridge.js
+Restart=always
+Environment=WHATSAPP_BRIDGE_PORT=8765
+Environment=WHATSAPP_SESSION_DIR=/home/YOUR_USER/.dominusprime/whatsapp/session
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable whatsapp-bridge
+sudo systemctl start whatsapp-bridge
+sudo systemctl status whatsapp-bridge
+```
+
+**Windows with PM2:**
+```bash
+npm install -g pm2
+pm2 start bridge.js --name whatsapp-bridge
+pm2 save
+pm2 startup
+```
 
 ## Configuration
 
-Add to your `config.json`:
+### Environment Variables
+
+- `WHATSAPP_BRIDGE_PORT` - HTTP/WebSocket port (default: 8765)
+- `WHATSAPP_SESSION_DIR` - Session storage directory (default: ~/.dominusprime/whatsapp/session)
+
+### Python Configuration
+
+Edit your DominusPrime config:
 
 ```json
 {
   "channels": {
     "whatsapp": {
       "enabled": true,
+      "bridge_url": "http://localhost:8765",
       "session_dir": "~/.dominusprime/whatsapp/session",
       "media_dir": "~/.dominusprime/media/whatsapp",
       "show_typing": true,
-      "dm_policy": "open",
-      "group_policy": "open",
-      "allow_from": [],
-      "deny_message": "Sorry, you are not authorized to use this bot.",
-      "max_retries": 3,
-      "retry_delay": 5
-    }
-  }
-}
-```
-
-### Configuration Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `enabled` | boolean | `false` | Enable/disable WhatsApp channel |
-| `session_dir` | string | `~/.dominusprime/whatsapp/session` | Directory to store session data (authentication) |
-| `media_dir` | string | `~/.dominusprime/media/whatsapp` | Directory to store received media files |
-| `show_typing` | boolean | `null` | Show typing indicator while processing |
-| `dm_policy` | string | `"open"` | Direct message policy: `"open"` or `"allowlist"` |
-| `group_policy` | string | `"open"` | Group message policy: `"open"` or `"allowlist"` |
-| `allow_from` | array | `[]` | List of allowed sender IDs (when policy is `"allowlist"`) |
-| `deny_message` | string | `""` | Message shown to unauthorized users |
-| `max_retries` | integer | `3` | Maximum connection retry attempts |
-| `retry_delay` | integer | `5` | Delay between retries (seconds) |
-
-## Usage
-
-### First-Time Setup
-
-1. **Install Dependencies**:
-   ```bash
-   pip install whatsapp-web.py qrcode[pil]
-   npm install whatsapp-web.js puppeteer
-   ```
-
-2. **Configure WhatsApp Channel**: Add configuration to `config.json` (see above)
-
-3. **Start DominusPrime**:
-   ```bash
-   dominusprime app
-   ```
-
-4. **Scan QR Code**: 
-   - A QR code will be displayed in the console
-   - QR code is also saved to `~/.dominusprime/whatsapp/session/qr_code.png`
-   - Open WhatsApp on your mobile device
-   - Go to Settings → Linked Devices → Link a Device
-   - Scan the QR code displayed in the console
-
-5. **Start Chatting**: Once authenticated, send a message to your WhatsApp number and the agent will respond!
-
-### Subsequent Runs
-
-After the first authentication, the session is saved. Simply start DominusPrime and it will automatically reconnect using the saved session - no need to scan QR code again.
-
-## Security
-
-### Allowlist Mode
-
-To restrict access to specific users or groups:
-
-```json
-{
-  "channels": {
-    "whatsapp": {
-      "enabled": true,
-      "dm_policy": "allowlist",
-      "group_policy": "allowlist",
-      "allow_from": [
-        "1234567890@c.us",
-        "987654321@c.us"
-      ],
-      "deny_message": "Sorry, you are not authorized to use this bot."
-    }
-  }
-}
-```
-
-**Getting Sender IDs**: Sender IDs are logged when messages are received. Check your logs to find the IDs you want to allowlist.
-
-### Open Mode
-
-Default mode - accepts messages from everyone:
-
-```json
-{
-  "channels": {
-    "whatsapp": {
-      "enabled": true,
       "dm_policy": "open",
       "group_policy": "open"
     }
@@ -141,82 +103,174 @@ Default mode - accepts messages from everyone:
 }
 ```
 
-## Media Handling
+## Usage
 
-### Receiving Media
+### 1. Start the Bridge Service
+```bash
+npm start
+```
 
-The agent automatically:
-- Downloads received media files to `media_dir`
-- Processes images, videos, audio, and documents
-- Includes media content in the agent's context
+### 2. Start DominusPrime
+```bash
+dominusprime app start
+```
 
-### Sending Media
+### 3. Scan QR Code
 
-The agent can send media files in responses. Media is sent as:
-- Images: `.jpg`, `.png`, etc.
-- Videos: `.mp4`, `.avi`, etc.
-- Audio: `.ogg`, `.mp3`, etc. (voice messages)
-- Documents: `.pdf`, `.docx`, etc.
+The QR code will be available at:
+- **Console**: Check logs for ASCII QR code
+- **API**: `GET http://localhost:8000/whatsapp/qr`
+- **Frontend**: Navigate to WhatsApp channel settings in the web UI
 
-## Group Chats
+### 4. Chat!
 
-WhatsApp channel works in both individual and group chats:
+Once authenticated, send messages to your WhatsApp number and the agent will respond.
 
-- **Individual Chats**: Direct 1:1 conversations
-- **Group Chats**: Agent responds to messages in WhatsApp groups
-- **Privacy**: Use `group_policy: "allowlist"` to control which groups can use the agent
+## API Endpoints
+
+### Bridge Service (Port 8765)
+
+- `GET /health` - Health check
+- `GET /status` - Connection status
+- `GET /qr` - Get QR code for authentication
+- `POST /send` - Send message
+- `GET /chat/:chatId` - Get chat information
+- `POST /typing/:chatId` - Set typing indicator
+- `POST /logout` - Logout and clear session
+- `POST /restart` - Restart client
+
+### WebSocket Events
+
+**Client → Server:**
+- (none currently)
+
+**Server → Client:**
+- `qr` - QR code generated
+- `authenticated` - Authentication successful
+- `auth_failure` - Authentication failed
+- `ready` - Client ready
+- `message` - Incoming message
+- `message_sent` - Outgoing message sent
+- `disconnected` - Client disconnected
+- `status` - Status update
 
 ## Troubleshooting
 
-### QR Code Not Displaying
+### QR Code Not Appearing
 
-- Check that `qrcode` package is installed: `pip install qrcode[pil]`
-- QR code is also saved to `session_dir/qr_code.png`
-- You can manually view this image to scan
+1. Check if bridge service is running:
+   ```bash
+   curl http://localhost:8765/health
+   ```
 
-### Authentication Failures
+2. Check logs:
+   ```bash
+   # If using systemd
+   sudo journalctl -u whatsapp-bridge -f
+   
+   # If running directly
+   # Check terminal output
+   ```
 
-- Delete the session directory and try again:
-  ```bash
-  rm -rf ~/.dominusprime/whatsapp/session
-  ```
-- Ensure WhatsApp Web is not open in your browser (only one session allowed)
+3. Clear session and restart:
+   ```bash
+   rm -rf ~/.dominusprime/whatsapp/session/*
+   npm start
+   ```
 
-### Connection Issues
+### Authentication Fails
 
-- Check that Node.js and npm packages are installed correctly
-- Verify Puppeteer can launch Chrome/Chromium:
-  ```bash
-  node -e "require('puppeteer').launch().then(b => b.close())"
-  ```
-- Check firewall/network settings
+1. Make sure you're scanning with the correct WhatsApp account
+2. QR code expires after ~20 seconds - get a fresh one
+3. Clear browser cache in Puppeteer:
+   ```bash
+   rm -rf ~/.dominusprime/whatsapp/session/*
+   ```
 
-### Media Not Downloading
+### Messages Not Sending/Receiving
 
-- Ensure `media_dir` is writable
-- Check available disk space
-- Verify network connection
+1. Check if authenticated:
+   ```bash
+   curl http://localhost:8765/status
+   ```
 
-## Architecture
+2. Check Python logs:
+   ```bash
+   dominusprime app logs
+   ```
 
-The WhatsApp channel:
-1. Uses `whatsapp-web.js` (Node.js library) via Python bridge
-2. Connects to WhatsApp Web using Puppeteer (headless Chrome)
-3. Authenticates via QR code (first time) or saved session
-4. Receives messages via event handlers
-5. Sends responses back through the WhatsApp Web API
+3. Restart bridge service
 
-## Limitations
+### High Memory Usage
 
-- **Single Session**: Only one WhatsApp Web session per phone number
-- **Phone Required**: Must have WhatsApp installed on a mobile device
-- **Internet Required**: Both mobile device and DominusPrime must be online
-- **Rate Limits**: WhatsApp may rate limit if too many messages are sent quickly
+Puppeteer can use significant memory. To reduce:
 
-## Support
+1. Edit `bridge.js` and add more Chrome flags:
+   ```javascript
+   args: [
+       '--no-sandbox',
+       '--disable-setuid-sandbox',
+       '--disable-dev-shm-usage',
+       '--disable-accelerated-2d-canvas',
+       '--no-first-run',
+       '--no-zygote',
+       '--disable-gpu',
+       '--single-process',  // Add this
+       '--disable-features=IsolateOrigins,site-per-process'  // Add this
+   ]
+   ```
 
-For issues, questions, or contributions, please visit the DominusPrime repository.
+2. Restart the bridge service
+
+## Security Notes
+
+1. **Session Files**: Keep `session_dir` secure - it contains authentication tokens
+2. **Network**: Bridge service should only be accessible locally (127.0.0.1)
+3. **Firewall**: Don't expose port 8765 to the internet
+4. **Permissions**: Limit file permissions on session directory:
+   ```bash
+   chmod 700 ~/.dominusprime/whatsapp/session
+   ```
+
+## Development
+
+### Run with Auto-Reload
+```bash
+npm run dev
+```
+
+### Debug Mode
+
+Set Node.js debug environment:
+```bash
+DEBUG=* npm start
+```
+
+### Test Endpoints
+
+```bash
+# Status
+curl http://localhost:8765/status
+
+# QR Code
+curl http://localhost:8765/qr
+
+# Send test message (after authentication)
+curl -X POST http://localhost:8765/send \
+  -H "Content-Type: application/json" \
+  -d '{
+    "chatId": "1234567890@c.us",
+    "message": "Hello from DominusPrime!"
+  }'
+```
+
+## Dependencies
+
+- **whatsapp-web.js**: WhatsApp Web API client
+- **express**: HTTP server
+- **socket.io**: WebSocket support
+- **qrcode-terminal**: QR code in terminal (optional)
 
 ## License
 
-Part of DominusPrime - see main LICENSE file.
+MIT

@@ -17,7 +17,6 @@
 & {
 param(
     [string]$Version   = "",
-    [switch]$FromSource,
     [string]$SourceDir = "",
     [string]$Extras    = "",
     [string]$UvPath    = "",
@@ -30,7 +29,7 @@ $ErrorActionPreference = "Stop"
 $DominusPrimeHome     = if ($env:DOMINUSPRIME_HOME) { $env:DOMINUSPRIME_HOME } else { Join-Path $HOME ".dominusprime" }
 $DominusPrimeVenv     = Join-Path $DominusPrimeHome "venv"
 $DominusPrimeBin      = Join-Path $DominusPrimeHome "bin"
-$PythonVersion = "3.12"
+$PythonVersion = "3.10"
 $DominusPrimeRepo     = "https://github.com/BattlescarZA/DominusPrime.git"
 
 # ── Colors ────────────────────────────────────────────────────────────────────
@@ -47,9 +46,8 @@ DominusPrime Installer for Windows
 Usage: .\install.ps1 [OPTIONS]
 
 Options:
-  -Version <VER>        Install a specific version (e.g. 0.9.4)
-  -FromSource           Install from source (requires git, or use -SourceDir)
-  -SourceDir <DIR>      Local source directory (used with -FromSource)
+  -Version <VER>        Install a specific version/tag from GitHub (e.g. v0.9.6)
+  -SourceDir <DIR>      Install from local source directory instead of GitHub
   -Extras <EXTRAS>      Comma-separated optional extras to install
                         (e.g. llamacpp, mlx, llamacpp,mlx)
   -UvPath <PATH>        Path to a pre-installed uv.exe (skips all auto-install)
@@ -57,6 +55,8 @@ Options:
 
 Environment:
   DOMINUSPRIME_HOME     Installation directory (default: ~/.dominusprime)
+
+Note: This installer always installs from source (GitHub or local directory).
 "@
     exit 0
 }
@@ -196,10 +196,10 @@ Ensure-Uv
 if (Test-Path $DominusPrimeVenv) {
     Write-Info "Existing environment found, upgrading..."
 } else {
-    Write-Info "Creating Python $PythonVersion environment..."
+    Write-Info "Creating Python $PythonVersion environment (compatible with all dependencies)..."
 }
 
-uv venv $DominusPrimeVenv --python $PythonVersion --quiet --clear
+uv venv $DominusPrimeVenv --python $PythonVersion --quiet --seed
 if ($LASTEXITCODE -ne 0) { Stop-WithError "Failed to create virtual environment" }
 
 $VenvPython = Join-Path $DominusPrimeVenv "Scripts\python.exe"
@@ -287,8 +287,9 @@ if ($SourceDir) {
     $SourceDir = (Resolve-Path $SourceDir).Path
     Write-Info "Installing DominusPrime from local source: $SourceDir"
     Prepare-Console $SourceDir
-    Write-Info "Installing package from source..."
-    uv pip install "${SourceDir}${ExtrasSuffix}" --python $VenvPython --prerelease=allow
+    Write-Info "Installing package from source (using pip for better compatibility)..."
+    & $VenvPython -m pip install --upgrade pip setuptools wheel
+    & $VenvPython -m pip install "${SourceDir}${ExtrasSuffix}"
     if ($LASTEXITCODE -ne 0) { Stop-WithError "Installation from source failed" }
     Cleanup-Console $SourceDir
 } else {
@@ -307,8 +308,9 @@ if ($SourceDir) {
         }
         if ($LASTEXITCODE -ne 0) { Stop-WithError "Failed to clone repository" }
         Prepare-Console $cloneDir
-        Write-Info "Installing package from source..."
-        uv pip install "${cloneDir}${ExtrasSuffix}" --python $VenvPython --prerelease=allow
+        Write-Info "Installing package from source (using pip for better compatibility)..."
+        & $VenvPython -m pip install --upgrade pip setuptools wheel
+        & $VenvPython -m pip install "${cloneDir}${ExtrasSuffix}"
         if ($LASTEXITCODE -ne 0) { Stop-WithError "Installation from source failed" }
     } finally {
         if (Test-Path $cloneDir) {

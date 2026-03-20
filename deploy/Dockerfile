@@ -14,7 +14,7 @@ FROM agentscope-registry.ap-southeast-1.cr.aliyuncs.com/agentscope/node:slim
 # ENV variables
 ENV NODE_ENV=production
 ENV WORKSPACE_DIR=/app
-ENV COPAW_WORKING_DIR=/app/working
+ENV COPAW_WORKING_DIR=/data/working
 
 # Available channels for this image.
 # Override at runtime with -e COPAW_ENABLED_CHANNELS=... if needed.
@@ -85,8 +85,12 @@ COPY src ./src
 COPY --from=console-builder /app/console/dist/ ./src/copaw/console/
 RUN pip install --no-cache-dir .
 
-# Init working dir with default config.json and HEARTBEAT.md (build time).
-RUN copaw init --defaults --accept-security
+# Create volume mount point for persistent data
+RUN mkdir -p /data/working && chmod -R 777 /data
+VOLUME ["/data"]
+
+# Note: Working directory will be initialized at runtime via entrypoint
+# to ensure it's created on the mounted volume
 
 # CoPaw app port (default 8088). Override at runtime with -e COPAW_PORT=3000.
 ENV COPAW_PORT=8088

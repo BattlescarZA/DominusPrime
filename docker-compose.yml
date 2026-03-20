@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  dominusprime:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    container_name: dominusprime
+    ports:
+      - "8088:8088"
+    volumes:
+      # Mount external storage for persistent data
+      - ./dominusprime-data:/data
+    environment:
+      - COPAW_PORT=8088
+      - COPAW_WORKING_DIR=/data/working
+      - COPAW_ENABLED_CHANNELS=discord,telegram,dingtalk,feishu,qq,console
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+volumes:
+  dominusprime-data:
+    driver: local

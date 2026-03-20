@@ -8,7 +8,7 @@ from typing import Optional
 
 import click
 
-from ..agents.memory.experience.system import ExperienceDistillationSystem
+from ..agents.memory.experience.system import ExperienceSystem
 from ..agents.memory.multimodal.processor import MediaProcessor
 from ..agents.memory.multimodal.index import MultimodalIndex
 from ..database.connection import DatabaseManager

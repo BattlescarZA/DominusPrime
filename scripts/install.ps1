@@ -199,7 +199,7 @@ if (Test-Path $DominusPrimeVenv) {
     Write-Info "Creating Python $PythonVersion environment (compatible with all dependencies)..."
 }
 
-uv venv $DominusPrimeVenv --python $PythonVersion --quiet
+uv venv $DominusPrimeVenv --python $PythonVersion --quiet --seed
 if ($LASTEXITCODE -ne 0) { Stop-WithError "Failed to create virtual environment" }
 
 $VenvPython = Join-Path $DominusPrimeVenv "Scripts\python.exe"
@@ -287,8 +287,9 @@ if ($SourceDir) {
     $SourceDir = (Resolve-Path $SourceDir).Path
     Write-Info "Installing DominusPrime from local source: $SourceDir"
     Prepare-Console $SourceDir
-    Write-Info "Installing package from source..."
-    uv pip install "${SourceDir}${ExtrasSuffix}" --python $VenvPython --prerelease=allow
+    Write-Info "Installing package from source (using pip for better compatibility)..."
+    & $VenvPython -m pip install --upgrade pip setuptools wheel
+    & $VenvPython -m pip install "${SourceDir}${ExtrasSuffix}"
     if ($LASTEXITCODE -ne 0) { Stop-WithError "Installation from source failed" }
     Cleanup-Console $SourceDir
 } else {
@@ -307,8 +308,9 @@ if ($SourceDir) {
         }
         if ($LASTEXITCODE -ne 0) { Stop-WithError "Failed to clone repository" }
         Prepare-Console $cloneDir
-        Write-Info "Installing package from source..."
-        uv pip install "${cloneDir}${ExtrasSuffix}" --python $VenvPython --prerelease=allow
+        Write-Info "Installing package from source (using pip for better compatibility)..."
+        & $VenvPython -m pip install --upgrade pip setuptools wheel
+        & $VenvPython -m pip install "${cloneDir}${ExtrasSuffix}"
         if ($LASTEXITCODE -ne 0) { Stop-WithError "Installation from source failed" }
     } finally {
         if (Test-Path $cloneDir) {

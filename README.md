@@ -112,6 +112,23 @@ DominusPrime init --defaults
 DominusPrime app
 ```
 
+### Windows Installer (v0.9.7+)
+
+For **Windows users** who want the easiest installation experience:
+
+1. Download `DominusPrime-0.9.7-Setup.exe` from the [releases page](https://github.com/BattlescarZA/DominusPrime/releases)
+2. Run the installer and follow the setup wizard
+3. Launch DominusPrime from the desktop icon or Start menu
+4. Your browser will automatically open to the Console interface
+
+The installer creates a Windows application that:
+- ✅ Automatically starts the server when launched
+- ✅ Opens your browser to the Console
+- ✅ Adds a desktop shortcut and Start menu entry
+- ✅ Includes an uninstaller
+
+For building the Windows installer yourself, see [`WINDOWS_INSTALLER.md`](WINDOWS_INSTALLER.md).
+
 ### Using Docker
 
 Images are on **Docker Hub** (`agentscope/DominusPrime`). Image tags: `latest` (stable); `pre` (PyPI pre-release).

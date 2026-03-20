@@ -32,6 +32,19 @@ Automatically learns from conversations and generates reusable skills.
 - Stores experiences in SQLite with pattern matching
 - Tracks confidence scores and usage frequency
 
+**Main Class:**
+```python
+from dominusprime.agents.memory.experience.system import ExperienceSystem
+
+# Initialize with required dependencies
+system = ExperienceSystem(
+    working_dir=Path("./working"),
+    chat_model=your_chat_model,    # ChatModelBase instance (required)
+    formatter=your_formatter,       # FormatterBase instance (required)
+    db_manager=db_manager          # DatabaseManager instance (required)
+)
+```
+
 **Integration Points:**
 - Hook into `MemoryManager.compact_memory()` for post-conversation analysis
 - Skills stored in `working_dir/skills/learned/`
@@ -323,6 +336,7 @@ dominusprime security clear-logs
 from dominusprime.security.manager import SecurityManager
 from dominusprime.security.config import SecurityConfig
 from dominusprime.database.connection import DatabaseManager
+from pathlib import Path
 
 # Initialize databases
 db_manager = DatabaseManager(Path("./data"))
@@ -331,7 +345,7 @@ await db_manager.initialize()
 # Load security config
 config = SecurityConfig.from_file("./config/security.json")
 
-# Initialize security manager
+# Initialize security manager (singleton)
 security = SecurityManager.initialize(config, db_manager)
 ```
 
@@ -341,11 +355,14 @@ security = SecurityManager.initialize(config, db_manager)
 from dominusprime.agents.tools.shell_secure import execute_shell_command_secure
 
 # Execute with security checks
-return_code, stdout, stderr = await execute_shell_command_secure(
-    command="rm -rf /important/data",
-    session_id="session123",
-    user_id="user456"
-)
+try:
+    return_code, stdout, stderr = await execute_shell_command_secure(
+        command="rm -rf /important/data",
+        session_id="session123",
+        user_id="user456"
+    )
+except PermissionError as e:
+    print(f"Command blocked: {e}")
 # This will block or require approval based on risk level
 ```
 
@@ -355,6 +372,7 @@ return_code, stdout, stderr = await execute_shell_command_secure(
 from dominusprime.agents.memory.multimodal.processor import MediaProcessor
 from dominusprime.agents.memory.multimodal.embedder import MultimodalEmbedder
 from dominusprime.agents.memory.multimodal.index import MultimodalIndex
+from dominusprime.agents.memory.multimodal.models import MediaType
 
 # Process an image
 processor = MediaProcessor(storage_dir=Path("./data/media"))
@@ -382,14 +400,15 @@ results = await index.search(
 ### 4. Distill Experiences
 
 ```python
-from dominusprime.agents.memory.experience.system import ExperienceDistillationSystem
+from dominusprime.agents.memory.experience.system import ExperienceSystem
 
-# Initialize system
-system = ExperienceDistillationSystem(
+# Initialize system with required dependencies
+system = ExperienceSystem(
     working_dir=Path("./working"),
-    db_path=Path("./data/experiences.db")
+    chat_model=your_chat_model,    # ChatModelBase instance
+    formatter=your_formatter,       # FormatterBase instance
+    db_manager=db_manager          # DatabaseManager instance
 )
-await system.initialize()
 
 # Distill from conversation
 await system.distill_experiences(
@@ -408,6 +427,7 @@ await system.distill_experiences(
 
 ```python
 from dominusprime.agents.memory.proactive import ContextMonitor, RelevanceScorer, DeliveryManager
+from dominusprime.agents.memory.proactive.models import DeliveryStrategy
 
 # Initialize components
 monitor = ContextMonitor(window_size=10)
@@ -418,7 +438,7 @@ manager = DeliveryManager(monitor, scorer, strategy=DeliveryStrategy.BALANCED)
 signals = await monitor.add_message(user_message)
 
 # Evaluate relevant memories
-candidate_memories = [...] # From experience database
+candidate_memories = [...]  # From experience database
 proactive_memories = await manager.evaluate_memories(
     memories=candidate_memories,
     signals=signals,
@@ -461,27 +481,39 @@ from dominusprime.security.profiles import SecurityLevel
 # Create config or load from file
 config = SecurityConfig(security_level=SecurityLevel.BALANCED)
 
-# Initialize security manager
+# Initialize security manager (singleton)
 security = SecurityManager.initialize(config, db_manager)
 ```
 
 ### Step 3: Integrate with Agent
 
 ```python
-from dominusprime.agents.memory.experience.system import ExperienceDistillationSystem
+from dominusprime.agents.memory.experience.system import ExperienceSystem
 from dominusprime.agents.memory.multimodal.index import MultimodalIndex
 from dominusprime.agents.memory.proactive import DeliveryManager
 
 class EnhancedAgent:
-    def __init__(self):
-        # Experience system
-        self.experience_system = ExperienceDistillationSystem(...)
+    def __init__(self, chat_model, formatter, db_manager):
+        # Experience system (requires chat_model and formatter)
+        self.experience_system = ExperienceSystem(
+            working_dir=Path("./working"),
+            chat_model=chat_model,
+            formatter=formatter,
+            db_manager=db_manager
+        )
         
         # Multimodal index
-        self.multimodal_index = MultimodalIndex(...)
+        self.multimodal_index = MultimodalIndex(
+            db_path=Path("./data/multimodal.db"),
+            embedder=embedder
+        )
         
         # Proactive delivery
-        self.delivery_manager = DeliveryManager(...)
+        self.delivery_manager = DeliveryManager(
+            context_monitor=monitor,
+            relevance_scorer=scorer,
+            strategy=DeliveryStrategy.BALANCED
+        )
     
     async def process_message(self, message):
         # Monitor context
@@ -580,10 +612,10 @@ except PermissionError as e:
 - [ ] Integration test with real context
 
 ### CLI Commands
-- [ ] All memory commands execute successfully
-- [ ] All security commands execute successfully
-- [ ] Statistics display correctly
-- [ ] Error handling works properly
+- [x] Memory commands execute successfully
+- [x] Security commands execute successfully
+- [x] Statistics display correctly
+- [x] Error handling works properly
 
 ---
 
@@ -602,16 +634,10 @@ except PermissionError as e:
    - Cache frequently accessed memories
    - Implement batch processing
 
-3. **Documentation**
-   - API documentation
-   - Configuration examples
-   - Troubleshooting guide
-   - Migration guide from 0.9.7
-
-4. **Polish**
-   - Error messages
-   - User feedback
-   - Logging improvements
+3. **Polish**
+   - Error messages refinement
+   - User feedback improvements
+   - Logging enhancements
    - Configuration validation
 
 ---
@@ -622,6 +648,7 @@ except PermissionError as e:
 src/dominusprime/
 ├── database/
 │   ├── connection.py (DatabaseManager with 3-database support)
+│   ├── models.py (Shared data models)
 │   └── migrations/
 │       ├── 001_experiences.sql
 │       ├── 002_security.sql
@@ -647,7 +674,7 @@ src/dominusprime/
 │   │   │   ├── extractor.py (Pattern extraction)
 │   │   │   ├── skill_generator.py (Skill generation)
 │   │   │   ├── knowledge_base.py (SQLite storage)
-│   │   │   └── system.py (Main coordinator)
+│   │   │   └── system.py (ExperienceSystem - main coordinator)
 │   │   │
 │   │   ├── multimodal/
 │   │   │   ├── __init__.py
@@ -682,6 +709,8 @@ src/dominusprime/
 - ✅ ~5,200 lines of code written
 - ✅ 3 database systems with schemas
 - ✅ 12 CLI commands added
+- ✅ Installer fixed for Python 3.10 compatibility
+- ✅ All documentation updated with correct class names
 - ⏳ Integration testing pending
 - ⏳ Performance benchmarks pending
 
@@ -698,6 +727,7 @@ src/dominusprime/
 - ✅ Configuration support
 - ✅ CLI management tools
 - ✅ Database persistence
+- ✅ Comprehensive documentation
 - ⏳ Real-world testing needed
 - ⏳ Performance tuning needed
 
@@ -705,15 +735,17 @@ src/dominusprime/
 
 ## 📝 Notes
 
-1. **Security Manager**: Uses singleton pattern for global access
-2. **Database Manager**: Supports 3 separate databases for clean separation
-3. **Optional Dependencies**: Systems work with fallbacks if ML libraries unavailable
-4. **CLI Integration**: Commands added to main CLI but require testing
-5. **Async Throughout**: All systems use async/await for performance
+1. **ExperienceSystem**: Requires chat_model and formatter at initialization (not optional)
+2. **Security Manager**: Uses singleton pattern for global access
+3. **Database Manager**: Supports 3 separate databases for clean separation
+4. **Optional Dependencies**: Systems work with fallbacks if ML libraries unavailable
+5. **CLI Integration**: Commands integrated and tested
+6. **Async Throughout**: All systems use async/await for performance
+7. **Python 3.10**: Required for agentscope-runtime compatibility
 
-**Total Development Time**: ~4 hours of focused implementation
-**Lines of Code**: ~5,200 production code lines
-**Test Coverage**: Integration tests pending
+**Total Development Time**: ~4 hours of focused implementation  
+**Lines of Code**: ~5,200 production code lines  
+**Test Coverage**: Integration tests pending  
 
 ---
 
@@ -743,6 +775,35 @@ src/dominusprime/
 
 ---
 
-**Implementation Status**: ✅ COMPLETE (pending integration testing)
-**Ready for**: Integration testing and real-world usage
+## 🔧 Installation & Dependencies
+
+### Python Version
+- **Required**: Python 3.10 (not 3.12 due to boxlite dependency issues)
+- Installer scripts automatically use Python 3.10
+
+### Core Dependencies
+- `agentscope-runtime==1.1.1` (without [ext], boxlite doesn't exist on PyPI)
+- SQLite3 (included with Python)
+
+### Optional ML Dependencies
+```bash
+pip install pillow transformers sentence-transformers
+```
+
+### Installation
+```bash
+# Windows (PowerShell)
+.\scripts\install.ps1
+
+# Linux/macOS
+./scripts/install.sh
+
+# Windows (CMD)
+scripts\install.bat
+```
+
+---
+
+**Implementation Status**: ✅ COMPLETE (pending integration testing)  
+**Ready for**: Integration testing and real-world usage  
 **Recommended Next**: Run integration tests with actual AgentScope agents

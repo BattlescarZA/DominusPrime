@@ -21,7 +21,7 @@ if defined dominusprime_HOME (
 )
 set "dominusprime_VENV=%dominusprime_HOME%\venv"
 set "dominusprime_BIN=%dominusprime_HOME%\bin"
-set "PYTHON_VERSION=3.12"
+set "PYTHON_VERSION=3.10"
 set "dominusprime_REPO=https://github.com/BattlescarZA/DominusPrime.git"
 
 REM ──── Argument defaults ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────

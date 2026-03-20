@@ -29,7 +29,7 @@ $ErrorActionPreference = "Stop"
 $DominusPrimeHome     = if ($env:DOMINUSPRIME_HOME) { $env:DOMINUSPRIME_HOME } else { Join-Path $HOME ".dominusprime" }
 $DominusPrimeVenv     = Join-Path $DominusPrimeHome "venv"
 $DominusPrimeBin      = Join-Path $DominusPrimeHome "bin"
-$PythonVersion = "3.12"
+$PythonVersion = "3.10"
 $DominusPrimeRepo     = "https://github.com/BattlescarZA/DominusPrime.git"
 
 # ── Colors ────────────────────────────────────────────────────────────────────
@@ -196,10 +196,10 @@ Ensure-Uv
 if (Test-Path $DominusPrimeVenv) {
     Write-Info "Existing environment found, upgrading..."
 } else {
-    Write-Info "Creating Python $PythonVersion environment..."
+    Write-Info "Creating Python $PythonVersion environment (compatible with all dependencies)..."
 }
 
-uv venv $DominusPrimeVenv --python $PythonVersion --quiet --clear
+uv venv $DominusPrimeVenv --python $PythonVersion --quiet
 if ($LASTEXITCODE -ne 0) { Stop-WithError "Failed to create virtual environment" }
 
 $VenvPython = Join-Path $DominusPrimeVenv "Scripts\python.exe"

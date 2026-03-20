@@ -11,7 +11,7 @@ set -euo pipefail
 dominusprime_HOME="${dominusprime_HOME:-$HOME/.dominusprime}"
 dominusprime_VENV="$dominusprime_HOME/venv"
 dominusprime_BIN="$dominusprime_HOME/bin"
-PYTHON_VERSION="3.12"
+PYTHON_VERSION="3.10"
 dominusprime_REPO="https://github.com/BattlescarZA/DominusPrime.git"
 
 VERSION=""

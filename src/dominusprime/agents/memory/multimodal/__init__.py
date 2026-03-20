@@ -1,15 +1,21 @@
 # -*- coding: utf-8 -*-
-"""Multimodal memory fusion module.
+"""Multimodal memory fusion system for DominusPrime.
 
-Enables storage and retrieval of images, audio, and video alongside text.
+This module provides capabilities to process, embed, and retrieve
+multimodal content (images, audio, video) alongside text-based memories.
 """
 
-from .base import MediaType, ProcessedMedia, MultimodalQuery
-from .system import MultimodalMemorySystem
+from .processor import MediaProcessor, MediaType
+from .embedder import MultimodalEmbedder
+from .index import MultimodalIndex
+from .models import MediaItem, MediaEmbedding, MultimodalMemory
 
 __all__ = [
+    "MediaProcessor",
     "MediaType",
-    "ProcessedMedia",
-    "MultimodalQuery",
-    "MultimodalMemorySystem",
+    "MultimodalEmbedder",
+    "MultimodalIndex",
+    "MediaItem",
+    "MediaEmbedding",
+    "MultimodalMemory",
 ]

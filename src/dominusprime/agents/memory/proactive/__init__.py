@@ -1,15 +1,23 @@
 # -*- coding: utf-8 -*-
-"""Context-aware proactive memory delivery.
+"""Proactive memory delivery system for DominusPrime.
 
-Proactively surfaces relevant memories based on conversation context.
+This module provides context-aware proactive memory delivery,
+automatically surfacing relevant memories and experiences based
+on the current conversation context.
 """
 
-from .base import ProactiveTrigger, DeliveryStrategy, UserFeedback
-from .system import ProactiveDeliverySystem
+from .context_monitor import ContextMonitor, ContextSignal
+from .relevance_scorer import RelevanceScorer, RelevanceScore
+from .delivery_manager import DeliveryManager, DeliveryStrategy
+from .models import ProactiveMemory, DeliveryTiming
 
 __all__ = [
-    "ProactiveTrigger",
+    "ContextMonitor",
+    "ContextSignal",
+    "RelevanceScorer",
+    "RelevanceScore",
+    "DeliveryManager",
     "DeliveryStrategy",
-    "UserFeedback",
-    "ProactiveDeliverySystem",
+    "ProactiveMemory",
+    "DeliveryTiming",
 ]

@@ -44,6 +44,11 @@ if os.path.exists(agents_path):
     if os.path.exists(skills_path):
         datas.append((skills_path, 'dominusprime/agents/skills'))
 
+# Add WhatsApp channel files (Node.js bridge)
+whatsapp_path = os.path.join(PROJECT_ROOT, 'src', 'dominusprime', 'app', 'channels', 'whatsapp')
+if os.path.exists(whatsapp_path):
+    datas.append((whatsapp_path, 'dominusprime/app/channels/whatsapp'))
+
 # Collect all submodules
 hiddenimports = []
 hiddenimports += collect_submodules('dominusprime')

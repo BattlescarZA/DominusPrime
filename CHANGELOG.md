@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.9] - 2026-03-21
+
+### Added
+
+- **WhatsApp Web Integration**: Full WhatsApp Web functionality with QR code authentication
+  - Node.js bridge service ([`bridge.js`](src/dominusprime/app/channels/whatsapp/bridge.js)) using whatsapp-web.js
+  - Real-time WebSocket communication between Python and Node.js
+  - QR code display in React frontend ([`WhatsAppQRDisplay.tsx`](console/src/pages/Control/Channels/components/WhatsAppQRDisplay.tsx))
+  - Session persistence for WhatsApp authentication
+  - Support for individual and group chats
+  - Media handling (images, videos, audio, documents)
+  - Typing indicators and read receipts
+  - Connection status monitoring
+  - Comprehensive setup documentation ([`README.md`](src/dominusprime/app/channels/whatsapp/README.md))
+
+### Changed
+
+- Updated [`WhatsAppConfig`](src/dominusprime/config/config.py) with bridge_url configuration
+- Removed Bot Prefix field from WhatsApp channel settings (not applicable for WhatsApp Web)
+- Enhanced [`WhatsAppChannel`](src/dominusprime/app/channels/whatsapp/channel.py) with async bridge communication
+
+### Technical Details
+
+- **Architecture**: Phone → WhatsApp Web (Puppeteer) → Node.js Bridge (port 8765) → Python Channel → Agent
+- **Dependencies**: whatsapp-web.js ^1.23.0, express ^4.18.2, socket.io ^4.6.1
+- **Frontend**: Added qrcode.react ^4.1.0, socket.io-client ^4.8.1
+
 ## [0.9.8] - 2026-03-20
 
 ### Added

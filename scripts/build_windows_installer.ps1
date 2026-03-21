@@ -4,7 +4,7 @@
 
 Write-Host "========================================"
 Write-Host "DominusPrime Windows Installer Builder"
-Write-Host "Version: 0.9.7"
+Write-Host "Version: 0.9.9"
 Write-Host "========================================"
 Write-Host ""
 
@@ -127,6 +127,9 @@ Write-Host "BUILD COMPLETED SUCCESSFULLY!" -ForegroundColor Green
 Write-Host "========================================"
 Write-Host ""
 Write-Host "The installer has been created at:"
-Write-Host "dist\installer\DominusPrime-0.9.7-Setup.exe" -ForegroundColor Yellow
+Write-Host "dist\installer\DominusPrime-0.9.9-Setup.exe" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "IMPORTANT: WhatsApp channel requires Node.js!" -ForegroundColor Cyan
+Write-Host "Users need to install Node.js 18+ to use WhatsApp integration." -ForegroundColor Yellow
 Write-Host ""
 Read-Host "Press Enter to exit"

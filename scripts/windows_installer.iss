@@ -1,9 +1,9 @@
 ; DominusPrime Windows Installer Script
 ; Inno Setup Script for creating Windows installer
-; Version: 0.9.7
+; Version: 0.9.9
 
 #define MyAppName "DominusPrime"
-#define MyAppVersion "0.9.7"
+#define MyAppVersion "0.9.9"
 #define MyAppPublisher "QuantaNova"
 #define MyAppURL "https://github.com/quantanova/dominus_prime_ui"
 #define MyAppExeName "DominusPrime.exe"

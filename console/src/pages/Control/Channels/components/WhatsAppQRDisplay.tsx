@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Alert, Card } from "@agentscope-ai/design";
 import { Spin } from "antd";
 import { CheckCircleFilled, QrcodeOutlined } from "@ant-design/icons";
+import { QRCodeSVG } from 'qrcode.react';
 
 interface WhatsAppQRDisplayProps {
   channelKey: string;
@@ -74,13 +75,13 @@ export function WhatsAppQRDisplay({ channelKey, enabled }: WhatsAppQRDisplayProp
         title={
           <span>
             <QrcodeOutlined style={{ marginRight: 8 }} />
-            WhatsApp Authentication
+            WhatsApp Web Authentication
           </span>
         }
       >
         {loading && !status && (
           <div style={{ textAlign: "center", padding: 24 }}>
-            <Spin size="large" tip="Loading WhatsApp status..." />
+            <Spin size="large" tip="Connecting to WhatsApp bridge..." />
           </div>
         )}
 
@@ -89,7 +90,19 @@ export function WhatsAppQRDisplay({ channelKey, enabled }: WhatsAppQRDisplayProp
             type="warning"
             showIcon
             message="Connection Error"
-            description={`${error}. Make sure the WhatsApp channel is enabled and the service is running.`}
+            description={
+              <div>
+                <p>{error}</p>
+                <p style={{ marginTop: 8, marginBottom: 0 }}>
+                  <strong>Make sure:</strong>
+                </p>
+                <ol style={{ marginTop: 4, marginBottom: 0, paddingLeft: 20 }}>
+                  <li>WhatsApp channel is enabled</li>
+                  <li>Node.js bridge service is running (see console logs)</li>
+                  <li>Run: <code>cd src/dominusprime/app/channels/whatsapp && npm install && npm start</code></li>
+                </ol>
+              </div>
+            }
             style={{ marginBottom: 16 }}
           />
         )}
@@ -99,52 +112,68 @@ export function WhatsAppQRDisplay({ channelKey, enabled }: WhatsAppQRDisplayProp
             type="success"
             showIcon
             icon={<CheckCircleFilled />}
-            message="WhatsApp Connected"
-            description="Your WhatsApp account is authenticated and ready to use."
+            message="WhatsApp Connected!"
+            description="Your WhatsApp account is authenticated and ready to use. You can now send messages to your WhatsApp number and the agent will respond."
           />
         ) : status?.qr_code ? (
           <div>
             <Alert
               type="info"
               showIcon
-              message="Scan QR Code"
-              description="Open WhatsApp on your phone, tap Menu or Settings and select Linked Devices, then point your camera at this QR code."
+              message="Scan QR Code with WhatsApp"
+              description={
+                <div>
+                  <p style={{ marginBottom: 8 }}>Follow these steps:</p>
+                  <ol style={{ marginBottom: 0, paddingLeft: 20 }}>
+                    <li>Open WhatsApp on your phone</li>
+                    <li>Tap <strong>Menu</strong> (⋮) or <strong>Settings</strong> (⚙️)</li>
+                    <li>Tap <strong>Linked Devices</strong></li>
+                    <li>Tap <strong>Link a Device</strong></li>
+                    <li>Point your phone at the QR code below</li>
+                  </ol>
+                </div>
+              }
               style={{ marginBottom: 16 }}
             />
             <div style={{ textAlign: "center", padding: 16 }}>
               <div
                 style={{
                   display: "inline-block",
-                  padding: 16,
+                  padding: 20,
                   background: "white",
-                  border: "1px solid #d9d9d9",
-                  borderRadius: 4,
-                  fontFamily: "monospace",
-                  fontSize: 10,
-                  lineHeight: 1,
-                  whiteSpace: "pre",
-                  wordBreak: "break-all",
-                  maxWidth: 300,
+                  border: "2px solid #25D366",
+                  borderRadius: 8,
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                 }}
               >
-                {status.qr_code}
+                <QRCodeSVG
+                  value={status.qr_code}
+                  size={280}
+                  level="M"
+                  includeMargin={true}
+                  style={{
+                    display: "block",
+                  }}
+                />
               </div>
-              <div style={{ marginTop: 12, color: "#8c8c8c", fontSize: 12 }}>
-                QR code refreshes automatically every 3 seconds
-              </div>
-              <div style={{ marginTop: 8, color: "#8c8c8c", fontSize: 11 }}>
-                Note: Install a QR code generator library to display as image
+              <div style={{ marginTop: 16 }}>
+                <div style={{ color: "#25D366", fontWeight: "bold", fontSize: 14 }}>
+                  ⏱️ QR code refreshes automatically
+                </div>
+                <div style={{ marginTop: 4, color: "#8c8c8c", fontSize: 12 }}>
+                  Scanning QR code will link your WhatsApp account
+                </div>
               </div>
             </div>
           </div>
         ) : (
           !loading && (
-            <Alert
-              type="info"
-              showIcon
-              message="Waiting for QR Code"
-              description="Starting WhatsApp client... This may take a few moments."
-            />
+            <div style={{ textAlign: "center", padding: 24 }}>
+              <Spin size="large" tip="Generating QR code..." />
+              <div style={{ marginTop: 16, color: "#8c8c8c", fontSize: 12 }}>
+                Starting WhatsApp Web client... This may take a few moments.
+              </div>
+            </div>
           )
         )}
       </Card>

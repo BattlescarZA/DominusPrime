@@ -476,7 +476,7 @@ export function ChannelDrawer({
             <Switch />
           </Form.Item>
 
-          {activeKey !== "voice" && (
+          {activeKey !== "voice" && activeKey !== "whatsapp" && (
             <Form.Item name="bot_prefix" label="Bot Prefix">
               <Input placeholder="@bot" />
             </Form.Item>

@@ -209,6 +209,15 @@ fi
 [ -x "$dominusprime_VENV/bin/dominusprime" ] || die "Installation failed: dominusprime CLI not found in venv"
 info "dominusprime installed successfully"
 
+# ── Install Playwright browsers (Chromium for browser automation) ────────────
+info "Installing Playwright browsers (Chromium)..."
+if "$dominusprime_VENV/bin/python" -m playwright install chromium --with-deps 2>&1 | grep -v "^$"; then
+    info "Playwright Chromium installed successfully"
+else
+    warn "Playwright browser installation had issues, but continuing..."
+    warn "You can manually install later with: playwright install chromium"
+fi
+
 # Check console availability
 if [ "$_CONSOLE_AVAILABLE" = 0 ]; then
     CONSOLE_CHECK="$("$dominusprime_VENV/bin/python" -c "import importlib.resources, dominusprime; p=importlib.resources.files('dominusprime')/'console'/'index.html'; print('yes' if p.is_file() else 'no')" 2>/dev/null || echo 'no')"

@@ -324,6 +324,16 @@ if (-not (Test-Path $VenvDominusPrime)) { Stop-WithError "Installation failed: d
 
 Write-Info "DominusPrime installed successfully"
 
+# ── Install Playwright browsers (Chromium for browser automation) ────────────
+Write-Info "Installing Playwright browsers (Chromium)..."
+try {
+    & $VenvPython -m playwright install chromium --with-deps 2>&1 | Out-Null
+    Write-Info "Playwright Chromium installed successfully"
+} catch {
+    Write-Warn "Playwright browser installation had issues, but continuing..."
+    Write-Warn "You can manually install later with: playwright install chromium"
+}
+
 # Check console availability (for PyPI installs, check the installed package)
 if (-not $script:ConsoleAvailable) {
     $consoleCheck = & $VenvPython -c "import importlib.resources, dominusprime; p=importlib.resources.files('dominusprime')/'console'/'index.html'; print('yes' if p.is_file() else 'no')" 2>&1

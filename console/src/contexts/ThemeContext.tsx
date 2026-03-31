@@ -16,8 +16,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (stored !== null) {
       return stored === "dark";
     }
-    // Default to dark mode
-    return true;
+    // Default to light mode
+    return false;
   });
 
   useEffect(() => {

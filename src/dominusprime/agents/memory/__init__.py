@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Memory management module for DominusPrime agents."""
+"""
+Memory system for DominusPrime agents.
 
-from .agent_md_manager import AgentMdManager
-from .memory_manager import MemoryManager
+Includes:
+- Multimodal memory (images, videos, audio)
+- Proactive delivery
+- Experience distillation
+"""
 
-__all__ = [
-    "AgentMdManager",
-    "MemoryManager",
-]
+__all__ = []

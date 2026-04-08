@@ -73,6 +73,14 @@ mlx = [
 ollama = [
     "ollama>=0.6.1",
 ]
+multimodal = [
+    "pillow>=10.0.0",          # Image processing
+    "opencv-python>=4.8.0",    # Video processing
+    "transformers>=4.30.0",    # For CLIP embeddings
+    "torch>=2.0.0",            # PyTorch for neural models
+    "numpy>=1.24.0",           # Array operations
+    "faiss-cpu>=1.7.4",        # Vector similarity search (optional)
+]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

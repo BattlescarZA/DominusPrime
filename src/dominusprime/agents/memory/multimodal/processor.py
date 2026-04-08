@@ -1,288 +1,261 @@
 # -*- coding: utf-8 -*-
-"""Media processing for multimodal memory system."""
+"""
+Media processor for multimodal memory.
 
-import asyncio
-import hashlib
-import mimetypes
-import os
+Handles extraction of metadata, text (OCR), and transcriptions from media files.
+"""
+import logging
 from pathlib import Path
-from typing import Optional, Dict, Any, List
-from datetime import datetime
+from typing import Dict, Optional, Tuple
 
-from .models import MediaItem, MediaType, ProcessingStatus
+from .models import MediaType
+
+logger = logging.getLogger(__name__)
 
 
 class MediaProcessor:
-    """Processes multimodal content for storage and analysis."""
+    """
+    Processes different types of media to extract metadata and content.
     
-    # Supported MIME types
-    SUPPORTED_TYPES = {
-        MediaType.IMAGE: [
-            "image/jpeg", "image/png", "image/gif", "image/webp",
-            "image/bmp", "image/tiff", "image/svg+xml"
-        ],
-        MediaType.AUDIO: [
-            "audio/mpeg", "audio/wav", "audio/ogg", "audio/mp4",
-            "audio/webm", "audio/flac", "audio/aac"
-        ],
-        MediaType.VIDEO: [
-            "video/mp4", "video/webm", "video/ogg", "video/mpeg",
-            "video/quicktime", "video/x-msvideo"
-        ],
-        MediaType.DOCUMENT: [
-            "application/pdf", "text/plain", "text/markdown",
-            "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        ],
-    }
+    Capabilities:
+    - Extract image EXIF data and dimensions
+    - Extract video metadata (duration, resolution, frames)
+    - OCR text from images
+    - Transcribe audio
+    """
     
-    def __init__(self, storage_dir: Path):
-        """Initialize media processor.
-        
-        Args:
-            storage_dir: Directory to store processed media files
-        """
-        self.storage_dir = Path(storage_dir)
-        self.storage_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Create subdirectories for each media type
-        for media_type in MediaType:
-            (self.storage_dir / media_type.value).mkdir(exist_ok=True)
-    
-    def _determine_media_type(self, mime_type: str) -> Optional[MediaType]:
-        """Determine media type from MIME type."""
-        for media_type, mime_types in self.SUPPORTED_TYPES.items():
-            if mime_type in mime_types:
-                return media_type
-        return None
-    
-    def _generate_id(self, file_path: str, content: bytes) -> str:
-        """Generate unique ID for media item."""
-        hasher = hashlib.sha256()
-        hasher.update(file_path.encode())
-        hasher.update(content)
-        return hasher.hexdigest()[:16]
-    
-    async def process_file(
+    def __init__(
         self,
-        file_path: str,
-        session_id: Optional[str] = None,
-        conversation_id: Optional[str] = None,
-        user_context: Optional[str] = None,
-    ) -> MediaItem:
-        """Process a media file and create MediaItem.
+        enable_ocr: bool = False,
+        enable_transcription: bool = False,
+    ):
+        """
+        Initialize media processor.
         
         Args:
-            file_path: Path to the media file
-            session_id: Associated session ID
-            conversation_id: Associated conversation ID
-            user_context: Additional user context
+            enable_ocr: Enable text extraction from images
+            enable_transcription: Enable audio transcription
+        """
+        self.enable_ocr = enable_ocr
+        self.enable_transcription = enable_transcription
+        
+        # Lazy import of heavy dependencies
+        self._pil_image = None
+        self._cv2 = None
+        self._pytesseract = None
+    
+    def process_media(
+        self,
+        file_path: Path,
+        media_type: MediaType,
+    ) -> Dict:
+        """
+        Process media file and extract metadata.
+        
+        Args:
+            file_path: Path to media file
+            media_type: Type of media
             
         Returns:
-            Processed MediaItem
+            Dictionary with extracted metadata
         """
-        path = Path(file_path)
-        if not path.exists():
-            raise FileNotFoundError(f"File not found: {file_path}")
-        
-        # Read file content
-        content = await asyncio.to_thread(path.read_bytes)
-        file_size = len(content)
-        
-        # Determine MIME type
-        mime_type, _ = mimetypes.guess_type(str(path))
-        if not mime_type:
-            mime_type = "application/octet-stream"
-        
-        # Determine media type
-        media_type = self._determine_media_type(mime_type)
-        if not media_type:
-            raise ValueError(f"Unsupported media type: {mime_type}")
-        
-        # Generate unique ID
-        item_id = self._generate_id(str(path), content)
-        
-        # Create storage path
-        storage_path = self.storage_dir / media_type.value / f"{item_id}{path.suffix}"
-        
-        # Copy file to storage
-        await asyncio.to_thread(storage_path.write_bytes, content)
-        
-        # Create MediaItem
-        media_item = MediaItem(
-            id=item_id,
-            media_type=media_type,
-            file_path=str(storage_path),
-            original_filename=path.name,
-            mime_type=mime_type,
-            file_size=file_size,
-            session_id=session_id,
-            conversation_id=conversation_id,
-            user_context=user_context,
-        )
-        
-        # Extract metadata based on type
-        try:
-            if media_type == MediaType.IMAGE:
-                await self._process_image(media_item, storage_path)
-            elif media_type == MediaType.AUDIO:
-                await self._process_audio(media_item, storage_path)
-            elif media_type == MediaType.VIDEO:
-                await self._process_video(media_item, storage_path)
-            elif media_type == MediaType.DOCUMENT:
-                await self._process_document(media_item, storage_path)
-            
-            media_item.status = ProcessingStatus.COMPLETED
-            media_item.processed_at = datetime.utcnow()
-        except Exception as e:
-            media_item.status = ProcessingStatus.FAILED
-            media_item.metadata["error"] = str(e)
-        
-        return media_item
+        if media_type == MediaType.IMAGE:
+            return self.process_image(file_path)
+        elif media_type == MediaType.VIDEO:
+            return self.process_video(file_path)
+        elif media_type == MediaType.AUDIO:
+            return self.process_audio(file_path)
+        else:
+            return self._get_basic_metadata(file_path)
     
-    async def _process_image(self, item: MediaItem, path: Path) -> None:
-        """Extract metadata from image."""
+    def process_image(self, file_path: Path) -> Dict:
+        """
+        Process image file.
+        
+        Extracts:
+        - Dimensions (width, height)
+        - Format
+        - EXIF data
+        - OCR text (if enabled)
+        """
         try:
-            # Try to import PIL (Pillow)
+            from PIL import Image
+            self._pil_image = Image
+        except ImportError:
+            logger.warning("Pillow not installed, limited image processing")
+            return self._get_basic_metadata(file_path)
+        
+        metadata = self._get_basic_metadata(file_path)
+        
+        try:
+            with Image.open(file_path) as img:
+                metadata.update({
+                    "width": img.width,
+                    "height": img.height,
+                    "format": img.format,
+                    "mode": img.mode,
+                })
+                
+                # Extract EXIF if available
+                exif = img.getexif()
+                if exif:
+                    metadata["exif"] = dict(exif)
+                
+                # OCR text extraction
+                if self.enable_ocr:
+                    metadata["ocr_text"] = self._extract_text_ocr(file_path)
+        
+        except Exception as e:
+            logger.error(f"Failed to process image {file_path}: {e}")
+        
+        return metadata
+    
+    def process_video(self, file_path: Path) -> Dict:
+        """
+        Process video file.
+        
+        Extracts:
+        - Duration
+        - Resolution (width, height)
+        - Frame rate
+        - Codec
+        """
+        try:
+            import cv2
+            self._cv2 = cv2
+        except ImportError:
+            logger.warning("OpenCV not installed, limited video processing")
+            return self._get_basic_metadata(file_path)
+        
+        metadata = self._get_basic_metadata(file_path)
+        
+        try:
+            cap = cv2.VideoCapture(str(file_path))
+            
+            if cap.isOpened():
+                metadata.update({
+                    "width": int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                    "height": int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
+                    "fps": cap.get(cv2.CAP_PROP_FPS),
+                    "frame_count": int(cap.get(cv2.CAP_PROP_FRAME_COUNT)),
+                    "duration_seconds": cap.get(cv2.CAP_PROP_FRAME_COUNT) / cap.get(cv2.CAP_PROP_FPS)
+                        if cap.get(cv2.CAP_PROP_FPS) > 0 else 0,
+                })
+            
+            cap.release()
+        
+        except Exception as e:
+            logger.error(f"Failed to process video {file_path}: {e}")
+        
+        return metadata
+    
+    def process_audio(self, file_path: Path) -> Dict:
+        """
+        Process audio file.
+        
+        Extracts:
+        - Duration
+        - Sample rate
+        - Channels
+        - Transcription (if enabled)
+        """
+        metadata = self._get_basic_metadata(file_path)
+        
+        try:
+            # Try to get audio info using wave for WAV files
+            if file_path.suffix.lower() == '.wav':
+                import wave
+                with wave.open(str(file_path), 'rb') as wav:
+                    metadata.update({
+                        "channels": wav.getnchannels(),
+                        "sample_rate": wav.getframerate(),
+                        "duration_seconds": wav.getnframes() / wav.getframerate(),
+                    })
+            
+            # Transcription
+            if self.enable_transcription:
+                metadata["transcription"] = self._transcribe_audio(file_path)
+        
+        except Exception as e:
+            logger.error(f"Failed to process audio {file_path}: {e}")
+        
+        return metadata
+    
+    def _get_basic_metadata(self, file_path: Path) -> Dict:
+        """Get basic file metadata."""
+        stat = file_path.stat()
+        return {
+            "file_size": stat.st_size,
+            "format": file_path.suffix.lstrip('.').lower(),
+            "created_at": stat.st_ctime,
+            "modified_at": stat.st_mtime,
+        }
+    
+    def _extract_text_ocr(self, image_path: Path) -> Optional[str]:
+        """Extract text from image using OCR."""
+        try:
+            import pytesseract
             from PIL import Image
             
-            img = await asyncio.to_thread(Image.open, str(path))
-            item.width = img.width
-            item.height = img.height
-            
-            # Extract EXIF data if available
-            if hasattr(img, '_getexif') and img._getexif():
-                exif = img._getexif()
-                if exif:
-                    item.metadata["exif"] = {k: str(v) for k, v in exif.items() if isinstance(k, int)}
-            
-            # Basic image info
-            item.metadata["format"] = img.format
-            item.metadata["mode"] = img.mode
-            
-        except ImportError:
-            # PIL not available, store basic info
-            item.metadata["note"] = "Install Pillow for advanced image processing"
-    
-    async def _process_audio(self, item: MediaItem, path: Path) -> None:
-        """Extract metadata from audio."""
-        try:
-            # Try to import mutagen for audio metadata
-            from mutagen import File as AudioFile
-            
-            audio = await asyncio.to_thread(AudioFile, str(path))
-            if audio:
-                item.duration = audio.info.length if hasattr(audio.info, 'length') else None
-                
-                # Extract tags
-                if audio.tags:
-                    item.metadata["tags"] = dict(audio.tags)
-                    
-                    # Extract common tags
-                    if "title" in audio.tags:
-                        item.metadata["title"] = str(audio.tags["title"][0])
-                    if "artist" in audio.tags:
-                        item.metadata["artist"] = str(audio.tags["artist"][0])
+            with Image.open(image_path) as img:
+                text = pytesseract.image_to_string(img)
+                return text.strip() if text else None
         
         except ImportError:
-            item.metadata["note"] = "Install mutagen for audio metadata extraction"
+            logger.warning("pytesseract not installed, skipping OCR")
+            return None
+        except Exception as e:
+            logger.error(f"OCR failed: {e}")
+            return None
     
-    async def _process_video(self, item: MediaItem, path: Path) -> None:
-        """Extract metadata from video."""
+    def _transcribe_audio(self, audio_path: Path) -> Optional[str]:
+        """Transcribe audio using Whisper."""
         try:
-            # Try to import opencv for video processing
-            import cv2
-            
-            cap = cv2.VideoCapture(str(path))
-            if cap.isOpened():
-                item.width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-                item.height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-                fps = cap.get(cv2.CAP_PROP_FPS)
-                frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-                item.duration = frame_count / fps if fps > 0 else None
-                
-                item.metadata["fps"] = fps
-                item.metadata["frame_count"] = frame_count
-                
-                cap.release()
+            # Note: This is a placeholder for Whisper integration
+            # Full implementation would use openai.whisper or whisper-api
+            logger.info("Audio transcription not yet implemented")
+            return None
         
-        except ImportError:
-            item.metadata["note"] = "Install opencv-python for video processing"
+        except Exception as e:
+            logger.error(f"Transcription failed: {e}")
+            return None
     
-    async def _process_document(self, item: MediaItem, path: Path) -> None:
-        """Extract text from documents."""
-        if item.mime_type in ("text/plain", "text/markdown"):
-            # Read text content directly
-            content = await asyncio.to_thread(path.read_text, encoding="utf-8")
-            item.detected_text = content[:10000]  # Limit to first 10k chars
-            item.metadata["char_count"] = len(content)
-        else:
-            # PDF or Word documents would need additional libraries
-            item.metadata["note"] = "Install PyPDF2 or python-docx for document text extraction"
-    
-    async def process_url(
+    def extract_video_frame(
         self,
-        url: str,
-        session_id: Optional[str] = None,
-        conversation_id: Optional[str] = None,
-        user_context: Optional[str] = None,
-    ) -> MediaItem:
-        """Download and process media from URL.
-        
-        Args:
-            url: URL to media file
-            session_id: Associated session ID
-            conversation_id: Associated conversation ID
-            user_context: Additional user context
-            
-        Returns:
-            Processed MediaItem
+        video_path: Path,
+        frame_number: int = 0,
+    ) -> Optional[Path]:
         """
-        # Download file
-        import aiohttp
-        
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                if response.status != 200:
-                    raise ValueError(f"Failed to download from {url}: {response.status}")
-                
-                content = await response.read()
-                mime_type = response.headers.get("Content-Type", "application/octet-stream")
-                
-                # Determine file extension
-                media_type = self._determine_media_type(mime_type)
-                if not media_type:
-                    raise ValueError(f"Unsupported media type: {mime_type}")
-                
-                # Generate ID and storage path
-                item_id = self._generate_id(url, content)
-                ext = mimetypes.guess_extension(mime_type) or ".bin"
-                storage_path = self.storage_dir / media_type.value / f"{item_id}{ext}"
-                
-                # Save file
-                await asyncio.to_thread(storage_path.write_bytes, content)
-                
-                # Process as regular file
-                return await self.process_file(
-                    str(storage_path),
-                    session_id=session_id,
-                    conversation_id=conversation_id,
-                    user_context=user_context,
-                )
-    
-    async def delete_media(self, media_item: MediaItem) -> bool:
-        """Delete media file from storage.
+        Extract a specific frame from video.
         
         Args:
-            media_item: MediaItem to delete
+            video_path: Path to video file
+            frame_number: Frame to extract (0 for first frame)
             
         Returns:
-            True if deleted successfully
+            Path to extracted frame image
         """
         try:
-            path = Path(media_item.file_path)
-            if path.exists():
-                await asyncio.to_thread(path.unlink)
-                return True
-        except Exception:
-            pass
-        return False
+            import cv2
+            import tempfile
+            
+            cap = cv2.VideoCapture(str(video_path))
+            cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
+            
+            ret, frame = cap.read()
+            cap.release()
+            
+            if ret:
+                # Save frame to temporary file
+                temp_file = Path(tempfile.mktemp(suffix='.jpg'))
+                cv2.imwrite(str(temp_file), frame)
+                return temp_file
+            
+            return None
+        
+        except Exception as e:
+            logger.error(f"Failed to extract frame: {e}")
+            return None
+
+
+__all__ = ["MediaProcessor"]

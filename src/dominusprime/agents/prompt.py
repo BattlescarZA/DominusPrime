@@ -107,8 +107,11 @@ class PromptBuilder:
                 )
                 return True  # Not fatal for optional files
 
-    def build(self) -> str:
+    def build(self, include_skills: bool = True) -> str:
         """Build the system prompt from markdown files.
+
+        Args:
+            include_skills: Whether to include skills index in prompt
 
         Returns:
             Constructed system prompt string
@@ -121,6 +124,18 @@ class PromptBuilder:
         if not self.prompt_parts:
             logger.warning("No content loaded from working directory")
             return DEFAULT_SYS_PROMPT
+
+        # Append skills index if requested
+        if include_skills:
+            try:
+                from .utils.skills_index import get_cached_skills_index
+                skills_index = get_cached_skills_index(compact=False)
+                if skills_index:
+                    self.prompt_parts.append("")
+                    self.prompt_parts.append(skills_index)
+                    logger.debug("Skills index appended to system prompt")
+            except Exception as e:
+                logger.warning(f"Failed to append skills index: {e}")
 
         # Join all parts with double newlines
         final_prompt = "\n\n".join(self.prompt_parts)

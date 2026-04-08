@@ -2,7 +2,9 @@
 """Agent command handler for system commands.
 
 This module handles system commands like /compact, /new, /clear, etc.
+Also supports slash commands for quick skill loading (e.g., /python-debugging).
 """
+import json
 import logging
 from typing import TYPE_CHECKING
 
@@ -47,7 +49,36 @@ class ConversationCommandHandlerMixin:
         """
         if not isinstance(query, str) or not query.startswith("/"):
             return False
-        return query.strip().lstrip("/") in self.SYSTEM_COMMANDS
+        return query.strip().lstrip("/").split()[0] in self.SYSTEM_COMMANDS
+    
+    def is_skill_command(self, query: str | None) -> bool:
+        """Check if the query is a skill slash command.
+        
+        Args:
+            query: User query string
+            
+        Returns:
+            True if query is a skill command (e.g., /python-debugging)
+        """
+        if not isinstance(query, str) or not query.startswith("/"):
+            return False
+        
+        command = query.strip().lstrip("/").split()[0]
+        
+        # Not a system command, so might be a skill
+        if command in self.SYSTEM_COMMANDS:
+            return False
+        
+        # Check if skill exists
+        try:
+            from .tools.skills_tool import skills
+            import asyncio
+            
+            result_str = asyncio.run(skills(action="view", name=command))
+            result = json.loads(result_str)
+            return result.get("success", False)
+        except Exception:
+            return False
 
 
 class CommandHandler(ConversationCommandHandlerMixin):
@@ -74,8 +105,8 @@ class CommandHandler(ConversationCommandHandlerMixin):
         self._enable_memory_manager = enable_memory_manager
 
     def is_command(self, query: str | None) -> bool:
-        """Check if the query is a system command (alias for mixin)."""
-        return self.is_conversation_command(query)
+        """Check if the query is any command (system or skill)."""
+        return self.is_conversation_command(query) or self.is_skill_command(query)
 
     async def _make_system_msg(self, text: str) -> Msg:
         """Create a system response message.
@@ -278,6 +309,84 @@ class CommandHandler(ConversationCommandHandlerMixin):
             f"- **Role:** {msg.role}\n"
             f"- **Content:**\n{msg.content}",
         )
+    
+    async def _process_skill(self, skill_name: str) -> Msg:
+        """Process skill slash command (e.g., /python-debugging).
+        
+        Args:
+            skill_name: Name of the skill to load
+            
+        Returns:
+            System message with skill content
+        """
+        try:
+            from .tools.skills_tool import skills
+            
+            # View the skill
+            result_str = await skills(action="view", name=skill_name)
+            result = json.loads(result_str)
+            
+            if not result.get("success"):
+                return await self._make_system_msg(
+                    f"**Skill Not Found: {skill_name}**\n\n"
+                    f"- The skill '{skill_name}' does not exist\n"
+                    f"- Use `await skills(action=\"list\")` to see available skills\n"
+                    f"- Or search: `await skills(action=\"search\", query=\"{skill_name}\")`"
+                )
+            
+            # Extract skill information
+            skill_content = result.get("body", "")
+            frontmatter = result.get("frontmatter", {})
+            description = frontmatter.get("description", "No description")
+            category = result.get("category", "uncategorized")
+            
+            # Build response
+            response_parts = [
+                f"**✓ Skill Loaded: {skill_name}**",
+                f"",
+                f"**Category**: {category}",
+                f"**Description**: {description}",
+                f"",
+                f"---",
+                f"",
+                skill_content,
+            ]
+            
+            # Include supporting files info if available
+            if result.get("supporting_files"):
+                files = result["supporting_files"]
+                response_parts.extend([
+                    f"",
+                    f"---",
+                    f"",
+                    f"**Supporting Files** ({len(files)}):",
+                ])
+                for file in files:
+                    response_parts.append(f"- `{file['path']}` ({file['size']} bytes)")
+            
+            return await self._make_system_msg("\n".join(response_parts))
+            
+        except Exception as e:
+            logger.error(f"Error loading skill '{skill_name}': {e}", exc_info=True)
+            return await self._make_system_msg(
+                f"**Error Loading Skill**\n\n"
+                f"- Failed to load skill '{skill_name}'\n"
+                f"- Error: {e}\n"
+                f"- Check logs for details"
+            )
+    
+    async def handle_skill_command(self, query: str) -> Msg:
+        """Process skill slash command.
+        
+        Args:
+            query: Skill command string (e.g., "/python-debugging")
+            
+        Returns:
+            System response message with skill content
+        """
+        skill_name = query.strip().lstrip("/").split()[0]
+        logger.info(f"Processing skill command: {skill_name}")
+        return await self._process_skill(skill_name)
 
     async def handle_conversation_command(self, query: str) -> Msg:
         """Process conversation system commands.
@@ -307,5 +416,26 @@ class CommandHandler(ConversationCommandHandlerMixin):
         return await handler(messages, args)
 
     async def handle_command(self, query: str) -> Msg:
-        """Process system commands (alias for handle_conversation_command)."""
-        return await self.handle_conversation_command(query)
+        """Process commands (system or skill).
+        
+        Args:
+            query: Command string
+            
+        Returns:
+            System response message
+        """
+        # Check if it's a system command first
+        if self.is_conversation_command(query):
+            return await self.handle_conversation_command(query)
+        # Otherwise try as skill command
+        elif self.is_skill_command(query):
+            return await self.handle_skill_command(query)
+        else:
+            # Unknown command
+            command = query.strip().lstrip("/").split()[0]
+            return await self._make_system_msg(
+                f"**Unknown Command: /{command}**\n\n"
+                f"**System Commands**: /compact, /new, /clear, /history, /message\n"
+                f"**Skill Commands**: /skill-name (e.g., /python-debugging)\n\n"
+                f"Use `await skills(action=\"list\")` to see available skills."
+            )

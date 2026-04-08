@@ -97,6 +97,11 @@ from .security_cmd import security  # noqa: E402
 _record(".security_cmd", time.perf_counter() - _t)
 
 _t = time.perf_counter()
+from .whatsapp_cmd import whatsapp_group  # noqa: E402
+
+_record(".whatsapp_cmd", time.perf_counter() - _t)
+
+_t = time.perf_counter()
 from .uninstall_cmd import uninstall_cmd  # noqa: E402
 
 _record(".uninstall_cmd", time.perf_counter() - _t)
@@ -151,4 +156,5 @@ cli.add_command(models_group)
 cli.add_command(skills_group)
 cli.add_command(memory)
 cli.add_command(security)
+cli.add_command(whatsapp_group)
 cli.add_command(uninstall_cmd)

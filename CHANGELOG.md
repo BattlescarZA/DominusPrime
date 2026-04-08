@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.12] - 2026-03-31
+
+### Added
+- **WhatsApp Baileys Integration (Phase 1)**: Complete rewrite of WhatsApp integration using modern Baileys library
+  - Node.js HTTP bridge ([`bridge.js`](scripts/whatsapp-bridge/bridge.js)) with REST API endpoints
+  - Python adapter ([`baileys_adapter.py`](src/dominusprime/app/channels/whatsapp/baileys_adapter.py)) with subprocess management
+  - Native message editing support (Baileys-exclusive feature)
+  - Superior media handling (images, videos, audio, documents)
+  - User allowlist security with LID ↔ phone mapping
+  - Self-chat and bot modes
+  - Auto npm dependency installation
+- **WhatsApp CLI Commands**: New [`dominusprime whatsapp`](src/dominusprime/cli/whatsapp_cmd.py) command group
+  - `dominusprime whatsapp pair` - QR code pairing
+  - `dominusprime whatsapp status` - Check bridge status
+  - `dominusprime whatsapp start` - Manual bridge start
+  - `dominusprime whatsapp reset` - Reset session
+- **Documentation**: Comprehensive guides
+  - [`scripts/whatsapp-bridge/README.md`](scripts/whatsapp-bridge/README.md) - Bridge documentation (200+ lines)
+  - [`docs/WHATSAPP_BAILEYS_IMPLEMENTATION.md`](docs/WHATSAPP_BAILEYS_IMPLEMENTATION.md) - Implementation guide (500+ lines)
+  - [`plans/hermes-agent-feature-analysis.md`](plans/hermes-agent-feature-analysis.md) - Feature analysis and roadmap (600+ lines)
+
+### Changed
+- Bumped version from 0.9.11 to 0.9.12
+- WhatsApp module now exports both [`WhatsAppChannel`](src/dominusprime/app/channels/whatsapp/channel.py) (old) and [`WhatsAppBaileysAdapter`](src/dominusprime/app/channels/whatsapp/baileys_adapter.py) (new)
+
+### Technical Details
+- **Bridge Architecture**: HTTP/JSON communication over localhost:3000
+- **Session Management**: Multi-file auth state for reliability
+- **Dependencies**: @whiskeysockets/baileys 7.0.0-rc.9, @hapi/boom, express, pino, qrcode-terminal
+- **Security**: Session lock mechanism, user allowlist, automatic echo filtering
+- **Testing**: 15+ unit tests for adapter and allowlist functionality
+
+### Migration Path
+- Existing whatsapp-web.js users can continue using `WhatsAppChannel`
+- New users should use `WhatsAppBaileysAdapter` for better reliability
+- See [`docs/WHATSAPP_BAILEYS_IMPLEMENTATION.md`](docs/WHATSAPP_BAILEYS_IMPLEMENTATION.md) for migration guide
+
+### Comparison: Baileys vs whatsapp-web.js
+| Feature | Baileys (0.9.12) | whatsapp-web.js (0.9.9) |
+|---------|------------------|-------------------------|
+| Maintenance Status | ✅ Active | ❌ Deprecated |
+| Message Editing | ✅ Native | ❌ Not supported |
+| Media Handling | ✅ Native binary | ⚠️ Base64 conversion |
+| Session Format | ✅ Multi-file | ⚠️ Single file |
+| Connection Stability | ✅ Excellent | ⚠️ Frequent drops |
+
 ## [0.9.9] - 2026-03-21
 
 ### Added

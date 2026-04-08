@@ -35,6 +35,7 @@ class ConversationCommandHandlerMixin:
             "compact_str",
             "await_summary",
             "message",
+            "memory",
         },
     )
 
@@ -373,6 +374,135 @@ class CommandHandler(ConversationCommandHandlerMixin):
                 f"- Failed to load skill '{skill_name}'\n"
                 f"- Error: {e}\n"
                 f"- Check logs for details"
+            )
+    
+    async def _process_memory(self, messages: list[Msg], args: str = "") -> Msg:
+        """Process /memory command.
+        
+        Args:
+            messages: Current conversation messages (unused for memory)
+            args: Arguments like "search query", "list", "stats", "clear"
+            
+        Returns:
+            System message with memory information
+        """
+        # Check if multimodal memory system exists
+        multimodal_memory = getattr(self, 'multimodal_memory', None)
+        if multimodal_memory is None:
+            return await self._make_system_msg(
+                "**Multimodal Memory Not Enabled**\n\n"
+                "The multimodal memory system is not available in this session."
+            )
+        
+        # Parse subcommand
+        parts = args.strip().split(" ", maxsplit=1)
+        subcommand = parts[0].lower() if parts else "help"
+        subargs = parts[1] if len(parts) > 1 else ""
+        
+        try:
+            if subcommand == "search":
+                # Search memories
+                if not subargs:
+                    return await self._make_system_msg(
+                        "**Usage**: `/memory search <query>`\n\n"
+                        "Example: `/memory search python debugging`"
+                    )
+                
+                results = multimodal_memory.search(query=subargs, top_k=5)
+                
+                if not results:
+                    return await self._make_system_msg(
+                        f"**No memories found** matching: `{subargs}`"
+                    )
+                
+                response_parts = [f"**Found {len(results)} memories** matching: `{subargs}`\n"]
+                for i, result in enumerate(results, 1):
+                    response_parts.append(f"\n**{i}. [{result.media_type.value.upper()}] {result.id}**")
+                    response_parts.append(f"- Session: `{result.session_id}`")
+                    if hasattr(result, 'similarity_score'):
+                        response_parts.append(f"- Relevance: {result.similarity_score:.2f}")
+                    if result.metadata and 'description' in result.metadata:
+                        desc = result.metadata['description'][:100]
+                        response_parts.append(f"- Context: {desc}...")
+                
+                return await self._make_system_msg("\n".join(response_parts))
+            
+            elif subcommand == "list":
+                # List memories from current session
+                session_id = subargs or getattr(multimodal_memory, 'current_session_id', 'default')
+                memories = multimodal_memory.get_session_memories(session_id)
+                
+                if not memories:
+                    return await self._make_system_msg(
+                        f"**No memories** in session: `{session_id}`"
+                    )
+                
+                # Sort by creation time
+                memories = sorted(memories, key=lambda m: m.created_at, reverse=True)[:10]
+                
+                response_parts = [f"**Memories in session `{session_id}`** ({len(memories)}):\n"]
+                for i, memory in enumerate(memories, 1):
+                    response_parts.append(f"\n**{i}. [{memory.media_type.value.upper()}] {memory.id}**")
+                    response_parts.append(f"- File: `{memory.file_path.name}`")
+                    if memory.metadata and 'description' in memory.metadata:
+                        desc = memory.metadata['description'][:80]
+                        response_parts.append(f"- Context: {desc}...")
+                
+                return await self._make_system_msg("\n".join(response_parts))
+            
+            elif subcommand == "stats":
+                # Show memory statistics
+                stats = multimodal_memory.get_statistics()
+                
+                response_text = f"""**Memory System Statistics**
+
+**Total Memories**: {stats.get('total_memories', 0)}
+**Storage Used**: {stats.get('storage_used', 0) / (1024**3):.2f} GB / {stats.get('storage_total', 0) / (1024**3):.2f} GB
+**Available**: {stats.get('storage_available', 0) / (1024**3):.2f} GB
+
+**By Type**:
+- Images: {stats.get('type_counts', {}).get('image', 0)}
+- Videos: {stats.get('type_counts', {}).get('video', 0)}
+- Audio: {stats.get('type_counts', {}).get('audio', 0)}
+- Documents: {stats.get('type_counts', {}).get('document', 0)}"""
+                
+                return await self._make_system_msg(response_text)
+            
+            elif subcommand == "clear":
+                # Clear memories from current session
+                session_id = subargs or getattr(multimodal_memory, 'current_session_id', 'default')
+                multimodal_memory.clear_session(session_id)
+                
+                return await self._make_system_msg(
+                    f"**Cleared all memories** from session: `{session_id}`"
+                )
+            
+            elif subcommand == "help" or subcommand == "":
+                # Show help
+                return await self._make_system_msg(
+                    "**Multimodal Memory Commands**\n\n"
+                    "**Search**: `/memory search <query>` - Search stored memories\n"
+                    "**List**: `/memory list [session]` - List memories (default: current session)\n"
+                    "**Stats**: `/memory stats` - Show memory statistics\n"
+                    "**Clear**: `/memory clear [session]` - Clear memories from session\n\n"
+                    "You can also use tools:\n"
+                    "- `await store_media(media_path, context_text)`\n"
+                    "- `await search_memories(query, top_k=5)`\n"
+                    "- `await list_memories(session_id)`\n"
+                    "- `await get_memory_stats()`"
+                )
+            
+            else:
+                return await self._make_system_msg(
+                    f"**Unknown memory command**: `{subcommand}`\n\n"
+                    "Use `/memory help` to see available commands."
+                )
+        
+        except Exception as e:
+            logger.error(f"Error processing memory command: {e}", exc_info=True)
+            return await self._make_system_msg(
+                f"**Error**: {e}\n\n"
+                "Check logs for details."
             )
     
     async def handle_skill_command(self, query: str) -> Msg:
